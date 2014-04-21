@@ -1,0 +1,140 @@
+.logo
+{
+	float: right;
+}
+
+/* For the selector within the approval table*/
+.row_selected
+{
+	background-color: rgba(255,238,0,.7) !important;
+}
+
+.filter-info-box
+{
+	font-size: 10px;
+	background-color: rgba(255,238,0,.7);
+	border: 1px solid #FFB900;
+	border-radius:3px;
+	padding: 1px;
+	text-align: center;
+	cursor: pointer;
+	display: none;	
+}
+
+
+.status-grouping-approved, .status-grouping-pending, .status-grouping-rejected, .status-grouping-ns, 
+.vuln-grouping-high, .vuln-grouping-med, .vuln-grouping-low,
+.analysis-grouping, .license-conflict-grouping
+{
+	display: inline-block;
+	vertical-align: middle;
+	min-width: 130px;
+	text-align: center;
+}
+
+/* This holds all the individual groupings */
+.grouping-numbers-bar
+{
+	padding-left: 2px;
+	text-align: center;
+}
+
+/* Enforces size on the table */
+.table-outer
+{
+	min-width: 555px;
+}
+
+.status-approved-title,.status-pending-title,.status-rejected-title,.status-ns-title, 
+.vuln-high-title,.vuln-med-title,.vuln-low-title,
+.analysis-title, .license-conflict-type
+{
+	font-family: arial, helvetica, clean, sans-serif;
+	font-size: 12px;
+	font-weight: bold;
+	vertical-align: middle;
+	padding-top: 5px;
+	padding-right: 2px;
+	margin-bottom: 10px;	
+	display: inline-block;	
+	
+	/*Make the title a link*/
+	cursor: pointer;
+	text-decoration:underline;
+}
+
+.title-no-link
+{
+	cursor: default;
+	text-decoration:none;
+}
+
+.title-highlite
+{
+	font-size: 12px;
+	color: darkRed;
+	padding: 8px;
+	background-color: rgba(255,238,0,.4);
+	border-radius:3px;
+	border: 1px solid #FFB900;
+}
+
+
+.status-approved-count, .status-rejected-count, .status-pending-count, 
+.status-ns-count, .vuln-high-count, .vuln-med-count, .vuln-low-count,
+.analysis-number, .license-conflict-count
+{
+	font-family: arial, helvetica, clean, sans-serif;
+	font-size: 15px;
+	font-weight: bold;
+	display: inline-block;	
+	padding: 2px;
+	padding-left: 5px;
+	padding-right: 5px;
+
+	color: white;
+	/*default color, set by jquery in the code*/
+	background-color: #FFCF53;
+}
+.status-approved-trend, .status-rejected-trend, .status-pending-trend, .status-ns-trend, .vuln-high-trend, .vuln-med-trend, .vuln-low-trend
+{
+	display: inline-block;	
+	text-align: center;
+	vertical-align: middle;
+}
+
+/* This overwrites the existing datatable layout, critically important */
+.display
+{
+	table-layout: fixed;
+}
+
+/* Over writes the css for the pulldown */
+.page-pulldown
+{
+	padding: 0px;
+	font-size: 11px;
+}
+
+
+/* Jquery UI override for the datatable columns */
+.ui-tooltip-class
+{
+	position: absolute;
+    background: #FFF7C3;
+    display: block;  
+    font-size:14px;
+    padding:6px;
+    color:black; 
+    border: 2px solid black;
+    word-wrap: normal;
+    text-align: left;
+    max-width: 450px;
+    max-height: 500px;
+}
+
+/* Overwrites header size*/
+.dataTable thead th
+{
+	font-size: 10px;
+}

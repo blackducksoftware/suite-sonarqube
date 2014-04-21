@@ -1,0 +1,161 @@
+<!-- GLOBALS -->
+<%
+	lic_json_string = measure('license-breakdown-json')
+	lic_conflict_measure = measure('protex-total-license-conflict-files')
+	fomatted_lic_conflict = format_measure(lic_conflict_measure, :suffix => '')
+	cc_bom_url = measure('cc-app-bom-url')
+	pp_measure = measure('protex-project')
+	
+%>
+<head>
+
+<link rel="stylesheet" type="text/css" href="<%= url_for_static(:plugin => 'BDSPlugin', :path => 'font-awesome/css/font-awesome.min.css') -%>" /></link>	
+<link rel="stylesheet" type="text/css" href="<%= url_for_static(:plugin => 'BDSPlugin', :path => 'common/bds_common.css') -%>" /></link>	
+
+
+<style>
+
+.conflict-count-color
+{
+	background-color: DarkRed;
+}
+
+.cc_link
+{
+	color: blue;
+	text-decoration: none;
+	font-weight: bold;
+}
+
+.chart-container
+{
+	min-width: 150px;
+	min-height: 150px;
+}
+</style>
+
+
+<script src="<%= url_for_static(:plugin => 'BDSPlugin', :path => 'highcharts.js') -%>  "></script>
+
+
+<script>
+	
+
+	  jQuery(function()
+	  {
+	
+		var dataArr = [];
+		var licJson = <%=lic_json_string.data%>
+		
+		console.log("License json: " + licJson);
+		for(key in licJson)
+		{
+		
+		    console.log("Category License: " + key);  
+		    var licenseCategory = licJson[key];
+	
+		    var number = parseFloat(licenseCategory['count']);
+			var color = licenseCategory['color'];
+			var catName = licenseCategory['categoryName'];
+			
+			var dataSlice = 
+			{
+				  color: color,
+				  name: catName,
+				  y: number,
+				  ownURL: 'http://www.google.com'
+			}
+			
+			dataArr.push(dataSlice);
+			
+		}
+		
+	
+		console.log("Data Array: " + dataArr);
+	
+		var seriesSet =    
+			{
+	            type: 'pie',
+	            name: 'Licenses',
+	            data: dataArr      
+	        };
+	
+
+	    var chart = new Highcharts.Chart({
+	        chart: {
+	            margin: 1,
+	            spacing: 1,
+	            renderTo: 'lic_chart_container',
+	            type: 'pie',
+	           
+     
+	        },
+	
+	        title: 
+	        {
+	        	text: "",
+	            floating: true,
+	            align: 'left',
+	            x: 10,
+	            y: 50
+	        },
+	
+	        plotOptions: {
+	            pie: {
+	                startAngle: 90,
+	                dataLabels: {
+	                    enabled: true,
+	                    format: '{point.name} ({point.y})',
+	                    style: {
+	                        textShadow: '0px 1px 1px gray'
+	                    }
+	                },
+	            }
+	        },
+	        credits:
+	        {
+	        	enabled: false
+	        },
+	        series: [ seriesSet ]
+	    });
+	  });
+	</script>
+</head>
+
+<body>
+<h1> Component License Information </h1> 
+
+<table width="95%">
+<tr>
+<td></td>
+<td align="right">
+	<a href="<%=cc_bom_url.data%>" target="_new" class="cc_link">Code Center <i class="fa fa-share-square-o"></i> </a>
+</td>
+</tr>
+<tr>
+	<td width="25%">
+		<div class="license-conflict-type title-no-link">License Types:</div>
+	</td>
+	<td width="50%" rowspan=2>
+		<div class="chart-container" id="lic_chart_container" width="50%"></div>
+	</td>
+<tr>
+<tr>
+	<td>
+		<div class="license-conflict-grouping">
+			<div class="license-conflict-type title-no-link">
+				Conflicts:
+			</div>
+			<div class="license-conflict-count conflict-count-color">
+				<%=fomatted_lic_conflict%>
+				<%=trend_icon(lic_conflict_measure, :big => true)%>
+			</div>	
+		</div>
+
+	</td>
+	<td>
+		<img class="logo" src="<%= url_for_static(:plugin => 'BDSPlugin', :path => 'common/bd_logo.png') -%>  ">	
+	</td>
+</tr>
+</table>
+ </body>

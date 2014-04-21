@@ -1,0 +1,167 @@
+<%
+
+	vuln_high_json = measure('vuln-high-list-json')
+	vuln_med_json = measure('vuln-med-list-json')
+	vuln_low_json = measure('vuln-low-list-json')
+	
+	vuln_high_count = measure('vuln-high')
+	vuln_med_count = measure('vuln-med')
+	vuln_low_count = measure('vuln-low')
+%>
+<head>
+
+	<link rel="stylesheet" type="text/css" href="<%= url_for_static(:plugin => 'BDSPlugin', :path => 'font-awesome/css/font-awesome.min.css') -%>" /></link>	
+	
+	<link rel="stylesheet" type="text/css" href="<%= url_for_static(:plugin => 'BDSPlugin', :path => 'datatables/css/demo_table_jui.css') -%>" /></link>	
+	<link rel="stylesheet" type="text/css" href="<%= url_for_static(:plugin => 'BDSPlugin', :path => 'datatables/css/jquery.dataTables.css') -%>" /></link>	
+	
+	<!-- UI Theme -->
+	
+	
+	<script type="text/javascript"  src="<%= url_for_static(:plugin => 'BDSPlugin', :path => 'datatables/jquery.dataTables.min.js') -%>  "></script>
+	<script type="text/javascript" src="<%= url_for_static(:plugin => 'BDSPlugin', :path => 'datatables/jquery.dataTables.columnFilter.js') -%>  "></script>
+	<script type="text/javascript" src="<%= url_for_static(:plugin => 'BDSPlugin', :path => 'jquery-ui/jquery-ui-1.10.4.min.js') -%>  "></script>
+	<script type="text/javascript" src="<%= url_for_static(:plugin => 'BDSPlugin', :path => 'common/bds_common_functions.js') -%>  "></script>
+
+	<script>
+		var dtVulnTableName = "#vuln-table-data";
+		
+		var approvedJsonList = <%=vuln_high_json.data%>;
+		var medJsonList = <%=vuln_med_json.data%>;
+		var lowJsonList = <%=vuln_low_json.data%>;
+	
+		var fullVulnList = [];
+
+		addToMasterList(approvedJsonList, fullVulnList);
+		addToMasterList(medJsonList, fullVulnList);
+		addToMasterList(lowJsonList, fullVulnList);
+
+	    $j(function()
+	  	{		
+				// Populate Counts and Colors
+				var $appCountUI = $j('.vuln-high-count');		
+				setColorAndValue($appCountUI, "darkRed", <%=vuln_high_count.value%>);
+
+				var $rejCountUI = $j('.vuln-med-count');		
+				setColorAndValue($rejCountUI, "orange", <%=vuln_med_count.value%>)
+				
+				var $penCountUI = $j('.vuln-low-count');		
+				setColorAndValue($penCountUI, "#FFDF00", <%=vuln_low_count.value%>)
+		});	
+			
+		var vulnWidthSize = "10%";	
+		var  vulnColumnData =  
+		[
+     
+            { 
+            	"mData": "componentName",
+            	"sTitle": "Component Name",
+            	"sWidth": "18%",
+            }, 
+            { 
+           	 	"mData": "componentVersion", 
+           	 	"sTitle": "Version",
+           	 	"sWidth": "9%"
+            }, 
+    	    { 
+           	 	"mData": "name", 
+           	 	"sTitle": "CVE",
+           	 	"sWidth": "12%",
+           	 	"mRender":function(data, type, row)
+           	 	{
+           	 		var nvdURL = "http://web.nvd.nist.gov/view/vuln/detail?vulnId=";
+           	 		var nvdURLFull = nvdURL + data;
+           	 		return  '<a href="'+ nvdURLFull+'" target=_new>' + data + '</a>';
+           	 	}
+            }, 
+      
+            { 
+           	 	"mData": "severity", 
+           	 	"sTitle": "Sev",
+           	 	"sWidth": "6%"
+            }, 
+            { 
+           	 	"mData": "publishDate", 
+           	 	"sTitle": "Date",
+           	 	"sWidth": "8%"
+            }, 
+            { 
+           	 	"mData": "description", 
+           	 	"sTitle": "Desc",
+           	 	"sWidth": "8%",
+           	 	'fnCreatedCell': function(nTd, sData, oData, iRow, iCol) 
+            	{
+            		// This is used by the tooltip
+			        nTd.title = oData.description;
+			    },
+            }, 
+            
+        ]
+	  
+		$j(document).createTable(dtVulnTableName,fullVulnList,vulnColumnData, 0);    
+		
+		$j(function()
+	  	{		
+			var localDataTable = $j(dtVulnTableName).dataTable();		 
+			$j(window).bind('resize', function () {
+			    localDataTable.fnAdjustColumnSizing();
+			 });
+		});
+	</script>
+
+</head>
+
+
+<body>
+
+
+<H1> Component Vulnerabilities </h1>
+<br><p>
+
+<div class="table-outer">
+	<div class="grouping-numbers-bar">
+		<div class="vuln-grouping-high">
+			<div class="vuln-high-title" onclick="javascript:filterColumnByValue(3, dtVulnTableName, this)">
+				High
+			</div>
+			<div class="vuln-high-count">
+			</div>
+			<div class="vuln-high-trend">
+				<%=trend_icon(vuln_high_count, :big => true)%>
+			</div>
+		</div>
+	
+		<div class="vuln-grouping-med">
+			<div class="vuln-med-title" onclick="javascript:filterColumnByValue(3, dtVulnTableName, this)">
+				Medium
+			</div>
+			<div class="vuln-med-count"></div>
+				<div class="vuln-med-trend">
+				<%=trend_icon(vuln_med_count, :big => true)%>
+			</div>
+		</div>
+		
+		<div class="vuln-grouping-low">
+			<div class="vuln-low-title" onclick="javascript:filterColumnByValue(3, dtVulnTableName, this)">
+				Low
+			</div>
+			<div class="vuln-low-count"></div>
+				<div class="vuln-low-trend">
+				<%=trend_icon(vuln_low_count, :big => true)%>
+			</div>
+		</div>
+	</div>
+	
+	<table id="vuln-table-data" class="display">
+		<thead></thead>
+		<tbody></tbody>
+		<tfoot>	
+		</tfoot>
+		<div class="filter-info-box" title="Click to clear" id="filterBox" onclick="javascript:clearFilterSelection(dtVulnTableName)"></div>
+		
+	</table>
+			
+	<br>
+	 <img class="logo" src="<%= url_for_static(:plugin => 'BDSPlugin', :path => 'common/bd_logo.png') -%> ">
+</div>
+</body>
