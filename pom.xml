@@ -2,7 +2,7 @@
   <modelVersion>4.0.0</modelVersion>
   <groupId>com.blackducksofware.soleng.poc.ccsonarplugin</groupId>
   <artifactId>BDSPlugin</artifactId>
-  <version>1.0.0-QA</version>
+  <version>1.0.1-SNAPSHOT</version>
 
 	   <repositories>
 			<repository>
@@ -43,7 +43,7 @@
 		<dependency>
 		    <groupId>com.blackducksoftware.soleng</groupId>
 		    <artifactId>common-framework</artifactId>
-		    <version>0.0.2-SNAPSHOT</version>	
+		    <version>1.0.0</version>	
 		</dependency>
 		
 		<dependency>
