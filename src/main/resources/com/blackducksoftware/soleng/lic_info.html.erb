@@ -1,5 +1,7 @@
 <!-- GLOBALS -->
 <%
+	cc_error_msg = measure('code-center-error-message')
+
 	lic_json_string = measure('license-breakdown-json')
 	lic_conflict_measure = measure('protex-total-license-conflict-files')
 	fomatted_lic_conflict = format_measure(lic_conflict_measure, :suffix => '')
@@ -47,6 +49,7 @@
 		var dataArr = [];
 		var licJson = <%=lic_json_string.data%>
 		
+		
 		console.log("License json: " + licJson);
 		for(key in licJson)
 		{
@@ -62,8 +65,7 @@
 			{
 				  color: color,
 				  name: catName,
-				  y: number,
-				  ownURL: 'http://www.google.com'
+				  y: number
 			}
 			
 			dataArr.push(dataSlice);
@@ -80,7 +82,13 @@
 	            data: dataArr      
 	        };
 	
-
+   // Check to make sure there is something worth rendering.
+    if(dataArr == null || dataArr.length == 0)
+    {
+      console.log("No data to populate the pie chart with.")
+      return;
+    }
+		
 	    var chart = new Highcharts.Chart({
 	        chart: {
 	            margin: 1,
@@ -125,37 +133,47 @@
 <body>
 <h1> Component License Information </h1> 
 
-<table width="95%">
-<tr>
-<td></td>
-<td align="right">
-	<a href="<%=cc_bom_url.data%>" target="_new" class="cc_link">Code Center <i class="fa fa-share-square-o"></i> </a>
-</td>
-</tr>
-<tr>
-	<td width="25%">
-		<div class="license-conflict-type title-no-link">License Types:</div>
+<% if cc_error_msg.data %>
+	<br>
+	<div class="error-message">
+		Error: <%=cc_error_msg.data %>
+	</div>
+<% else %>
+	<table width="95%">
+	<tr>
+	<td></td>
+	<td align="right">
+		<a href="<%=cc_bom_url.data%>" target="_new" class="cc_link">Code Center <i class="fa fa-share-square-o"></i> </a>
 	</td>
-	<td width="50%" rowspan=2>
-		<div class="chart-container" id="lic_chart_container" width="50%"></div>
-	</td>
-<tr>
-<tr>
-	<td>
-		<div class="license-conflict-grouping">
-			<div class="license-conflict-type title-no-link">
-				Conflicts:
+	</tr>
+	<tr>
+		<td width="25%">
+			<div class="license-conflict-type title-no-link">License Types:</div>
+		</td>
+		<td width="50%" rowspan=2>
+			<div class="chart-container" id="lic_chart_container" width="50%"></div>
+		</td>
+	<tr>
+	<tr>
+		<td>
+			<div class="license-conflict-grouping">
+				<div class="license-conflict-type title-no-link">
+					Conflicts:
+				</div>
+				<div class="license-conflict-count conflict-count-color">
+					<%=fomatted_lic_conflict%>
+				</div>	
+				<div class="component-license-trend">
+				  <%=trend_icon(lic_conflict_measure, :big => true)%>
+			  </div>
 			</div>
-			<div class="license-conflict-count conflict-count-color">
-				<%=fomatted_lic_conflict%>
-				<%=trend_icon(lic_conflict_measure, :big => true)%>
-			</div>	
-		</div>
 
-	</td>
-	<td>
-		<img class="logo" src="<%= url_for_static(:plugin => 'BDSPlugin', :path => 'common/bd_logo.png') -%>  ">	
-	</td>
-</tr>
-</table>
+		</td>
+		<td>
+			<img class="logo" src="<%= url_for_static(:plugin => 'BDSPlugin', :path => 'common/bd_logo.png') -%>  ">	
+		</td>
+	</tr>
+	</table>
+
+<% end %>
  </body>

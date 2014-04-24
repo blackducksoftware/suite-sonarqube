@@ -181,8 +181,16 @@ function filterTable(value, pos, cssName)
  */
 jQuery.fn.createTable = function(tableClassName, dataList, columnData, defaultSortPos)
 {
-	// Overwrite classes
-	$j.fn.dataTableExt.oJUIClasses = 'page-pulldown';
+	
+	/**
+	 * Check to see if data arrived
+	 */
+	if(dataList == null || dataList.length == 0)
+	{
+		console.log("Data or column information is null or empty, for table: " + tableClassName);
+		return;
+	}
+	
 	/**
 		 * 	For sDom:
 		The following options are allowed:
@@ -225,7 +233,7 @@ jQuery.fn.createTable = function(tableClassName, dataList, columnData, defaultSo
 	    // Tooltip
 		 oTable.$('td').smallipop(
 			{
-		        popupYOffset: 5, // Bubble has a 20px vertical offset
+		        popupYOffset: 2, // Bubble has a 20px vertical offset
 		        popupDistance: 2, // Bubble travels vertically 
 		        popupOffset: 0, // No horizontal offset
 		        theme: 'blue fat-shadow',

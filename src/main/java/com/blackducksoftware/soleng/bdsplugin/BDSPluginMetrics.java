@@ -10,6 +10,21 @@ import java.util.List;
 public final class BDSPluginMetrics implements Metrics {
 
 	/**
+	 * Error Metrics
+	 */
+	 
+  public final static Metric PROTEX_ERROR_MESSAGE = 
+		  new Metric.Builder(BDSPluginConstants.PROTEX_ERROR_MESSAGE_KEY, "Protex Error", Metric.ValueType.STRING)
+  .setDomain(CoreMetrics.DOMAIN_GENERAL)
+  .create();
+  
+  
+  public final static Metric CC_ERROR_MESSAGE = 
+		  new Metric.Builder(BDSPluginConstants.CODE_CENTER_ERROR_MESSAGE_KEY, "Code Center Error", Metric.ValueType.STRING)
+  .setDomain(CoreMetrics.DOMAIN_GENERAL)
+  .create();
+	
+	/**
 	 * Protex Metrics
 	 */
   public final static Metric PROTEX_TOTAL_FILES = 
@@ -160,6 +175,8 @@ public final class BDSPluginMetrics implements Metrics {
   public List<Metric> getMetrics() {
     return Arrays.asList
     	(
+			PROTEX_ERROR_MESSAGE,
+			CC_ERROR_MESSAGE,
     		PROTEX_TOTAL_FILES, 
     		PROTEX_PENDING_FILES,
     		PROTEX_NO_DISCOVERY_FILES,

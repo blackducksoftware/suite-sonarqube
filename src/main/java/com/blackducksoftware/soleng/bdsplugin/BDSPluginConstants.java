@@ -2,6 +2,9 @@ package com.blackducksoftware.soleng.bdsplugin;
 
 public class BDSPluginConstants {
 
+	/**
+	 * Settings
+	 */
 	// Property Keys
 	public static final String PROPERTY_PROTEX_PROJECT = "ProtexProjectKey";
 	public static final String PROPERTY_PROTEX_URL = "ProtexUrlKey";
@@ -19,13 +22,9 @@ public class BDSPluginConstants {
 
 
 	
-	
-	
-	
-	
-
-
-	
+	/**
+	 * Metrics/Measures
+	 */
 	// License category constants for license breakdown map
 	public static String LICENSE_CATEGORY_UNKNOWN = "Unknown";
 	public static String LICENSE_CATEGORY_PERMISSIVE = "Permissive";
@@ -34,9 +33,12 @@ public class BDSPluginConstants {
 	
 	public static String[] LICENSE_CAT_LIST = {LICENSE_CATEGORY_UNKNOWN, LICENSE_CATEGORY_PERMISSIVE, LICENSE_CATEGORY_WEAK_RECIPROCAL, LICENSE_CATEGORY_RECIPROCAL};
 	
-	/**
-	 * The following strings are to be used for the metric keys
-	 */
+	
+	// Error Keys
+	public static String PROTEX_ERROR_MESSAGE_KEY = "protex-error-message";
+	public static String CODE_CENTER_ERROR_MESSAGE_KEY = "code-center-error-message";
+	
+	// Component Analysis
 	public static String PROTEX_TOTAL_FILES_METRIC_KEY = "protex-total-files";
 	public static String PROTEX_TOTAL_PENDING_METRIC_KEY = "protex-total-pending-files";
 	public static String PROTEX_TOTAL_NO_DISCOVERY_METRIC_KEY = "protex-total-no-discovery-files";

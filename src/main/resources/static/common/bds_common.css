@@ -1,3 +1,21 @@
+.error-message
+{
+	position: relative;
+	color: #D8000C;
+	background-color: #FAD1D1;
+	border: 1px solid #FF3A2C;
+	border-radius:5px;
+	padding: 5px;
+
+}
+
+.error-message:before
+{
+	font-size: 14px;
+	font-family: FontAwesome;
+    content: "\F071";
+}
+
 .logo
 {
 	float: right;
@@ -28,21 +46,23 @@
 {
 	display: inline-block;
 	vertical-align: middle;
-	min-width: 130px;
-	text-align: center;
+	min-width: 120px;
+	text-align: start;
+	padding-right: 3px;
 }
 
 /* This holds all the individual groupings */
 .grouping-numbers-bar
 {
-	padding-left: 2px;
+
 	text-align: center;
+	min-width: 515px;
 }
 
-/* Enforces size on the table */
+/* Enforces size on all our widgets */
 .table-outer
 {
-	min-width: 555px;
+	min-width: 495px;
 }
 
 .status-approved-title,.status-pending-title,.status-rejected-title,.status-ns-title, 
@@ -71,9 +91,8 @@
 
 .title-highlite
 {
-	font-size: 12px;
+	padding-bottom: 5px;
 	color: darkRed;
-	padding: 8px;
 	background-color: rgba(255,238,0,.4);
 	border-radius:3px;
 	border: 1px solid #FFB900;
@@ -96,7 +115,8 @@
 	/*default color, set by jquery in the code*/
 	background-color: #FFCF53;
 }
-.status-approved-trend, .status-rejected-trend, .status-pending-trend, .status-ns-trend, .vuln-high-trend, .vuln-med-trend, .vuln-low-trend
+.status-approved-trend, .status-rejected-trend, .status-pending-trend, .status-ns-trend, 
+.vuln-high-trend, .vuln-med-trend, .vuln-low-trend, .component-analysis-trend, .component-license-trend
 {
 	display: inline-block;	
 	text-align: center;

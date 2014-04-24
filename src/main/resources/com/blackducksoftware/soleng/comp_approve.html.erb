@@ -1,4 +1,5 @@
 <%
+  cc_error_msg = measure('code-center-error-message')
 
 	comp_list_pending_json = measure('comp-list-pending-json')
 	comp_list_approved_json = measure('comp-list-approved-json')
@@ -92,16 +93,17 @@
 				setColorAndValue($appCountUI, "darkGreen", <%=approved_count.value%>);
 
 				var $rejCountUI = $j('.status-rejected-count');		
-				setColorAndValue($rejCountUI, "darkRed", <%=rejected_count.value%>)
+				setColorAndValue($rejCountUI, "darkRed", <%=rejected_count.value%>);
 				
 				var $penCountUI = $j('.status-pending-count');		
-				setColorAndValue($penCountUI, "darkOrange", <%=pending_count.value%>)
+				setColorAndValue($penCountUI, "darkOrange", <%=pending_count.value%>);
 				
 				var $nsCountUI = $j('.status-ns-count');		
-				setColorAndValue($nsCountUI, "black", <%=ns_count.value%>)
+				setColorAndValue($nsCountUI, "black", <%=ns_count.value%>);
 		});	
 		
 		// Function for centering
+				
 		var centerFunction = function (data, type, row)
             	{	            		
             		return  '<center>' + data + '</center>';
@@ -275,7 +277,14 @@
 <body>
 
 	<h1> Component Approvals </h1>
-	<br>
+<% if cc_error_msg.data %>
+  <br>
+  <div class="error-message">
+    Error: <%=cc_error_msg.data %>
+  </div>
+<% else %>
+
+<br><p>
 
 	<div class="table-outer">
 		<div class="grouping-numbers-bar">
@@ -330,6 +339,7 @@
 		<br>
 		<img class="logo" src="<%= url_for_static(:plugin => 'BDSPlugin', :path => 'common/bd_logo.png') -%> ">
 	</div>
-
+	
+<% end %>
 </body>
 </html>

@@ -38,9 +38,9 @@ public class ProtexConnector {
 	private ProtexDAO pDAO = null;
 	
 
-	public ProtexConnector(Settings settings, String sonarProjectName)
+	public ProtexConnector(Settings settings) throws Exception
 	{
-		pDAO = new ProtexDAO(settings, sonarProjectName);			
+		pDAO = new ProtexDAO(settings);			
 	}
 	
 	public ApplicationPOJO populateApplicationWithProtexData(ApplicationPOJO pojo, SensorContext sensorContext) 
@@ -51,8 +51,15 @@ public class ProtexConnector {
 			pDAO.populateProjectFileCounts(pojo, sensorContext);
 					
 			log.info("App information: " + pojo.toString());
-		} catch (Throwable t)
+		} 
+		catch (Exception e)
 		{
+			log.error("Unable to populate Protex data", e);
+			pojo.setProtexErrorMsg(e.getMessage());
+		}
+		catch (Throwable t)
+		{
+			pojo.setProtexErrorMsg(t.getMessage());
 			log.error("Fatal Protex error: Unable to generate Protex information", t);
 		}
 		

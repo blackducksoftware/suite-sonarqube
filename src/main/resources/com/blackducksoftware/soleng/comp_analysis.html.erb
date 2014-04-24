@@ -6,6 +6,8 @@ measure_protex_no_discovery_total =measure('protex-total-no-discovery-files')
 measure_protex_discovery_total =measure('protex-total-discovery-files')
 measure_protex_analyzed_date =measure('protex-analyzed-date')
 
+protex_err_msg = measure('protex-error-message')
+
 fomatted_total = format_measure(measure_protex_total, :suffix => '')
 formatted_pending = format_measure(measure_protex_pending_total, :suffix => '')
 formatted_no_disc = format_measure(measure_protex_no_discovery_total, :suffix => '')
@@ -21,16 +23,13 @@ formatted_date = format_measure(measure_protex_analyzed_date, :suffix => '')
 	<script>
 
 		   $j(function()
-	  	    {
-		 
-              console.log("Started processing...");
+	  	 {		 
+          console.log("Started processing...");
 		 
 		      var discoveredFiles = <%=measure_protex_discovery_total.value%>;
-			  var pendingFiles = <%=measure_protex_pending_total.value%>;
+			    var pendingFiles = <%=measure_protex_pending_total.value%>;
 		
-
-		
-			  // We want to subtract from 1 to showcase how much percent is REMAINING rather than is absolute
+			    // We want to subtract from 1 to showcase how much percent is REMAINING rather than is absolute
 		      var percentage_float = 1 - (pendingFiles / discoveredFiles);
 		      var percentage = Math.floor(percentage_float * 100);
 		    
@@ -40,6 +39,13 @@ formatted_date = format_measure(measure_protex_analyzed_date, :suffix => '')
 		      var $startNumber = $j('.start.number');  
 		      var $endNumber = $j('.end.number');  
 		      var $tile = $j('#identifiedFiles');
+		      
+		      var mainWidgetId = $tile.length;
+		      if(mainWidgetId == 0)
+		      {
+		          console.log("Main widget not initialized, aborting");
+		          return;
+		      }
 		      
 		      
 		      var range = $j('#identifiedFiles .end.value').offset().left 
@@ -51,10 +57,10 @@ formatted_date = format_measure(measure_protex_analyzed_date, :suffix => '')
 		  	  	$j('#identifiedFiles .start.value').outerWidth()) - 
 		  	  	$tile.offset().left;
 		  	  	
-			  var boxHeight = $j('#identifiedFiles').offset().top;
+		  	  	var boxHeight = $j('#identifiedFiles').offset().top;
 			 
-			 // TODO:  The fixed 15 will not work when browser is resized
-			  var top = $j('.gradient').offset().top - boxHeight - 15;
+		  	  	// TODO:  The fixed 15 will not work when browser is resized
+		  	  	var top = $j('.gradient').offset().top - boxHeight - 15;
 		
 		      
 		       // Populate the starting and ending numbers
@@ -104,62 +110,65 @@ formatted_date = format_measure(measure_protex_analyzed_date, :suffix => '')
 
 <body>
         <h1>Component Analysis</h1>
+
+<% if protex_err_msg.data %>
+	<br>
+	<div class="error-message">
+		Error: <%=protex_err_msg.data %>
+	</div>
+<% else %>
+		
         <br>
   <div class="container">
     <div id="identifiedFiles" class="widget-tile">
      
       <div class="grouping-numbers-bar">
-          <div class="approval-grouping">
-            <div class="analysis-title title-no-link">
-	            	Files: 
-           	    </div>
-	            <div class="analysis-number">
-	               <%=fomatted_total %>
-		           <div class="trendarrow">
-		           		<%=trend_icon(measure_protex_total, :big => true)%>
-		           </div>
-	            </div>  
-	          
+          <div class="analysis-grouping">
+              <div class="analysis-title title-no-link">
+  	            	Files
+             	 </div>
+  	           <div class="analysis-number">
+  	               <%=fomatted_total %>
+               </div>
+  	           <div class="component-analysis-trend">
+  	               <%=trend_icon(measure_protex_total, :big => true)%>
+  	           </div>
       	   </div>
       	   
-          <div class="approval-grouping">
-      		   <div class="analysis-title title-no-link">
-              		Discovered:
+          <div class="analysis-grouping">
+      		    <div class="analysis-title title-no-link">
+              		Discovered
               </div>
               <div class="analysis-number"> 
               	   <%=formatted_disc %>
-		           <%=trend_icon(measure_protex_discovery_total, :big => true)%> 
+              </div>
+              <div class="component-analysis-trend">
+                  <%=trend_icon(measure_protex_discovery_total, :big => true)%> 
               </div>           
-           
-     
           </div>
           
-          <div class="approval-grouping">
-    		        <div class="analysis-title title-no-link">
-               Without:
-               </div>
-              <div class="analysis-number"> <%=formatted_no_disc %>
-                <div class="trend">
-		           		<%=trend_icon(measure_protex_no_discovery_total, :big => true)%>
-		           </div>
+          <div class="analysis-grouping">
+  		        <div class="analysis-title title-no-link">
+  		            Without
               </div>
-             
-        
-       
+              <div class="analysis-number"> 
+                  <%=formatted_no_disc %>
+              </div>    
+              <div class="component-analysis-trend">
+                  <%=trend_icon(measure_protex_no_discovery_total, :big => true)%>
+              </div>
           </div>
           
-          <div class="approval-grouping">
-     		   <div class="analysis-title title-no-link">
-             	 Pending:
+          <div class="analysis-grouping">
+         		  <div class="analysis-title title-no-link">
+                 	 Pending
               </div>
-              <div class="analysis-number"><%=formatted_pending %>
-                <div class="trend">
-		           		<%=trend_icon(measure_protex_pending_total, :big => true)%>
-		           </div>
+              <div class="analysis-number">
+                  <%=formatted_pending %>
               </div>
-              
-           
-  
+              <div class="component-analysis-trend">
+                  <%=trend_icon(measure_protex_pending_total, :big => true)%>
+		          </div>
           </div>
       </div>
       
@@ -183,4 +192,6 @@ formatted_date = format_measure(measure_protex_analyzed_date, :suffix => '')
       <div class="clear"></div>
     </div>
   </div>
+  
+  <% end %>
 </body>

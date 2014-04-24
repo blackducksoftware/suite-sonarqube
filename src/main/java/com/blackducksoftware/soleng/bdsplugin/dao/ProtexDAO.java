@@ -15,6 +15,9 @@ import org.sonar.api.batch.SensorContext;
 import org.sonar.api.config.Settings;
 import org.sonar.api.measures.Measure;
 
+import soleng.framework.core.config.ProtexConfigurationManager;
+import soleng.framework.standard.protex.ProtexServerWrapper;
+
 import com.blackducksoftware.sdk.fault.SdkFault;
 import com.blackducksoftware.sdk.protex.client.util.ProtexServerProxyV6_3;
 import com.blackducksoftware.sdk.protex.license.GlobalLicense;
@@ -35,6 +38,8 @@ import com.blackducksoftware.sdk.protex.project.codetree.identification.CodeTree
 import com.blackducksoftware.sdk.protex.project.codetree.identification.IdentificationApi;
 import com.blackducksoftware.soleng.bdsplugin.BDSPluginConstants;
 import com.blackducksoftware.soleng.bdsplugin.BDSPluginMetrics;
+import com.blackducksoftware.soleng.bdsplugin.config.BDSPluginProtexConfigManager;
+import com.blackducksoftware.soleng.bdsplugin.config.BDSPluginUser;
 import com.blackducksoftware.soleng.bdsplugin.model.ApplicationPOJO;
 import com.blackducksoftware.soleng.bdsplugin.model.LicensePOJO;
 
@@ -42,12 +47,7 @@ public class ProtexDAO implements SDKDAO
 {
 	static Logger log = LoggerFactory.getLogger(ProtexDAO.class.getName());
 	
-	private static String SERVER = "";
-	private static String USER_NAME = "";
-	private static String PASSWORD = "";
-	private static String PROJECT_NAME = "";
-	
-	private ProtexServerProxyV6_3 proxy = null;
+
 	private ProjectApi projectApi = null;
 	private CodeTreeApi codeTreeApi = null;
 	private DiscoveryApi discoveryApi = null;
@@ -58,64 +58,69 @@ public class ProtexDAO implements SDKDAO
 	private Settings settings = null;
 	
 	
-	public ProtexDAO(Settings settings, String sonarProjectName)
+	private BDSPluginProtexConfigManager configManager = null;
+	private ProtexServerWrapper protexWrapper = null;
+	
+	public ProtexDAO(Settings settings) throws Exception
 	{
 		this.settings = settings;
 		authenticate();		
 	}
 
-	public void authenticate() {
+	public void authenticate() throws Exception {
 		try
 		{
-			SERVER = settings.getString(BDSPluginConstants.PROPERTY_PROTEX_URL);
-			USER_NAME = settings.getString(BDSPluginConstants.PROPERTY_PROTEX_USERNAME);
-			PASSWORD = settings.getString(BDSPluginConstants.PROPERTY_PROTEX_PASSWORD);
-			PROJECT_NAME = settings.getString(BDSPluginConstants.PROPERTY_PROTEX_PROJECT);
-			settings.appendProperty(BDSPluginConstants.PROPERTY_PROTEX_PROJECT, "AT Project");	
-			if(SERVER == null || SERVER.length() == 0)
-			{
-				log.error("Server url must be specificed! Exiting");
-			}
+			String SERVER = settings.getString(BDSPluginConstants.PROPERTY_PROTEX_URL);
+			String USER_NAME = settings.getString(BDSPluginConstants.PROPERTY_PROTEX_USERNAME);
+			String PASSWORD = settings.getString(BDSPluginConstants.PROPERTY_PROTEX_PASSWORD);
+			String PROJECT_NAME = settings.getString(BDSPluginConstants.PROPERTY_PROTEX_PROJECT);
+			
+			BDSPluginUser user = new BDSPluginUser(SERVER, USER_NAME, PASSWORD);
 			
 	          // workaround for this here http://fusesource.com/forums/thread.jspa?messageID=10988
             Thread.currentThread().setContextClassLoader(this.getClass().getClassLoader());
-			proxy = new ProtexServerProxyV6_3(SERVER, USER_NAME, PASSWORD);
-				
-			projectApi = proxy.getProjectApi();
-			codeTreeApi = proxy.getCodeTreeApi();
-			discoveryApi = proxy.getDiscoveryApi();
-			licenseApi = proxy.getLicenseApi();
-			idApi = proxy.getIdentificationApi();
-			bomApi = proxy.getBomApi();
+            configManager = new BDSPluginProtexConfigManager(user);
+            configManager.setProtexPojectName(PROJECT_NAME);
+            
+            protexWrapper = new ProtexServerWrapper(configManager, true);
+            	
+			projectApi = protexWrapper.getInternalApiWrapper().projectApi;
+			codeTreeApi = protexWrapper.getInternalApiWrapper().codeTreeApi;
+			discoveryApi = protexWrapper.getInternalApiWrapper().discoveryApi;
+			licenseApi = protexWrapper.getInternalApiWrapper().licenseApi;
+			idApi = protexWrapper.getInternalApiWrapper().identificationApi;
+			bomApi = protexWrapper.getInternalApiWrapper().bomApi;
 			
 			log.info("Protex authentication completed");
 		} catch (Exception e)
 		{
-			log.error("Authentication failure: " + e.getMessage()); 
+			throw new Exception("Authentication failure: " + e.getMessage()); 
 		}
 		
 	}
 
 	public void populateProjectInfo(ApplicationPOJO pojo) 
 	{
+		String pojoProjectName = null;
 		try{
-			// Check to see if the pojo contains populated information
-			String pojoProjectName = pojo.getProjectName();
-			if(pojoProjectName != null && pojoProjectName.length() > 0)
+			// Use the user specified project
+			pojoProjectName = configManager.getProtexPojectName();
+			if(pojoProjectName == null ||pojoProjectName.length() == 0)
 			{
-				PROJECT_NAME = pojoProjectName;
+				// If it is empty, then take it from the Config Manager, Code Center may have populated it.
+				pojoProjectName = pojo.getProjectName();
 			}
 			
-			// 
-			if(PROJECT_NAME == null || PROJECT_NAME.length() == 0)
+			// If it is still empty, then there is no sense in continuing.
+			if(pojoProjectName == null || pojoProjectName.length() == 0)
 			{
-				log.error("Nothing to analyze, project name is empty");
-				return;
+				throw new Exception("Nothing to analyze, project name is empty");
 			}
 			
-			log.info("Getting project information for project name: " + PROJECT_NAME);
+			log.info("Getting project information for project name: " + pojoProjectName);
 			
-			Project project = projectApi.getProjectByName(PROJECT_NAME);
+			// Get the project from the SDK, if the project has a bad name, missing, etc it will bomb.
+			Project project = projectApi.getProjectByName(pojoProjectName);
 			
 			pojo.setProjectID(project.getProjectId());
 			pojo.setProjectName(project.getName());
@@ -132,11 +137,12 @@ public class ProtexDAO implements SDKDAO
 			
 		} catch (Exception e)
 		{
-			log.error("Could not get project information for: " + PROJECT_NAME);
+			log.error("Could not get project information for: " + pojoProjectName);
 			log.error("Error: " + e.getMessage());
+			pojo.setProtexErrorMsg(e.getMessage());
 		}
 		
-		log.info("Got project information for: " + PROJECT_NAME);
+		log.info("Got project information for: " + pojoProjectName);
 	}
 
 	private ApplicationPOJO getRefreshDateFromSonar(ApplicationPOJO pojo) {

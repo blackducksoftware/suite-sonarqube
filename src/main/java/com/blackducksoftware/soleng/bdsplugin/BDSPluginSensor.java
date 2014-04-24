@@ -1,23 +1,18 @@
 package com.blackducksoftware.soleng.bdsplugin;
 
-import java.net.URL;
 import java.util.Date;
-import java.util.HashMap;
-import java.util.Set;
 
-import org.apache.commons.configuration.Configuration;
+
 import org.sonar.api.batch.Sensor;
 import org.sonar.api.batch.SensorContext;
 import org.sonar.api.config.Settings;
 import org.sonar.api.measures.Measure;
 import org.sonar.api.measures.Metric;
-import org.sonar.api.measures.PropertiesBuilder;
 import org.sonar.api.resources.Project;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import com.blackducksoftware.soleng.bdsplugin.model.ApplicationPOJO;
-import com.blackducksoftware.soleng.bdsplugin.model.LicenseCategory;
 import com.google.gson.Gson;
 
 
@@ -65,18 +60,33 @@ public class BDSPluginSensor implements Sensor {
 	public void analyse(Project sonarProject, SensorContext sensorContext) 
 	{
 		String sonarProjectName = "";
+		CodeCenterConnector ccConecctor = null;
+		ProtexConnector protexConnector = null;
+		
 		if(sonarProject != null)
 		{
 			sonarProjectName = sonarProject.getName();
 		}
 		
 		// Code Center should be initialized first so that it can get associated project info.
-		CodeCenterConnector ccConecctor = new CodeCenterConnector(settings, sonarProjectName);
-		ProtexConnector protexConnector = new ProtexConnector(settings, sonarProjectName);
-
+		// Catch authentication exceptions and store the errors.
+		try{
+			ccConecctor = new CodeCenterConnector(settings, sonarProjectName);
+		} catch (Exception e)
+		{
+			log.error("Unable to authenticate Code Center, cause: " + e.getMessage());
+			pojo.setCcErrorMsg(e.getMessage());
+		}
+		try{
+			protexConnector = new ProtexConnector(settings);
+		} catch (Exception e)
+		{
+			log.error("Unable to authenticate Protex, cause: " + e.getMessage());
+			pojo.setProtexErrorMsg(e.getMessage());
+		}
+		
 		// Get the basic stuff
 		pojo = ccConecctor.populateApplicationPojo(pojo);
-
 		pojo = protexConnector.populateApplicationWithProtexData(pojo, sensorContext);
 	
 		// Determine license breakdown
@@ -95,8 +105,13 @@ public class BDSPluginSensor implements Sensor {
 	 */
 	private void saveMetrics(ApplicationPOJO pojo, SensorContext sensorContext) 
 	{
-		// Protex data
+	
 		try{
+			// Errors if any
+			saveMetricString(sensorContext, pojo.getProtexErrorMsg(), BDSPluginMetrics.PROTEX_ERROR_MESSAGE);	
+			saveMetricString(sensorContext, pojo.getCcErrorMsg(), BDSPluginMetrics.CC_ERROR_MESSAGE);	
+			
+			// Protex data
 			saveMetricInt(sensorContext, pojo.getTotalFileCount(), BDSPluginMetrics.PROTEX_TOTAL_FILES);
 			saveMetricInt(sensorContext, pojo.getTotalPendingFileCount(), BDSPluginMetrics.PROTEX_PENDING_FILES);
 			saveMetricInt(sensorContext, pojo.getTotalNoDiscoveryCount(), BDSPluginMetrics.PROTEX_NO_DISCOVERY_FILES);	

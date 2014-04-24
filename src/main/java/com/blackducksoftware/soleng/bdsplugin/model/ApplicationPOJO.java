@@ -5,6 +5,8 @@ import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
 
+import com.blackducksoftware.sdk.codecenter.application.data.ApplicationIdToken;
+
 /**
  * Holds all the information for our project/application regardless of which backend the data comes from
  * @author Ari
@@ -13,10 +15,17 @@ import java.util.List;
 public class ApplicationPOJO 
 {
 	// Code Center
+	private ApplicationIdToken applicationId = null; // This is the CC ID for your application.
 	private String appName = "";
 	private String appVersion = "";
 	private String appDescription = "";
 
+	/**
+	 * Error Messages
+	 */
+	private String protexErrorMsg = null;
+	private String ccErrorMsg = null;
+	
 	/**
 	 * Component Information
 	 */
@@ -428,6 +437,39 @@ public class ApplicationPOJO
 		vulnLowList.add(vulnLow);
 		this.vulnLowCount = vulnLowList.size();
 	}
+
+
+	public String getProtexErrorMsg() {
+		return protexErrorMsg;
+	}
+
+
+	public void setProtexErrorMsg(String protexErrorMsg) {
+		this.protexErrorMsg = protexErrorMsg;
+	}
+
+
+	public String getCcErrorMsg() {
+		return ccErrorMsg;
+	}
+
+
+	public void setCcErrorMsg(String ccErrorMsg) {
+		this.ccErrorMsg = ccErrorMsg;
+	}
+
+
+	public ApplicationIdToken getApplicationId() {
+		return applicationId;
+	}
+
+
+	public void setApplicationId(ApplicationIdToken applicationId) {
+		this.applicationId = applicationId;
+	}
+
+
+
 
 
 

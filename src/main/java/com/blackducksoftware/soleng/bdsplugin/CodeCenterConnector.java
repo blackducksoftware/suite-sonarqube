@@ -20,11 +20,10 @@ public class CodeCenterConnector
 	
     private Settings settings = null;
     
-	public CodeCenterConnector(Settings settings, String sonarProjectName)
+	public CodeCenterConnector(Settings settings, String sonarProjectName) throws Exception
 	{
 		this.settings = settings;
-		ccDAO = new CodeCenterDAO(settings, sonarProjectName);	
-		
+		ccDAO = new CodeCenterDAO(settings, sonarProjectName);			
 	}
 	
 	public ApplicationPOJO populateApplicationPojo(ApplicationPOJO pojo)

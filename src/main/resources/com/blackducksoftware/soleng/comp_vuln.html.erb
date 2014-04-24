@@ -1,6 +1,7 @@
 <%
-
-	vuln_high_json = measure('vuln-high-list-json')
+  cc_error_msg = measure('code-center-error-message')
+	
+  vuln_high_json = measure('vuln-high-list-json')
 	vuln_med_json = measure('vuln-med-list-json')
 	vuln_low_json = measure('vuln-low-list-json')
 	
@@ -116,52 +117,61 @@
 
 
 <H1> Component Vulnerabilities </h1>
-<br><p>
 
-<div class="table-outer">
-	<div class="grouping-numbers-bar">
-		<div class="vuln-grouping-high">
-			<div class="vuln-high-title" onclick="javascript:filterColumnByValue(3, dtVulnTableName, this)">
-				High
-			</div>
-			<div class="vuln-high-count">
-			</div>
-			<div class="vuln-high-trend">
-				<%=trend_icon(vuln_high_count, :big => true)%>
-			</div>
-		</div>
-	
-		<div class="vuln-grouping-med">
-			<div class="vuln-med-title" onclick="javascript:filterColumnByValue(3, dtVulnTableName, this)">
-				Medium
-			</div>
-			<div class="vuln-med-count"></div>
-				<div class="vuln-med-trend">
-				<%=trend_icon(vuln_med_count, :big => true)%>
-			</div>
-		</div>
-		
-		<div class="vuln-grouping-low">
-			<div class="vuln-low-title" onclick="javascript:filterColumnByValue(3, dtVulnTableName, this)">
-				Low
-			</div>
-			<div class="vuln-low-count"></div>
-				<div class="vuln-low-trend">
-				<%=trend_icon(vuln_low_count, :big => true)%>
-			</div>
-		</div>
-	</div>
-	
-	<table id="vuln-table-data" class="display">
-		<thead></thead>
-		<tbody></tbody>
-		<tfoot>	
-		</tfoot>
-		<div class="filter-info-box" title="Click to clear" id="filterBox" onclick="javascript:clearFilterSelection(dtVulnTableName)"></div>
-		
-	</table>
-			
-	<br>
-	 <img class="logo" src="<%= url_for_static(:plugin => 'BDSPlugin', :path => 'common/bd_logo.png') -%> ">
-</div>
+<% if cc_error_msg.data %>
+  <br>
+  <div class="error-message">
+    Error: <%=cc_error_msg.data %>
+  </div>
+<% else %>
+  
+  <br><p>
+  
+  <div class="table-outer">
+  	<div class="grouping-numbers-bar">
+  		<div class="vuln-grouping-high">
+  			<div class="vuln-high-title" onclick="javascript:filterColumnByValue(3, dtVulnTableName, this)">
+  				High
+  			</div>
+  			<div class="vuln-high-count">
+  			</div>
+  			<div class="vuln-high-trend">
+  				<%=trend_icon(vuln_high_count, :big => true)%>
+  			</div>
+  		</div>
+  	
+  		<div class="vuln-grouping-med">
+  			<div class="vuln-med-title" onclick="javascript:filterColumnByValue(3, dtVulnTableName, this)">
+  				Medium
+  			</div>
+  			<div class="vuln-med-count"></div>
+  				<div class="vuln-med-trend">
+  				<%=trend_icon(vuln_med_count, :big => true)%>
+  			</div>
+  		</div>
+  		
+  		<div class="vuln-grouping-low">
+  			<div class="vuln-low-title" onclick="javascript:filterColumnByValue(3, dtVulnTableName, this)">
+  				Low
+  			</div>
+  			<div class="vuln-low-count"></div>
+  				<div class="vuln-low-trend">
+  				<%=trend_icon(vuln_low_count, :big => true)%>
+  			</div>
+  		</div>
+  	</div>
+  	
+  	<table id="vuln-table-data" class="display">
+  		<thead></thead>
+  		<tbody></tbody>
+  		<tfoot>	
+  		</tfoot>
+  		<div class="filter-info-box" title="Click to clear" id="filterBox" onclick="javascript:clearFilterSelection(dtVulnTableName)"></div>
+  		
+  	</table>
+  			
+  	<br>
+  	 <img class="logo" src="<%= url_for_static(:plugin => 'BDSPlugin', :path => 'common/bd_logo.png') -%> ">
+  </div>
+  	<% end %>
 </body>

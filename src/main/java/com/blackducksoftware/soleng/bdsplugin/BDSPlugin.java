@@ -30,6 +30,8 @@ public class BDSPlugin extends SonarPlugin
 	protected final static String CC_SUB_CATEGORY = "Code Center";
 	protected final static String PROTEX_SUB_CATEGORY = "Protex";
 	
+	// Used for the UI to return static ruby templates 
+	public static final Boolean devMode = new Boolean(true);
 	
   /**
    * Add the jfreechart extension modules to display "prettier" graphics	
@@ -135,9 +137,8 @@ public class BDSPlugin extends SonarPlugin
     	        .hidden()
     	        .build(),
     	        PropertyDefinition.builder(BDSPluginConstants.PROPERTY_PROTEX_PROJECT)
-    	        .defaultValue("Ari_Remote_GIT")
     	        .name("Name of Protex Project")
-    	        .description("This should be automatically configured within Code Center, but you can override")
+    	        .description("This should be automatically configured within Code Center, but you can override here.")
     	        .onlyOnQualifiers(Qualifiers.PROJECT, Qualifiers.MODULE)
     	        .category(BD_CATEGORY)
     	        .subCategory(PROTEX_SUB_CATEGORY)

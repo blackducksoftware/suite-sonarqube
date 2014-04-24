@@ -22,6 +22,8 @@ import org.sonar.api.utils.SonarException;
 
 import com.blackducksoftware.sdk.codecenter.application.ApplicationApi;
 import com.blackducksoftware.sdk.codecenter.application.data.Application;
+import com.blackducksoftware.sdk.codecenter.application.data.ApplicationIdToken;
+import com.blackducksoftware.sdk.codecenter.application.data.ApplicationNameVersionOrIdToken;
 import com.blackducksoftware.sdk.codecenter.application.data.ApplicationNameVersionToken;
 import com.blackducksoftware.sdk.codecenter.application.data.Project;
 import com.blackducksoftware.sdk.codecenter.client.util.CodeCenterServerProxyV6_5_0;
@@ -29,10 +31,12 @@ import com.blackducksoftware.sdk.codecenter.cola.ColaApi;
 import com.blackducksoftware.sdk.codecenter.cola.data.Component;
 import com.blackducksoftware.sdk.codecenter.cola.data.ComponentIdToken;
 import com.blackducksoftware.sdk.codecenter.cola.data.ComponentNameVersionOrIdToken;
+import com.blackducksoftware.sdk.codecenter.cola.data.KbComponentIdToken;
 import com.blackducksoftware.sdk.codecenter.cola.data.LicenseIdToken;
 import com.blackducksoftware.sdk.codecenter.cola.data.LicenseSummary;
 import com.blackducksoftware.sdk.codecenter.common.data.ApprovalStatusEnum;
 import com.blackducksoftware.sdk.codecenter.fault.SdkFault;
+import com.blackducksoftware.sdk.codecenter.request.data.RequestApplicationComponentToken;
 import com.blackducksoftware.sdk.codecenter.request.data.RequestSummary;
 import com.blackducksoftware.sdk.codecenter.vulnerability.VulnerabilityApi;
 import com.blackducksoftware.sdk.codecenter.vulnerability.data.VulnerabilityPageFilter;
@@ -73,7 +77,7 @@ public class CodeCenterDAO implements SDKDAO
 	private Settings settings = null;
 	private String sonarProjectName = null;
 	
-	public CodeCenterDAO(Settings settings, String sonarProjectName)
+	public CodeCenterDAO(Settings settings, String sonarProjectName) throws Exception
 	{
 		this.settings = settings;
 		this.sonarProjectName = sonarProjectName;
@@ -89,7 +93,7 @@ public class CodeCenterDAO implements SDKDAO
 		authenticate();
 	}
 
-	public void authenticate() 
+	public void authenticate() throws Exception 
 	{
 		try
 		{
@@ -126,7 +130,7 @@ public class CodeCenterDAO implements SDKDAO
 		}
 		catch (Exception e)
 		{
-			log.error("Could not properly authenticate Code Center, error: " + e.getMessage());
+			throw new Exception("Could not properly authenticate Code Center, error: " + e.getMessage());
 		}
 	}
 
@@ -171,14 +175,20 @@ public class CodeCenterDAO implements SDKDAO
 		{
 			log.error("Unable to get application object with name: " + APP_NAME);
 			log.error("Error: " + e.getMessage());
+			pojo.setCcErrorMsg("General error: " + e.getMessage());
+			
+			return pojo;
 		}
 		catch (Throwable t)
 		{
 			log.error("General fatal error", t);
+			pojo.setCcErrorMsg("General error: " + t.getMessage());
+			return pojo;
 		}
 		pojo.setAppName(app.getName());
 		pojo.setAppVersion(app.getVersion());
 		pojo.setAppDescription(app.getDescription());
+		pojo.setApplicationId(app.getId());
 		
 		return pojo;
 	}
@@ -190,39 +200,39 @@ public class CodeCenterDAO implements SDKDAO
 	 */
 	public ApplicationPOJO populateComponentBreakdown(ApplicationPOJO pojo) 
 	{
+		List<CompPOJO> allComponents = new ArrayList<CompPOJO>();
 		try
 		{
-			// TODO: Pass this in as an object later
-			List<RequestSummary> requests = aApi.getApplicationRequests(app.getId());
-			
+			log.info("Gathering all requests.");
+			allComponents = getAllRequestsForApplication(allComponents, pojo, pojo.getApplicationId());
+		
 			List<CompPOJO> approvedComponents = new ArrayList<CompPOJO>();
 			List<CompPOJO> rejectedComponents = new ArrayList<CompPOJO>();
 			List<CompPOJO> pendingComponents = new ArrayList<CompPOJO>();
 			List<CompPOJO> unknownComponents = new ArrayList<CompPOJO>();
 			
-			for(RequestSummary request : requests)
+			for(CompPOJO component : allComponents)
 			{
-				CompPOJO component = getComponentData(pojo, request);
 				// Request Information
-				ApprovalStatusEnum status = request.getApprovalStatus();				
+				String status = component.getRequestType();				
 				switch(status)
 				{
-					case APPROVED: 
+					case "APPROVED": 
 					{
 						approvedComponents.add(component);					
 						break;
 					}
-					case PENDING: 
+					case "PENDING": 
 					{
 						pendingComponents.add(component);
 						break;
 					}					
-					case REJECTED:
+					case "REJECTED":
 					{	
 						rejectedComponents.add(component);
 						break;
 					}
-					case NOTSUBMITTED:
+					case "NOTSUBMITTED":
 					{
 						unknownComponents.add(component);
 						break;
@@ -234,11 +244,6 @@ public class CodeCenterDAO implements SDKDAO
 					}
 				
 				}
-				
-				
-				populateLicenseData(pojo, request);				
-				populateVulnerabilityData(pojo, component, request);
-
 			}
 			
 			
@@ -255,6 +260,66 @@ public class CodeCenterDAO implements SDKDAO
 		
 		log.info("Finished collecting application requests");
 		return pojo;
+	}
+
+	
+	/**
+	 * Recursively looks through all the requests, if a request is another application
+	 * then continues looking until all requests are fetched.
+	 * @param requests
+	 * @param applicationId
+	 * @return
+	 */
+	private List<CompPOJO> getAllRequestsForApplication(
+			List<CompPOJO> allComponents, ApplicationPOJO pojo, ApplicationNameVersionOrIdToken appToken) 
+	{
+		try
+		{	
+			List<RequestSummary> summaries = new ArrayList<RequestSummary>();
+	
+			try{
+				summaries = aApi.getApplicationRequests(appToken);
+			} catch (SdkFault sdk)
+			{
+				// We catch here, because of bug CC-10683
+				log.warn("Unable to get app information for: " + sdk.getMessage());
+				String errorCode = sdk.getFaultInfo().getErrorCode().toString();
+				if(errorCode != null && errorCode.contains("NO_APPLICATION_NAMEVERISON_FOUND"))
+					log.warn("Most likely a custom component.");
+			}
+			for(RequestSummary request : summaries)
+			{
+				CompPOJO component = getComponentData(pojo, request);
+				
+				// FIXME: We have a SDK bug, where we cannot rely on component's app token.
+				// BUG: https://jira/browse/CC-10683
+				// So instead we check for kbComponentId and if it is missing, then proceed.	
+				//ApplicationIdToken componentAppToken = component.getAppIdToken();
+				// If this is not null, then this is not a component, but another CC app. 
+				KbComponentIdToken kbToken = component.getKbCompId();
+				if(kbToken ==  null)
+				{
+					// If the KB token is null, then *most* likely we are dealing with another application, although 
+					// it can be a custom component too.  This is the workaround.
+					ApplicationNameVersionToken componentApplicationToken = new ApplicationNameVersionToken();
+					componentApplicationToken.setName(component.getComponentName());
+					componentApplicationToken.setVersion(component.getVersion());
+					
+					getAllRequestsForApplication(allComponents, pojo, componentApplicationToken);
+				}
+				// Otherwise add it to our list
+				allComponents.add(component);
+				// Process licenses and vulnerabilities for this component
+				populateLicenseData(pojo, request);				
+				populateVulnerabilityData(pojo, component, request);
+			}
+			
+		} catch (Exception e)
+		{
+			log.error("Unable to fetch component for application: " + appToken.toString(), e);
+		}
+		
+		return allComponents;
 	}
 
 	/**
@@ -274,12 +339,15 @@ public class CodeCenterDAO implements SDKDAO
 			Component comp = colaApi.getCatalogComponent(request.getApplicationComponentToken().getComponentId());
 			compName = comp.getName();
 			compVersion = comp.getVersion();
-			
 			componentPojo = new CompPOJO(compName, compVersion);
+			componentPojo.setAppIdToken(comp.getApplicationId());
+			componentPojo.setKbCompId(comp.getKbComponentId());
 			
 			ComponentIdToken token = comp.getId();
 			if(token != null)
+			{
 				componentPojo.setId(comp.getId().getId());
+			}
 			
 			componentPojo.setRequestType(request.getApprovalStatus().toString());
 			

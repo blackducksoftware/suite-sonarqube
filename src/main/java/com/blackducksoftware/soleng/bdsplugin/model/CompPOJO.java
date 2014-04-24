@@ -6,6 +6,9 @@ package com.blackducksoftware.soleng.bdsplugin.model;
 import java.util.ArrayList;
 import java.util.List;
 
+import com.blackducksoftware.sdk.codecenter.application.data.ApplicationIdToken;
+import com.blackducksoftware.sdk.codecenter.cola.data.KbComponentIdToken;
+
 /**
  * Class that holds that basic component information
  * @author Ari
@@ -18,7 +21,9 @@ public class CompPOJO {
 	private String id = null;
 	private String requestType = null;
 	private String url = null;
-
+	private ApplicationIdToken appIdToken = null;  // This will only be non-null if the component is a rolled up App.
+	private KbComponentIdToken kbCompId = null; // Temporary workaround until the appid gets fixed.
+	
 	// Counts for easy access
 	private Integer vulnHigh = new Integer(0);
 	private Integer vulnMed = new Integer(0);
@@ -111,6 +116,22 @@ public class CompPOJO {
 	
 	public void addVulnMed() {
 		this.vulnMed = vulnMed + 1;
+	}
+
+	public ApplicationIdToken getAppIdToken() {
+		return appIdToken;
+	}
+
+	public void setAppIdToken(ApplicationIdToken appIdToken) {
+		this.appIdToken = appIdToken;
+	}
+
+	public KbComponentIdToken getKbCompId() {
+		return kbCompId;
+	}
+
+	public void setKbCompId(KbComponentIdToken kbCompId) {
+		this.kbCompId = kbCompId;
 	}
 
 
