@@ -1,16 +1,15 @@
 package com.blackducksoftware.soleng.bdsplugin;
 
-import java.util.Arrays;
+import java.util.ArrayList;
 import java.util.List;
 
-import org.sonar.api.Properties;
-import org.sonar.api.Property;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.sonar.api.PropertyType;
 import org.sonar.api.SonarPlugin;
 import org.sonar.api.config.PropertyDefinition;
 import org.sonar.api.resources.Qualifiers;
 
-import com.blackducksoftware.soleng.bdsplugin.model.CCPieChart3D;
 import com.blackducksoftware.soleng.bdsplugin.widgets.CompAnalysisWidget;
 import com.blackducksoftware.soleng.bdsplugin.widgets.CompApproveWidget;
 import com.blackducksoftware.soleng.bdsplugin.widgets.CompVulnWidget;
@@ -26,19 +25,36 @@ import com.google.common.collect.ImmutableList;
 public class BDSPlugin extends SonarPlugin 
 {
 
-	protected final static String BD_CATEGORY = "BlackDuck";
-	protected final static String CC_SUB_CATEGORY = "Code Center";
-	protected final static String PROTEX_SUB_CATEGORY = "Protex";
+	protected final static String BD_CATEGORY 			= 	"BlackDuck";
+	protected final static String CC_SUB_CATEGORY 		= 	"Code Center";
+	protected final static String PROTEX_SUB_CATEGORY 	= 	"Protex";
+	protected final static String GENERAL_CATEGORY 		= 	" General";
 	
 	// Used for the UI to return static ruby templates 
 	public static final Boolean devMode = new Boolean(true);
 	
-  /**
-   * Add the jfreechart extension modules to display "prettier" graphics	
-   */
+	private static final Logger log = LoggerFactory.getLogger(ProtexConnector.class);
+	
+	private String sonarProjectName = "";
+	private String sonarProjectKey = "";
+	
+	
+	
+	private List<String> PROXY_PROTOCOLS = new ArrayList<String>();
+	
+  public BDSPlugin()
+  {
+  }
+	
   public List<?> getExtensions() 
   {
-
+	
+	log.info("Building settings for project password: " + sonarProjectName);
+	log.info("Building settings for project key: " + sonarProjectKey);
+	
+	PROXY_PROTOCOLS.add(BDSPluginConstants.PROXY_PROTOCOL_HTTP);
+	PROXY_PROTOCOLS.add(BDSPluginConstants.PROXY_PROTOCOL_SSL);
+	
     return ImmutableList.of(
     	      PropertyDefinition.builder(BDSPluginConstants.PROPERTY_CC_URL)
     	        .defaultValue("http://satemplatecc1/")
@@ -69,7 +85,7 @@ public class BDSPlugin extends SonarPlugin
     	        .build(),
     	        
     	        PropertyDefinition.builder(BDSPluginConstants.PROPERTY_CC_PROJECT)
-    	        .defaultValue("Ari_App")
+    	        .defaultValue(sonarProjectName)
     	        .name("Code Center App Name")
     	        .description("Name of your Code Center Application")
     	        .category(BD_CATEGORY)
@@ -137,6 +153,7 @@ public class BDSPlugin extends SonarPlugin
     	        .hidden()
     	        .build(),
     	        PropertyDefinition.builder(BDSPluginConstants.PROPERTY_PROTEX_PROJECT)
+    	        .defaultValue(sonarProjectName)
     	        .name("Name of Protex Project")
     	        .description("This should be automatically configured within Code Center, but you can override here.")
     	        .onlyOnQualifiers(Qualifiers.PROJECT, Qualifiers.MODULE)
@@ -144,6 +161,34 @@ public class BDSPlugin extends SonarPlugin
     	        .subCategory(PROTEX_SUB_CATEGORY)
     	        .type(PropertyType.STRING)
     	        .index(0)
+    	        .build(),
+    	        
+    	        // Proxy
+    	        PropertyDefinition.builder(BDSPluginConstants.PROPERTY_PROXY_SERVER)
+    	        .name("Proxy Server")
+    	        .description("Server for your proxy.")
+    	        .category(BD_CATEGORY)
+    	        .subCategory(GENERAL_CATEGORY)
+    	        .type(PropertyType.STRING)
+    	        .index(0)
+    	        .build(),
+    	        PropertyDefinition.builder(BDSPluginConstants.PROPERTY_PROXY_PORT)
+    	        .name("Proxy Port")
+    	        .description("Port for your proxy.")
+    	        .category(BD_CATEGORY)
+    	        .subCategory(GENERAL_CATEGORY)
+    	        .type(PropertyType.STRING)
+    	        .index(1)
+    	        .build(),
+    	        PropertyDefinition.builder(BDSPluginConstants.PROPERTY_PROXY_PROTOCOL)
+    	        .name("Protocol for your proxy")
+    	        .defaultValue(BDSPluginConstants.PROXY_PROTOCOL_HTTP)
+    	        .description("HTTP or SSL")
+    	        .category(BD_CATEGORY)
+    	        .subCategory(GENERAL_CATEGORY)
+    	        .type(PropertyType.SINGLE_SELECT_LIST) 	  
+    	        .options(PROXY_PROTOCOLS)
+    	        .index(2)
     	        .build(),
     	        
     		BDSPluginMetrics.class, 

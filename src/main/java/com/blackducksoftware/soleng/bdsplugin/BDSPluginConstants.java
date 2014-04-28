@@ -5,6 +5,13 @@ public class BDSPluginConstants {
 	/**
 	 * Settings
 	 */
+	// General property keys
+	public static final String PROPERTY_PROXY_SERVER = "ProxyServerKey";
+	public static final String PROPERTY_PROXY_PORT = "ProxyPortKey";
+	public static final String PROPERTY_PROXY_PROTOCOL = "ProxyProtocolKey";
+	public static final String PROXY_PROTOCOL_HTTP = "HTTP"; // Used an option in the pulldown
+	public static final String PROXY_PROTOCOL_SSL = "SSL"; // Used an option in the pulldown
+	
 	// Property Keys
 	public static final String PROPERTY_PROTEX_PROJECT = "ProtexProjectKey";
 	public static final String PROPERTY_PROTEX_URL = "ProtexUrlKey";

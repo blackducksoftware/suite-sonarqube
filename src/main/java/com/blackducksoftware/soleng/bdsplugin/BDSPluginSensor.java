@@ -85,6 +85,7 @@ public class BDSPluginSensor implements Sensor {
 			pojo.setProtexErrorMsg(e.getMessage());
 		}
 		
+		
 		// Get the basic stuff
 		pojo = ccConecctor.populateApplicationPojo(pojo);
 		pojo = protexConnector.populateApplicationWithProtexData(pojo, sensorContext);
@@ -104,8 +105,7 @@ public class BDSPluginSensor implements Sensor {
 	 * @param sensorContext
 	 */
 	private void saveMetrics(ApplicationPOJO pojo, SensorContext sensorContext) 
-	{
-	
+	{	
 		try{
 			// Errors if any
 			saveMetricString(sensorContext, pojo.getProtexErrorMsg(), BDSPluginMetrics.PROTEX_ERROR_MESSAGE);	
@@ -152,9 +152,6 @@ public class BDSPluginSensor implements Sensor {
 			// Licenses for the chart
 			saveMetricJson(sensorContext, pojo.getSortedLicenseMap(), BDSPluginMetrics.LICENSE_BREAKDOWN_JSON);
 			
-			
-
-		
 		} catch (Exception e)
 		{
 			log.warn("Unable to save all metrics!", e);

@@ -20,13 +20,15 @@ import org.slf4j.LoggerFactory;
 import org.sonar.api.config.Settings;
 import org.sonar.api.utils.SonarException;
 
+import soleng.framework.core.config.ConfigurationManager;
+import soleng.framework.standard.codecenter.CodeCenterServerWrapper;
+
 import com.blackducksoftware.sdk.codecenter.application.ApplicationApi;
 import com.blackducksoftware.sdk.codecenter.application.data.Application;
 import com.blackducksoftware.sdk.codecenter.application.data.ApplicationIdToken;
 import com.blackducksoftware.sdk.codecenter.application.data.ApplicationNameVersionOrIdToken;
 import com.blackducksoftware.sdk.codecenter.application.data.ApplicationNameVersionToken;
 import com.blackducksoftware.sdk.codecenter.application.data.Project;
-import com.blackducksoftware.sdk.codecenter.client.util.CodeCenterServerProxyV6_5_0;
 import com.blackducksoftware.sdk.codecenter.cola.ColaApi;
 import com.blackducksoftware.sdk.codecenter.cola.data.Component;
 import com.blackducksoftware.sdk.codecenter.cola.data.ComponentIdToken;
@@ -42,6 +44,9 @@ import com.blackducksoftware.sdk.codecenter.vulnerability.VulnerabilityApi;
 import com.blackducksoftware.sdk.codecenter.vulnerability.data.VulnerabilityPageFilter;
 import com.blackducksoftware.sdk.codecenter.vulnerability.data.VulnerabilitySummary;
 import com.blackducksoftware.soleng.bdsplugin.BDSPluginConstants;
+import com.blackducksoftware.soleng.bdsplugin.config.BDSPluginCodeCenterConfigManager;
+import com.blackducksoftware.soleng.bdsplugin.config.BDSPluginProtexConfigManager;
+import com.blackducksoftware.soleng.bdsplugin.config.BDSPluginUser;
 import com.blackducksoftware.soleng.bdsplugin.model.ApplicationPOJO;
 import com.blackducksoftware.soleng.bdsplugin.model.CompPOJO;
 import com.blackducksoftware.soleng.bdsplugin.model.LicensePOJO;
@@ -54,7 +59,7 @@ import com.blackducksoftware.soleng.bdsplugin.model.ApplicationPOJO.VULNERABILIT
  * @author Ari Kamen
  *
  */
-public class CodeCenterDAO implements SDKDAO
+public class CodeCenterDAO extends CommonDAO
 {
 
 	static Logger log = LoggerFactory.getLogger(CodeCenterDAO.class.getName());
@@ -67,7 +72,6 @@ public class CodeCenterDAO implements SDKDAO
 	private static String VERSION_ID = "";
 	
 	// Internal vars
-	private CodeCenterServerProxyV6_5_0 ccProxy = null;
 	private ApplicationApi aApi = null;
 	private Application app = null;
 	private VulnerabilityApi vulApi = null;
@@ -75,13 +79,13 @@ public class CodeCenterDAO implements SDKDAO
 	
 	// Settings for Sonar
 	private Settings settings = null;
-	private String sonarProjectName = null;
+	private BDSPluginCodeCenterConfigManager ccConfigManager = null;
+	private CodeCenterServerWrapper ccServerWrapper = null;
 	
 	public CodeCenterDAO(Settings settings, String sonarProjectName) throws Exception
 	{
 		this.settings = settings;
-		this.sonarProjectName = sonarProjectName;
-		
+	
 		ClassLoader original = Thread.currentThread().getContextClassLoader();
 		try {
 		  Thread.currentThread().setContextClassLoader(getClass().getClassLoader());
@@ -89,10 +93,11 @@ public class CodeCenterDAO implements SDKDAO
 		} finally {
 		  Thread.currentThread().setContextClassLoader(original);
 		}
-		
+
 		authenticate();
 	}
 
+	@Override
 	public void authenticate() throws Exception 
 	{
 		try
@@ -105,6 +110,7 @@ public class CodeCenterDAO implements SDKDAO
 				
 				APP_NAME = settings.getString(BDSPluginConstants.PROPERTY_CC_PROJECT);
 				VERSION_ID = settings.getString(BDSPluginConstants.PROPERTY_CC_VERSION);
+		
 				
 				try{
 					checkProperty(SERVER, BDSPluginConstants.PROPERTY_CC_URL);
@@ -118,17 +124,24 @@ public class CodeCenterDAO implements SDKDAO
 				}
 			}
 			
+			BDSPluginUser user = new BDSPluginUser(SERVER, USER_NAME, PASSWORD);
+			ccConfigManager = new BDSPluginCodeCenterConfigManager(user); 
+			
+			
+			ccConfigManager = (BDSPluginCodeCenterConfigManager) collectGeneralSettings(ccConfigManager, settings);
+	            
+			
 	          // workaround for this here http://fusesource.com/forums/thread.jspa?messageID=10988
             Thread.currentThread().setContextClassLoader(this.getClass().getClassLoader());
-			ccProxy = new CodeCenterServerProxyV6_5_0(SERVER, USER_NAME, PASSWORD);
+        	ccServerWrapper = new CodeCenterServerWrapper(ccConfigManager);
 			log.info("Code Center authentication complete.");
 					
-			aApi = ccProxy.getApplicationApi();
-			vulApi = ccProxy.getVulnerabilityApi();
-			colaApi = ccProxy.getColaApi();
-			
+			aApi = ccServerWrapper.getInternalApiWrapper().applicationApi;
+			vulApi = ccServerWrapper.getInternalApiWrapper().vulnerabilityApi;
+			colaApi = ccServerWrapper.getInternalApiWrapper().colaApi;
+	
 		}
-		catch (Exception e)
+		catch (Throwable e)
 		{
 			throw new Exception("Could not properly authenticate Code Center, error: " + e.getMessage());
 		}
@@ -161,15 +174,18 @@ public class CodeCenterDAO implements SDKDAO
 				// TODO:  Lookup the user specified project, then derive ID.
 				Project associatedProject = aApi.getAssociatedProtexProject(appToken);
 				String protexName = associatedProject.getName();
+			
 				log.info("Found associated project in Protex: " + associatedProject.getName());
 				settings.setProperty(BDSPluginConstants.PROPERTY_PROTEX_PROJECT, protexName);
 				pojo.setProjectName(protexName);
 				pojo.setProjectID(associatedProject.getId().getId());
 			
+				String associatedServer = associatedProject.getId().getServerId().toString();
+				
 				
 			} catch(SdkFault fault)
 			{
-				log.error("Unable to get associated project", fault);
+				log.error("Unable to get associated project: " + fault.getMessage());
 			}					
 		} catch (Exception e)
 		{

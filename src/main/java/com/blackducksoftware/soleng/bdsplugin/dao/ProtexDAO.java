@@ -43,7 +43,7 @@ import com.blackducksoftware.soleng.bdsplugin.config.BDSPluginUser;
 import com.blackducksoftware.soleng.bdsplugin.model.ApplicationPOJO;
 import com.blackducksoftware.soleng.bdsplugin.model.LicensePOJO;
 
-public class ProtexDAO implements SDKDAO 
+public class ProtexDAO extends CommonDAO
 {
 	static Logger log = LoggerFactory.getLogger(ProtexDAO.class.getName());
 	
@@ -67,6 +67,7 @@ public class ProtexDAO implements SDKDAO
 		authenticate();		
 	}
 
+	@Override
 	public void authenticate() throws Exception {
 		try
 		{
@@ -74,13 +75,17 @@ public class ProtexDAO implements SDKDAO
 			String USER_NAME = settings.getString(BDSPluginConstants.PROPERTY_PROTEX_USERNAME);
 			String PASSWORD = settings.getString(BDSPluginConstants.PROPERTY_PROTEX_PASSWORD);
 			String PROJECT_NAME = settings.getString(BDSPluginConstants.PROPERTY_PROTEX_PROJECT);
+			String PROXY_SERVER = settings.getString(BDSPluginConstants.PROPERTY_PROXY_SERVER);
+			String PROXY_PORT = settings.getString(BDSPluginConstants.PROPERTY_PROXY_PORT);
 			
 			BDSPluginUser user = new BDSPluginUser(SERVER, USER_NAME, PASSWORD);
 			
-	          // workaround for this here http://fusesource.com/forums/thread.jspa?messageID=10988
+	        // workaround for this here http://fusesource.com/forums/thread.jspa?messageID=10988
             Thread.currentThread().setContextClassLoader(this.getClass().getClassLoader());
             configManager = new BDSPluginProtexConfigManager(user);
             configManager.setProtexPojectName(PROJECT_NAME);
+         
+            configManager = (BDSPluginProtexConfigManager) collectGeneralSettings(configManager, settings);
             
             protexWrapper = new ProtexServerWrapper(configManager, true);
             	
