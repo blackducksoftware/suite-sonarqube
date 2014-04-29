@@ -4,6 +4,7 @@ package com.blackducksoftware.soleng.bdsplugin;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.sonar.api.config.Settings;
+import org.sonar.api.resources.Project;
 
 import com.blackducksoftware.soleng.bdsplugin.dao.CodeCenterDAO;
 import com.blackducksoftware.soleng.bdsplugin.model.ApplicationPOJO;
@@ -19,11 +20,11 @@ public class CodeCenterConnector
     private CodeCenterDAO ccDAO = null;	
 	
     private Settings settings = null;
-    
-	public CodeCenterConnector(Settings settings, String sonarProjectName) throws Exception
+
+	public CodeCenterConnector(Settings settings, Project sonarProject) throws Exception
 	{
 		this.settings = settings;
-		ccDAO = new CodeCenterDAO(settings, sonarProjectName);			
+		ccDAO = new CodeCenterDAO(settings, sonarProject);			
 	}
 	
 	public ApplicationPOJO populateApplicationPojo(ApplicationPOJO pojo)

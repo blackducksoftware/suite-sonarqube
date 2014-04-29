@@ -79,12 +79,14 @@ public class CodeCenterDAO extends CommonDAO
 	
 	// Settings for Sonar
 	private Settings settings = null;
+	private org.sonar.api.resources.Project sonarProject = null;
 	private BDSPluginCodeCenterConfigManager ccConfigManager = null;
 	private CodeCenterServerWrapper ccServerWrapper = null;
 	
-	public CodeCenterDAO(Settings settings, String sonarProjectName) throws Exception
+	public CodeCenterDAO(Settings settings, org.sonar.api.resources.Project sonarProject) throws Exception
 	{
 		this.settings = settings;
+		this.sonarProject = sonarProject;
 	
 		ClassLoader original = Thread.currentThread().getContextClassLoader();
 		try {
@@ -116,8 +118,8 @@ public class CodeCenterDAO extends CommonDAO
 					checkProperty(SERVER, BDSPluginConstants.PROPERTY_CC_URL);
 					checkProperty(USER_NAME, BDSPluginConstants.PROPERTY_CC_USERNAME);
 					checkProperty(PASSWORD, BDSPluginConstants.PROPERTY_CC_PASSSWORD);
-					checkProperty(APP_NAME, BDSPluginConstants.PROPERTY_CC_PROJECT);
-					checkProperty(VERSION_ID, BDSPluginConstants.PROPERTY_CC_VERSION);
+					checkOptionalProperty(APP_NAME, BDSPluginConstants.PROPERTY_CC_PROJECT);
+					checkOptionalProperty(VERSION_ID, BDSPluginConstants.PROPERTY_CC_VERSION);
 				} catch (Exception e)
 				{
 					throw new SonarException(e);
@@ -125,13 +127,22 @@ public class CodeCenterDAO extends CommonDAO
 			}
 			
 			BDSPluginUser user = new BDSPluginUser(SERVER, USER_NAME, PASSWORD);
-			ccConfigManager = new BDSPluginCodeCenterConfigManager(user); 
-			
-			
+			ccConfigManager = new BDSPluginCodeCenterConfigManager(user); 	
 			ccConfigManager = (BDSPluginCodeCenterConfigManager) collectGeneralSettings(ccConfigManager, settings);
-	            
+	        
+			// If app or version is blank, default it.
+			if(APP_NAME.length() == 0)
+			{
+				log.warn("Defaulting application name to: " + sonarProject.getName());
+				APP_NAME = sonarProject.getName();
+			}
+			if(VERSION_ID.length() == 0)
+			{
+				log.warn("Defaulting version to: " + sonarProject.getAnalysisVersion());
+				VERSION_ID = sonarProject.getAnalysisVersion();
+			}
 			
-	          // workaround for this here http://fusesource.com/forums/thread.jspa?messageID=10988
+	        // workaround for this here http://fusesource.com/forums/thread.jspa?messageID=10988
             Thread.currentThread().setContextClassLoader(this.getClass().getClassLoader());
         	ccServerWrapper = new CodeCenterServerWrapper(ccConfigManager);
 			log.info("Code Center authentication complete.");
@@ -156,6 +167,15 @@ public class CodeCenterDAO extends CommonDAO
 		
 	}
 
+	private void checkOptionalProperty(String value, String prop) throws Exception 
+	{
+		if(value == null || value.length() == 0)
+		{
+			log.warn("The following is set, defaulting! " + prop);
+		}
+		
+	}
+	
 	public ApplicationPOJO populateApplicationInfo(ApplicationPOJO pojo)
 	{	
 		try

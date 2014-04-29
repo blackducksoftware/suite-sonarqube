@@ -59,26 +59,22 @@ public class BDSPluginSensor implements Sensor {
 
 	public void analyse(Project sonarProject, SensorContext sensorContext) 
 	{
-		String sonarProjectName = "";
+	
 		CodeCenterConnector ccConecctor = null;
 		ProtexConnector protexConnector = null;
-		
-		if(sonarProject != null)
-		{
-			sonarProjectName = sonarProject.getName();
-		}
-		
+	
 		// Code Center should be initialized first so that it can get associated project info.
 		// Catch authentication exceptions and store the errors.
 		try{
-			ccConecctor = new CodeCenterConnector(settings, sonarProjectName);
+			ccConecctor = new CodeCenterConnector(settings, sonarProject);
 		} catch (Exception e)
 		{
 			log.error("Unable to authenticate Code Center, cause: " + e.getMessage());
 			pojo.setCcErrorMsg(e.getMessage());
 		}
 		try{
-			protexConnector = new ProtexConnector(settings);
+			
+			protexConnector = new ProtexConnector(settings, sonarProject);
 		} catch (Exception e)
 		{
 			log.error("Unable to authenticate Protex, cause: " + e.getMessage());

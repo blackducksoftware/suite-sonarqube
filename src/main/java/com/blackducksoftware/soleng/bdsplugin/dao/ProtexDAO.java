@@ -56,14 +56,15 @@ public class ProtexDAO extends CommonDAO
 	private BomApi bomApi = null;
 	
 	private Settings settings = null;
-	
+	private org.sonar.api.resources.Project sonarProject = null;
 	
 	private BDSPluginProtexConfigManager configManager = null;
 	private ProtexServerWrapper protexWrapper = null;
 	
-	public ProtexDAO(Settings settings) throws Exception
+	public ProtexDAO(Settings settings, org.sonar.api.resources.Project sonarProject) throws Exception
 	{
 		this.settings = settings;
+		this.sonarProject = sonarProject;
 		authenticate();		
 	}
 
@@ -71,12 +72,20 @@ public class ProtexDAO extends CommonDAO
 	public void authenticate() throws Exception {
 		try
 		{
+			/**
+			 * First we check to see if project settings contain data, if not use global.
+			 */
+		    Map<String, String> props = settings.getProperties();
+			
+		   
+		    
 			String SERVER = settings.getString(BDSPluginConstants.PROPERTY_PROTEX_URL);
 			String USER_NAME = settings.getString(BDSPluginConstants.PROPERTY_PROTEX_USERNAME);
 			String PASSWORD = settings.getString(BDSPluginConstants.PROPERTY_PROTEX_PASSWORD);
 			String PROJECT_NAME = settings.getString(BDSPluginConstants.PROPERTY_PROTEX_PROJECT);
-			String PROXY_SERVER = settings.getString(BDSPluginConstants.PROPERTY_PROXY_SERVER);
-			String PROXY_PORT = settings.getString(BDSPluginConstants.PROPERTY_PROXY_PORT);
+		
+			settings.getDefinitions();
+			
 			
 			BDSPluginUser user = new BDSPluginUser(SERVER, USER_NAME, PASSWORD);
 			

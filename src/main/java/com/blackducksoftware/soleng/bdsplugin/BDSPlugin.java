@@ -85,7 +85,6 @@ public class BDSPlugin extends SonarPlugin
     	        .build(),
     	        
     	        PropertyDefinition.builder(BDSPluginConstants.PROPERTY_CC_PROJECT)
-    	        .defaultValue(sonarProjectName)
     	        .name("Code Center App Name")
     	        .description("Name of your Code Center Application")
     	        .category(BD_CATEGORY)
@@ -95,7 +94,6 @@ public class BDSPlugin extends SonarPlugin
     	        .index(0)
     	        .build(),
     	        PropertyDefinition.builder(BDSPluginConstants.PROPERTY_CC_VERSION)
-    	        .defaultValue("1.0")
     	        .name("Version of your Code Center Application")
     	        .description("Version of your Code Center Application")
     	        .category(BD_CATEGORY)
@@ -109,8 +107,9 @@ public class BDSPlugin extends SonarPlugin
     	        PropertyDefinition.builder(BDSPluginConstants.PROPERTY_PROTEX_URL)
     	        .defaultValue("https://kiowa.blackducksoftware.com/")
     	        .name("Protex Server URL")
-    	        .description("The full URL of the protex server")
+    	        .description("The full URL of the protex server.")
     	        .category(BD_CATEGORY)
+    	        .onQualifiers(Qualifiers.PROJECT) // General and project
     	        .subCategory(PROTEX_SUB_CATEGORY)
     	        .type(PropertyType.STRING)
     	        .index(0)
@@ -120,15 +119,16 @@ public class BDSPlugin extends SonarPlugin
     	        .name("Protex User Name")
     	        .description("Your Protex account user name")
     	        .category(BD_CATEGORY)
+    	        .onQualifiers(Qualifiers.PROJECT) // General and project
     	        .subCategory(PROTEX_SUB_CATEGORY)
     	        .type(PropertyType.STRING)
     	        .index(1)
     	        .build(),
     	        PropertyDefinition.builder(BDSPluginConstants.PROPERTY_PROTEX_PASSWORD)
-    	        .defaultValue("")
     	        .name("Protex Password")
     	        .description("Your Protex password")
     	        .category(BD_CATEGORY)
+    	        .onQualifiers(Qualifiers.PROJECT) // General and project
     	        .subCategory(PROTEX_SUB_CATEGORY)
     	        .type(PropertyType.PASSWORD)
     	        .index(2)
@@ -141,17 +141,7 @@ public class BDSPlugin extends SonarPlugin
     	        .type(PropertyType.STRING)
     	        .index(3)
     	        .hidden()
-    	        .build(),
-    	        PropertyDefinition.builder(BDSPluginConstants.PROPERTY_PROTEX_LICENSE_COLORS)
-    	        .defaultValue("")
-    	        .name("Protex License Category Colors")
-    	        .description("Assign colors per license type, example: permissive=red,unknown=orange")
-    	        .category(BD_CATEGORY)
-    	        .subCategory(PROTEX_SUB_CATEGORY)
-    	        .type(PropertyType.STRING)
-    	        .index(3)
-    	        .hidden()
-    	        .build(),
+    	        .build(),  	   
     	        PropertyDefinition.builder(BDSPluginConstants.PROPERTY_PROTEX_PROJECT)
     	        .defaultValue(sonarProjectName)
     	        .name("Name of Protex Project")
@@ -160,7 +150,17 @@ public class BDSPlugin extends SonarPlugin
     	        .category(BD_CATEGORY)
     	        .subCategory(PROTEX_SUB_CATEGORY)
     	        .type(PropertyType.STRING)
-    	        .index(0)
+    	        .index(4)
+    	        .build(),
+    	        PropertyDefinition.builder(BDSPluginConstants.PROPERTY_PROTEX_LICENSE_COLORS)
+    	        .defaultValue("")
+    	        .name("Protex License Category Colors")
+    	        .description("Assign colors per license type, example: permissive=red,unknown=orange")
+    	        .category(BD_CATEGORY)
+    	        .subCategory(PROTEX_SUB_CATEGORY)
+    	        .type(PropertyType.STRING)
+    	        .index(5)
+    	        .hidden()
     	        .build(),
     	        
     	        // Proxy

@@ -14,6 +14,7 @@ import org.slf4j.LoggerFactory;
 
 import org.sonar.api.batch.SensorContext;
 import org.sonar.api.config.Settings;
+import org.sonar.api.resources.Project;
 
 import com.blackducksoftware.soleng.bdsplugin.dao.ProtexDAO;
 import com.blackducksoftware.soleng.bdsplugin.model.ApplicationPOJO;
@@ -38,9 +39,9 @@ public class ProtexConnector {
 	private ProtexDAO pDAO = null;
 	
 
-	public ProtexConnector(Settings settings) throws Exception
+	public ProtexConnector(Settings settings, Project sonarProject) throws Exception
 	{
-		pDAO = new ProtexDAO(settings);			
+		pDAO = new ProtexDAO(settings, sonarProject);			
 	}
 	
 	public ApplicationPOJO populateApplicationWithProtexData(ApplicationPOJO pojo, SensorContext sensorContext) 
