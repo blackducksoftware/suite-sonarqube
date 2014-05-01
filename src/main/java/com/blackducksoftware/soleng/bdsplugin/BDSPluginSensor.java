@@ -131,6 +131,9 @@ public class BDSPluginSensor implements Sensor {
 			saveMetricJson(sensorContext, pojo.getComponentsPending(), BDSPluginMetrics.COMP_LIST_PENDING_JSON);
 			saveMetricJson(sensorContext, pojo.getComponentsRejected(), BDSPluginMetrics.COMP_LIST_REJECTED_JSON);
 			saveMetricJson(sensorContext, pojo.getComponentsUnknown(), BDSPluginMetrics.COMP_LIST_NS_JSON);
+			// Custom Attributes
+			saveMetricJson(sensorContext, pojo.getAttributes(), BDSPluginMetrics.CC_CUSTOM_ATTIBUTES_JSON);
+			
 			
 			/*
 			 * VULNERABILITIES
@@ -140,6 +143,7 @@ public class BDSPluginSensor implements Sensor {
 			saveMetricInt(sensorContext, pojo.getVulnHighCount(), BDSPluginMetrics.CC_VULN_HIGH_COUNT);
 			saveMetricInt(sensorContext, pojo.getVulnMedCount(), BDSPluginMetrics.CC_VULN_MED_COUNT);
 			saveMetricInt(sensorContext, pojo.getVulnLowCount(), BDSPluginMetrics.CC_VULN_LOW_COUNT);
+			
 			// Vulnerabilities JSON
 			saveMetricJson(sensorContext, pojo.getVulnHighList(), BDSPluginMetrics.VULN_LIST_HIGH_JSON);
 			saveMetricJson(sensorContext, pojo.getVulnMedList(), BDSPluginMetrics.VULN_LIST_MED_JSON);

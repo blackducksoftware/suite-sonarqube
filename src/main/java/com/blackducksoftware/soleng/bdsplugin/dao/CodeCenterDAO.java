@@ -29,6 +29,10 @@ import com.blackducksoftware.sdk.codecenter.application.data.ApplicationIdToken;
 import com.blackducksoftware.sdk.codecenter.application.data.ApplicationNameVersionOrIdToken;
 import com.blackducksoftware.sdk.codecenter.application.data.ApplicationNameVersionToken;
 import com.blackducksoftware.sdk.codecenter.application.data.Project;
+import com.blackducksoftware.sdk.codecenter.attribute.AttributeApi;
+import com.blackducksoftware.sdk.codecenter.attribute.data.AbstractAttribute;
+import com.blackducksoftware.sdk.codecenter.attribute.data.AttributeNameOrIdToken;
+import com.blackducksoftware.sdk.codecenter.attribute.data.AttributePageFilter;
 import com.blackducksoftware.sdk.codecenter.cola.ColaApi;
 import com.blackducksoftware.sdk.codecenter.cola.data.Component;
 import com.blackducksoftware.sdk.codecenter.cola.data.ComponentIdToken;
@@ -37,6 +41,7 @@ import com.blackducksoftware.sdk.codecenter.cola.data.KbComponentIdToken;
 import com.blackducksoftware.sdk.codecenter.cola.data.LicenseIdToken;
 import com.blackducksoftware.sdk.codecenter.cola.data.LicenseSummary;
 import com.blackducksoftware.sdk.codecenter.common.data.ApprovalStatusEnum;
+import com.blackducksoftware.sdk.codecenter.common.data.AttributeValue;
 import com.blackducksoftware.sdk.codecenter.fault.SdkFault;
 import com.blackducksoftware.sdk.codecenter.request.data.RequestApplicationComponentToken;
 import com.blackducksoftware.sdk.codecenter.request.data.RequestSummary;
@@ -48,6 +53,7 @@ import com.blackducksoftware.soleng.bdsplugin.config.BDSPluginCodeCenterConfigMa
 import com.blackducksoftware.soleng.bdsplugin.config.BDSPluginProtexConfigManager;
 import com.blackducksoftware.soleng.bdsplugin.config.BDSPluginUser;
 import com.blackducksoftware.soleng.bdsplugin.model.ApplicationPOJO;
+import com.blackducksoftware.soleng.bdsplugin.model.AttributePOJO;
 import com.blackducksoftware.soleng.bdsplugin.model.CompPOJO;
 import com.blackducksoftware.soleng.bdsplugin.model.LicensePOJO;
 import com.blackducksoftware.soleng.bdsplugin.model.VulnPOJO;
@@ -201,6 +207,7 @@ public class CodeCenterDAO extends CommonDAO
 				pojo.setProjectID(associatedProject.getId().getId());
 			
 				String associatedServer = associatedProject.getId().getServerId().toString();
+				
 				
 				
 			} catch(SdkFault fault)
@@ -591,6 +598,49 @@ public class CodeCenterDAO extends CommonDAO
 		}
 		
 		return pojo;
+	}
+
+	public ApplicationPOJO collectCustomAttributes(ApplicationPOJO applicationPojo) 
+	{
+		AttributeApi attributeApi = ccServerWrapper.getInternalApiWrapper().attributeApi;
+
+		try
+		{
+			AttributePageFilter filter = new AttributePageFilter();
+			filter.setFirstRowIndex(0);
+			filter.setLastRowIndex(Integer.MAX_VALUE);
+			List<AttributeValue> attributes = app.getAttributeValues();
+			
+			for(AttributeValue attValue : attributes)
+			{		
+				AbstractAttribute attribute = null;
+				try{
+					AttributeNameOrIdToken id = attValue.getAttributeId();
+					attribute = attributeApi.getAttribute(id);
+					log.debug("Examining attribute: " + attribute.getQuestion());
+					
+					// We want to store the question and the answer.
+					// This is a bit kludgy, but the SDK is forcing us into this predicament. 
+					// Because the actual Attribute does not contain the "answer", we must rely on the list of values that we initially grabbed.
+					// TODO:  Although a list comes back, it never appears to actually include a list - so we get the first index.
+					AttributePOJO attPojo = new AttributePOJO(attribute.getQuestion(), attValue.getValues().get(0));
+					applicationPojo.addAttributes(attPojo);
+				} catch (Exception e)
+				{
+					log.error("Unable to get attribute details for: " + attribute.getName());
+				}
+			}
+			
+			log.debug("Found number of attributes: " + attributes.size());
+			
+			
+		} catch (Exception e)
+		{
+			log.error("Unable to get attributes", e);
+		}
+		
+		
+		return applicationPojo;
 	}
 	
 }

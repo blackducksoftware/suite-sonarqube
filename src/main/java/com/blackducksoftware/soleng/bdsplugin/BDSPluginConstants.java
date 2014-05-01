@@ -64,6 +64,7 @@ public class BDSPluginConstants {
 	public static String REQUESTS_APPROVED_METRIC_KEY = "requests-approved";
 	public static String REQUESTS_REJECTED_METRIC_KEY = "requests-rejected";
 	public static String REQUESTS_NOT_SUBMITTED_METRIC_KEY = "requests-not-submitted";
+	public static String CC_CUSTOM_ATTIBUTES_KEY = "custom-attributes";
 	
 	// Vulnerabilities
 	

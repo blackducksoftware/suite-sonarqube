@@ -34,6 +34,9 @@ public class CodeCenterConnector
 			pojo = ccDAO.populateApplicationInfo(pojo);		
 			pojo = ccDAO.populateComponentBreakdown(pojo);
 			pojo = ccDAO.populateURLs(pojo, settings);
+			// Optional depending on settings.
+			pojo = ccDAO.collectCustomAttributes(pojo);
+			
 		} catch (Exception e)
 		{
 			log.error("Unable to populate Code Center data: " + e.getMessage());

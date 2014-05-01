@@ -117,6 +117,12 @@ public final class BDSPluginMetrics implements Metrics {
   .setDomain(CoreMetrics.DOMAIN_GENERAL)
   .create();
   
+  // Custom Attributes
+  public final static Metric CC_CUSTOM_ATTIBUTES_JSON = 
+		  new Metric.Builder(BDSPluginConstants.CC_CUSTOM_ATTIBUTES_KEY, "Custom Attributes", Metric.ValueType.DATA)
+  .setDomain(CoreMetrics.DOMAIN_GENERAL)
+  .create();
+  
   /**
    * Code Center Vulnerability data
    */
@@ -189,6 +195,7 @@ public final class BDSPluginMetrics implements Metrics {
     		CC_REQUESTS_REJECTED,
     		CC_REQUESTS_PENDING, 
     		CC_REQUESTS_NS,
+    		CC_CUSTOM_ATTIBUTES_JSON,
     		COMP_LIST_APPROVED_JSON,
     		COMP_LIST_PENDING_JSON,
     		COMP_LIST_REJECTED_JSON,

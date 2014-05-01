@@ -54,6 +54,11 @@ public class ApplicationPOJO
 	private Integer vulnMedCount = new Integer(0);
 	private Integer vulnLowCount = new Integer(0);
 	
+	/**
+	 * Optional attribute list
+	 */
+	private List<AttributePOJO> attributes = new ArrayList<AttributePOJO>();
+	
 	private String codeCenterBomPage = "";
 	
 	// Raw list of IDs
@@ -136,6 +141,8 @@ public class ApplicationPOJO
 			buff.append("High Vulnerability: " + this.getVulnLowCount());
 			buff.append("\n");
 			buff.append("Sorted License Map: " + this.getSortedLicenseMap());
+			buff.append("\n");
+			buff.append("Attributes: " + this.getAttributes().size());
 		} catch (Exception e)
 		{
 			// ignore
@@ -466,6 +473,16 @@ public class ApplicationPOJO
 
 	public void setApplicationId(ApplicationIdToken applicationId) {
 		this.applicationId = applicationId;
+	}
+
+
+	public List<AttributePOJO> getAttributes() {
+		return attributes;
+	}
+
+
+	public void addAttributes(AttributePOJO attribute) {
+		this.attributes.add(attribute);
 	}
 
 
