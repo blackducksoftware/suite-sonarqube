@@ -22,8 +22,9 @@
 	background-color: DarkRed;
 }
 
-.cc_link
+.cc-link
 {
+  float: right;
 	color: blue;
 	text-decoration: none;
 	font-weight: bold;
@@ -131,21 +132,21 @@
 </head>
 
 <body>
-<h1> Component License Information </h1> 
-
+  <div class="title-header">
+    <h1>
+      Component License Information 
+     </h1> 
+  </div>
 <% if cc_error_msg.data %>
-	<br>
 	<div class="error-message">
 		Error: <%=cc_error_msg.data %>
 	</div>
 <% else %>
-	<table width="95%">
-	<tr>
-	<td></td>
-	<td align="right">
-		<a href="<%=cc_bom_url.data%>" target="_new" class="cc_link">Code Center <i class="fa fa-share-square-o"></i> </a>
-	</td>
-	</tr>
+  <div class="cc-link"> 
+    <a href="<%=cc_bom_url.data%>" target="_new">Code Center <i class="fa fa-share-square-o"></i> </a>
+  </div>
+
+	<table width="95%">	
 	<tr>
 		<td width="25%">
 			<div class="license-conflict-type title-no-link">License Types:</div>

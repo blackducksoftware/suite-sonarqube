@@ -37,6 +37,8 @@
 		addToMasterList(medJsonList, fullVulnList);
 		addToMasterList(lowJsonList, fullVulnList);
 
+		console.log("Vulnerabilities: Count of master list: " + fullVulnList.length)
+		
 	    $j(function()
 	  	{		
 				// Populate Counts and Colors
@@ -93,8 +95,8 @@
            	 	'fnCreatedCell': function(nTd, sData, oData, iRow, iCol) 
             	{
             		// This is used by the tooltip
-			        nTd.title = oData.description;
-			    },
+            		nTd.title = oData.description;
+			        },
             }, 
             
         ]

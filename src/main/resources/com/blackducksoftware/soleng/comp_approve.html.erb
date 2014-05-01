@@ -5,6 +5,7 @@
 	comp_list_approved_json = measure('comp-list-approved-json')
 	comp_list_rejected_json = measure('comp-list-rejected-json')
 	comp_list_unknown_json = measure('comp-list-ns-json')
+	cc_custom_attributes_json = measure('custom-attributes')
 	
 	approved_count = measure('requests-approved')
 	rejected_count = measure('requests-rejected')
@@ -22,7 +23,8 @@
 	<link rel="stylesheet" type="text/css" href="<%= url_for_static(:plugin => 'BDSPlugin', :path => 'font-awesome/css/font-awesome.min.css') -%>" /></link>	
 	<link rel="stylesheet" type="text/css" href="<%= url_for_static(:plugin => 'BDSPlugin', :path => 'common/bds_common.css') -%>" /></link>	
 	<link rel="stylesheet" type="text/css" href="<%= url_for_static(:plugin => 'BDSPlugin', :path => 'spop/css/jquery.smallipop.css') -%>" /></link>	
-	
+	<link rel="stylesheet" type="text/css" href="<%= url_for_static(:plugin => 'BDSPlugin', :path => 'qtip/jquery.qtip.css') -%>" /></link> 
+  
 	
 	<!-- UI Theme -->
 
@@ -55,7 +57,36 @@
 		
 		/* CSS for the table */
 		.columnGroup { border-left: 1px solid black; }
-
+		
+		  
+		/* This is the link that people will see */    		
+		.custom-attributes
+		{
+		  
+		   float: right;
+		   font-size: 11px;
+		   font-weight: bold;
+		}
+		
+		.custom-attributes-answer
+    {
+      font-weight: bold;
+      font-style: oblique;
+      float: left;
+      font-size: 13px;
+      padding: 2px;
+      height: 20px;
+    }
+    
+    .custom-attributes-question
+    {
+      float: left;
+      font-size: 13px;
+      padding: 2px;
+      height: 20px;
+      
+    }
+    
 	</style>
 
 	
@@ -67,7 +98,8 @@
 	<script type="text/javascript" src="<%= url_for_static(:plugin => 'BDSPlugin', :path => 'common/bds_common_functions.js') -%>  "></script>
 	<script type="text/javascript" src="<%= url_for_static(:plugin => 'BDSPlugin', :path => 'spop/jquery.smallipop.min.js') -%>  "></script>
 	<script type="text/javascript" src="<%= url_for_static(:plugin => 'BDSPlugin', :path => 'spop/contrib/modernizr.js') -%>  "></script>
-	
+  <script type="text/javascript" src="<%= url_for_static(:plugin => 'BDSPlugin', :path => 'qtip/jquery.qtip.min.js') -%>  "></script>
+ 
 	
 
 
@@ -100,6 +132,8 @@
 				
 				var $nsCountUI = $j('.status-ns-count');		
 				setColorAndValue($nsCountUI, "black", <%=ns_count.value%>);
+
+        
 		});	
 		
 		// Function for centering
@@ -266,17 +300,66 @@
        			}
        			var infoBoxMsg = "Filtering on component: " + compName + ", Version: " + versionNumber;
        			filterBoxCss.text(infoBoxMsg);
-           		
-		        
+           				        
 			 });
 			 
+			 // Custom attributes
+          
+        // Populate custom attributes if any
+        <% if cc_custom_attributes_json %>
+          var cc_att_json = <%=cc_custom_attributes_json.data%>;
+          var html_attrib_list = "";
+          for(var i=0; i < cc_att_json.length; i++)
+          {
+            var attrib_element = cc_att_json[i];
+            if(attrib_element != null)
+                html_attrib_list =  html_attrib_list + 
+                "<div class='custom-attributes-question'>" + attrib_element.question + ":" +"</div>"
+                + 
+                "<div class='custom-attributes-answer'>" + attrib_element.answer + "</div><br>";
+          }
+          console.log("HTML:" + html_attrib_list);
+          
+          $j('.custom-attributes').qtip(
+          {
+              content:
+              {
+                  text: html_attrib_list,
+                  title: 'Custom Attributes',
+                  button: true
+              },
+              hide: 
+              {
+                event: false
+              },
+              style:
+              {
+                classes: 'qtip-blue qtip-shadow',
+              },
+              position:
+              {
+                my: 'top left',
+                at: 'bottom center'
+              }
+          });  
+        <% end %>
 			 
 		});	 
 	</script>
 </head>
 <body>
-
-	<h1> Component Approvals </h1>
+  <div class="title-header">
+    <h1> Component Approvals </h1>
+	</div>
+  <% if cc_custom_attributes_json %>
+     <div class="custom-attributes">
+  	   Custom Attributes <i class="fa fa-info-circle"></i>
+  	</div>
+   <% end %>
+	   
+	<!-- Separate the top divs from the bottom divs, important or behavior changes -->
+	<br>
+	
 <% if cc_error_msg.data %>
   <br>
   <div class="error-message">

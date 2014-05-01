@@ -1,3 +1,7 @@
+.title-header /* The main title*/
+{
+	float: left;
+}
 .error-message
 {
 	position: relative;
@@ -54,9 +58,8 @@
 /* This holds all the individual groupings */
 .grouping-numbers-bar
 {
-
 	text-align: center;
-	min-width: 515px;
+	min-width: 555px;
 }
 
 /* Enforces size on all our widgets */
