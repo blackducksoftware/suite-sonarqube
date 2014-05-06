@@ -82,7 +82,25 @@
             { 
            	 	"mData": "severity", 
            	 	"sTitle": "Sev",
-           	 	"sWidth": "6%"
+           	 	"sWidth": "5%",
+              "mRender" : function (data, type, row)
+              { 
+                  if(type === 'display')
+                  {
+                      // We want to alter the display, but keep the content to preserve filtering
+                      switch(data)
+                      {   
+                        
+                          // Only alter the medium
+                          case "MEDIUM":
+                          {
+                              return "MED";
+                          }
+                     } // switch
+                  } // display
+                    
+                  return data;
+              } 
             }, 
             { 
            	 	"mData": "publishDate", 
