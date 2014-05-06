@@ -61,6 +61,11 @@
             	"mData": "componentName",
             	"sTitle": "Component Name",
             	"sWidth": "18%",
+              'fnCreatedCell': function(nTd, sData, oData, iRow, iCol) 
+                  {
+                    // This is used by the tooltip
+                    nTd.title = oData.componentName;
+                  },
             }, 
             { 
            	 	"mData": "componentVersion", 
