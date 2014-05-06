@@ -105,7 +105,12 @@
             { 
            	 	"mData": "publishDate", 
            	 	"sTitle": "Date",
-           	 	"sWidth": "8%"
+           	 	"sWidth": "8%",
+              'fnCreatedCell': function(nTd, sData, oData, iRow, iCol) 
+                {
+                  // This is used by the tooltip
+                  nTd.title = oData.publishDate;
+                },
             }, 
             { 
            	 	"mData": "description", 
