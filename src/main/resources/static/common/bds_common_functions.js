@@ -94,6 +94,34 @@ function clearFilterSelection(cssTableName)
 }
 
 
+function createQtipTooltip(cssInfoElement, title, content)
+{
+	$j(function()
+	{
+		  $j(cssInfoElement).qtip(
+          {
+              show: 'click',
+              hide: 'click',                   
+              content:
+              {
+                  text: content,
+                  title: title,                 
+              },
+              style:
+              {
+                classes: 'qtip-blue qtip-shadow',
+              },
+              position:
+              {
+                my: 'top left',
+                at: 'bottom center'
+              }
+          });  
+	 });
+}
+
+
+
 /**
  * Filters by version and component name
  * @param compName
@@ -242,5 +270,54 @@ jQuery.fn.createTable = function(tableClassName, dataList, columnData, defaultSo
 		    });	 
 
 	});
+}
+
+/*************************
+ * ToolTip functionality */
+
+/**
+ * Creates a qtip2 tooltip on the passed in element
+ */
+function buildToolTip(cssElement, title, html_list)
+{
+	$j(function()		  	
+	{
+		$j(cssElement).qtip(
+	      {
+	          show: 'click',
+	          hide: 'click',                   
+	          content:
+	          {
+	              text: html_list,
+	              title: title,
+	              
+	          },
+	          style:
+	          {
+	            classes: 'qtip-blue qtip-shadow',
+	          },
+	          position:
+	          {
+	            my: 'top left',
+	            at: 'bottom center'
+	          }
+	      });  
+  	});
+}
+
+/**
+ * Constructs a working html out of the key value pair.
+ * @param key
+ * @param value
+ * @returns {String}
+ */
+function buildHtmlToolTip(key, value)
+{
+    
+	var htmlList =  "<div class='info-tooltip-key'>" + key + ":" +"</div>"
+				+ 
+				"<div class='info-tooltip-value'>" + value + "</div><br><br>";
+	
+	return htmlList;
 }
 

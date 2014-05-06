@@ -1,5 +1,6 @@
 <%
   cc_error_msg = measure('code-center-error-message')
+  cc_bom_url = measure('cc-app-bom-url')
 
 	comp_list_pending_json = measure('comp-list-pending-json')
 	comp_list_approved_json = measure('comp-list-approved-json')
@@ -57,36 +58,6 @@
 		
 		/* CSS for the table */
 		.columnGroup { border-left: 1px solid black; }
-		
-		  
-		/* This is the link that people will see */    		
-		.custom-attributes
-		{
-		  
-		   float: right;
-		   font-size: 11px;
-		   font-weight: bold;
-		}
-		
-		.custom-attributes-answer
-    {
-      font-weight: bold;
-      font-style: oblique;
-      float: left;
-      font-size: 13px;
-      padding: 2px;
-      height: 20px;
-    }
-    
-    .custom-attributes-question
-    {
-      float: left;
-      font-size: 13px;
-      padding: 2px;
-      height: 20px;
-      
-    }
-    
 	</style>
 
 	
@@ -94,7 +65,6 @@
 	<script type="text/javascript"  src="<%= url_for_static(:plugin => 'BDSPlugin', :path => 'datatables/jquery.dataTables.min.js') -%>  "></script>
 	<script type="text/javascript" src="<%= url_for_static(:plugin => 'BDSPlugin', :path => 'datatables/jquery.dataTables.columnFilter.js') -%>  "></script>
 	<script type="text/javascript" src="<%= url_for_static(:plugin => 'BDSPlugin', :path => 'jquery-ui/jquery-ui-1.10.4.min.js') -%>  "></script>
-	<script type="text/javascript" src="<%= url_for_static(:plugin => 'BDSPlugin', :path => 'common/bds_common_functions.js') -%>  "></script>
 	<script type="text/javascript" src="<%= url_for_static(:plugin => 'BDSPlugin', :path => 'common/bds_common_functions.js') -%>  "></script>
 	<script type="text/javascript" src="<%= url_for_static(:plugin => 'BDSPlugin', :path => 'spop/jquery.smallipop.min.js') -%>  "></script>
 	<script type="text/javascript" src="<%= url_for_static(:plugin => 'BDSPlugin', :path => 'spop/contrib/modernizr.js') -%>  "></script>
@@ -303,46 +273,25 @@
            				        
 			 });
 			 
-			 // Custom attributes
-          
+			  // Custom attributes          
         // Populate custom attributes if any
         <% if cc_custom_attributes_json %>
           var cc_att_json = <%=cc_custom_attributes_json.data%>;
           var html_attrib_list = "";
           for(var i=0; i < cc_att_json.length; i++)
           {
-            var attrib_element = cc_att_json[i];
-            if(attrib_element != null)
-                html_attrib_list =  html_attrib_list + 
-                "<div class='custom-attributes-question'>" + attrib_element.question + ":" +"</div>"
-                + 
-                "<div class='custom-attributes-answer'>" + attrib_element.answer + "</div><br>";
+              var attrib_element = cc_att_json[i];
+              // Keep on building the 
+              if(attrib_element != null)
+                  html_attrib_list = html_attrib_list + buildHtmlToolTip(attrib_element.question, attrib_element.answer);
           }
           console.log("HTML:" + html_attrib_list);
           
-          $j('.custom-attributes').qtip(
-          {
-              content:
-              {
-                  text: html_attrib_list,
-                  title: 'Custom Attributes',
-                  button: true
-              },
-              hide: 
-              {
-                event: false
-              },
-              style:
-              {
-                classes: 'qtip-blue qtip-shadow',
-              },
-              position:
-              {
-                my: 'top left',
-                at: 'bottom center'
-              }
-          });  
+          // Create a tooltip for the info button
+          buildToolTip(".cc-tooltip-info", "Application Attributes", html_attrib_list);          
         <% end %>
+        
+
 			 
 		});	 
 	</script>
@@ -351,21 +300,32 @@
   <div class="title-header">
     <h1> Component Approvals </h1>
 	</div>
+  
+  <!-- HANDLE ERROR CASE -->
+  
+  <% if cc_error_msg.data %>
+    <br>
+    <div class="error-message">
+      Error: <%=cc_error_msg.data %>
+    </div>
+  <% else %>
+	
+	<! -- START CONTENT -->
+    
   <% if cc_custom_attributes_json %>
-     <div class="custom-attributes">
-  	   Custom Attributes <i class="fa fa-info-circle"></i>
+     <div class="cc-tooltip-info">
+  	   <i class="fa fa-info-circle"></i>
   	</div>
-   <% end %>
+   <% end %> 	   
+    <div class="cc-link"> 
+      <a href="<%=cc_bom_url.data%>" target="_new" title="Code Center BOM"><i class="fa fa-share-square-o"></i></a>
+    </div>
+
 	   
 	<!-- Separate the top divs from the bottom divs, important or behavior changes -->
 	<br>
 	
-<% if cc_error_msg.data %>
-  <br>
-  <div class="error-message">
-    Error: <%=cc_error_msg.data %>
-  </div>
-<% else %>
+
 
 <br><p>
 

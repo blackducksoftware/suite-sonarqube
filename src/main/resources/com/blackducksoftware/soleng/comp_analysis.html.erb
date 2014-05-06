@@ -6,7 +6,11 @@ measure_protex_no_discovery_total =measure('protex-total-no-discovery-files')
 measure_protex_discovery_total =measure('protex-total-discovery-files')
 measure_protex_analyzed_date =measure('protex-analyzed-date')
 
+protex_info_json =measure('protex-info-bean')
+
 protex_err_msg = measure('protex-error-message')
+
+
 
 fomatted_total = format_measure(measure_protex_total, :suffix => '')
 formatted_pending = format_measure(measure_protex_pending_total, :suffix => '')
@@ -21,11 +25,21 @@ formatted_date = format_measure(measure_protex_analyzed_date, :suffix => '')
 	<link rel="stylesheet" type="text/css" href="<%= url_for_static(:plugin => 'BDSPlugin', :path => 'common/bds_common.css') -%>" />
 		
 	<script>
-
+	     
 		   $j(function()
 	  	 {		 
           console.log("Started processing...");
 		 
+          var infoJson = <%=protex_info_json.data%>;
+          
+          if(infoJson != null)
+          {
+            var protexBomUrl = infoJson.protexBomURL;
+            var protexLinkUI = $j('#protex_bom_anchor_tag');
+            protexLinkUI.attr('href',protexBomUrl);
+          }
+          
+          
 		      var discoveredFiles = <%=measure_protex_discovery_total.value%>;
 			    var pendingFiles = <%=measure_protex_pending_total.value%>;
 		
@@ -104,21 +118,53 @@ formatted_date = format_measure(measure_protex_analyzed_date, :suffix => '')
 		      $percentageUI.find(".value").html(percentage + "%");
 		      
 		      console.log("Done processing, the percent is: " + percentage);
+		      
+           // Build the Protex info Tip        
+           if(infoJson != null)
+           {
+               var protexInfoList = "";
+               var html_info_list = "";  
+               
+               html_info_list = buildHtmlToolTip("Server", infoJson.protexServer);
+               html_info_list = html_info_list + buildHtmlToolTip("Project", infoJson.protexProjectName);
+               html_info_list = html_info_list + buildHtmlToolTip("Analyzed Date", infoJson.protexAnalyzedDate);
+              
+               console.log("Protex Info HTML:" + html_info_list);
+
+              // Create a tooltip for the protex info button
+              buildToolTip(".protex-tooltip-info", "Protex Information", html_info_list);     
+          }
 		  });
 	</script>
 </head>
 
 <body>
-        <h1>Component Analysis</h1>
 
-<% if protex_err_msg.data %>
-	<br>
-	<div class="error-message">
-		Error: <%=protex_err_msg.data %>
-	</div>
-<% else %>
-		
-        <br>
+   <div class="title-header">
+       <h1>Component Analysis</h1>
+   </div>
+  
+  <!-- HANDLE ERROR CASE -->
+            
+  <% if protex_err_msg.data %>
+  	<br>
+  	<div class="error-message">
+  		Error: <%=protex_err_msg.data %>
+  	</div>
+  <% else %>
+
+  <img class="logo" src="<%= url_for_static(:plugin => 'BDSPlugin', :path => 'common/bd_logo.png') -%>  ">
+
+  <div class="protex-tooltip-info">
+       <i class="fa fa-info-circle"></i>
+  </div>
+  <div class="cc-link"> 
+      <a href="" target="_new" title="Protex BOM" id="protex_bom_anchor_tag"><i class="fa fa-share-square-o"></i></a>
+  </div>
+  
+ 
+
+  <br><br>
   <div class="container">
     <div id="identifiedFiles" class="widget-tile">
      
@@ -184,10 +230,6 @@ formatted_date = format_measure(measure_protex_analyzed_date, :suffix => '')
 	    	<label>Identified</label>      
         </div>
         <div class="end value"><%=formatted_disc %></div>
-      </div>
-      <div class="widget-row widget-footer">
-          <abbr title="Last Analyzed">Last Analyzed: <%=formatted_date%></abbr>  
-          <img class="logo" src="<%= url_for_static(:plugin => 'BDSPlugin', :path => 'common/bd_logo.png') -%>  ">
       </div>
       <div class="clear"></div>
     </div>

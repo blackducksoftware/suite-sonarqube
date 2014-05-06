@@ -42,6 +42,7 @@ import com.blackducksoftware.soleng.bdsplugin.config.BDSPluginProtexConfigManage
 import com.blackducksoftware.soleng.bdsplugin.config.BDSPluginUser;
 import com.blackducksoftware.soleng.bdsplugin.model.ApplicationPOJO;
 import com.blackducksoftware.soleng.bdsplugin.model.LicensePOJO;
+import com.blackducksoftware.soleng.bdsplugin.model.ProtexPOJO;
 
 public class ProtexDAO extends CommonDAO
 {
@@ -148,6 +149,27 @@ public class ProtexDAO extends CommonDAO
 			
 			// Grab the latest refresh date
 			getRefreshDateFromSonar(pojo);
+			
+			// Grab the url 
+			String SERVER = settings.getString(BDSPluginConstants.PROPERTY_PROTEX_URL);
+			//TODO: This is not working, just brings to main projectString protexBomURL = bomApi.getIdentifyBomUrl(project.getProjectId(), "/");
+			// TODO: Figure it out, this hard-coded stuff is terrible.
+			String protexBomURL = SERVER
+					+ "/protex/ProtexIPIdentifyFolderBillOfMaterialsContainer?isAtTop=true&ProtexIPProjectId="
+					+ project.getProjectId()
+					+ "&ProtexIPIdentifyFileViewLevel=folder&ProtexIPIdentifyFileId=-1";
+	
+			pojo.setProtexBomURL(protexBomURL);
+			
+			// Pack some information about Protex
+			ProtexPOJO protexInfo = new ProtexPOJO();
+			protexInfo.setProtexServer(SERVER);
+			protexInfo.setProtexProjectName(project.getName());
+			protexInfo.setProtexAnalyzedDate(prettyDate);
+			protexInfo.setProtexBomURL(protexBomURL);
+			
+			pojo.setProtexInfo(protexInfo);
+			
 			
 		} catch (Exception e)
 		{

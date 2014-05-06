@@ -22,18 +22,10 @@
 	background-color: DarkRed;
 }
 
-.cc-link
-{
-  float: right;
-	color: blue;
-	text-decoration: none;
-	font-weight: bold;
-}
-
 .chart-container
 {
-	min-width: 150px;
-	min-height: 150px;
+	min-width: 200px;
+	min-height: 130px;
 }
 </style>
 
@@ -128,6 +120,10 @@
 	        series: [ seriesSet ]
 	    });
 	  });
+		
+		
+		
+		
 	</script>
 </head>
 
@@ -142,21 +138,17 @@
 		Error: <%=cc_error_msg.data %>
 	</div>
 <% else %>
+  <img class="logo" src="<%= url_for_static(:plugin => 'BDSPlugin', :path => 'common/bd_logo.png') -%>  ">  
   <div class="cc-link"> 
-    <a href="<%=cc_bom_url.data%>" target="_new">Code Center <i class="fa fa-share-square-o"></i> </a>
+      <a href="<%=cc_bom_url.data%>" target="_new" title="Code Center BOM"><i class="fa fa-share-square-o"></i></a>
   </div>
 
 	<table width="95%">	
 	<tr>
-		<td width="25%">
-			<div class="license-conflict-type title-no-link">License Types:</div>
-		</td>
-		<td width="50%" rowspan=2>
-			<div class="chart-container" id="lic_chart_container" width="50%"></div>
-		</td>
-	<tr>
-	<tr>
 		<td>
+      <div class="license-conflict-type title-no-link">License Types:</div>
+      <br><br><br><br>
+      
 			<div class="license-conflict-grouping">
 				<div class="license-conflict-type title-no-link">
 					Conflicts:
@@ -167,12 +159,11 @@
 				<div class="component-license-trend">
 				  <%=trend_icon(lic_conflict_measure, :big => true)%>
 			  </div>
-			</div>
-
+			</div>			
 		</td>
-		<td>
-			<img class="logo" src="<%= url_for_static(:plugin => 'BDSPlugin', :path => 'common/bd_logo.png') -%>  ">	
-		</td>
+      <td>
+        <div class="chart-container" id="lic_chart_container"></div>
+      </td>
 	</tr>
 	</table>
 

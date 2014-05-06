@@ -115,12 +115,12 @@ public class BDSPluginSensor implements Sensor {
 			saveMetricInt(sensorContext, pojo.getTotalLicenseConflictCount(), BDSPluginMetrics.PROTEX_LICENSE_CONFLICT_FILES);	
 			saveMetricString(sensorContext, pojo.getProjectName(), BDSPluginMetrics.PROTEX_ASSOCIATED_PROJECT);	
 			saveMetricString(sensorContext, pojo.getDateLastAnalyzed(), BDSPluginMetrics.PROTEX_ANALYZED_DATE);	
-			saveMetricString(sensorContext, pojo.getCodeCenterBomPage(), BDSPluginMetrics.CC_APP_BOM_URL);	
+			saveMetricJson(sensorContext, pojo.getProtexInfo(), BDSPluginMetrics.PROTEX_INFO_JSON);	
 			
 			/*
 			 * REQUESTS
 			 * */
-			
+			saveMetricString(sensorContext, pojo.getCodeCenterBomPage(), BDSPluginMetrics.CC_APP_BOM_URL);	
 			// Component Request Measures
 			saveMetricInt(sensorContext, pojo.getApprovedComponentCount(), BDSPluginMetrics.CC_REQUESTS_APPROVED);
 			saveMetricInt(sensorContext, pojo.getPendingComponentCount(), BDSPluginMetrics.CC_REQUESTS_PENDING);
@@ -175,13 +175,20 @@ public class BDSPluginSensor implements Sensor {
 	private void saveMetricString(SensorContext sensorContext,
 			String value, Metric metric) 
 	{
-		final Measure measure = new Measure(metric);
-		measure.setData(value);
+		try{
+			final Measure measure = new Measure(metric);
+			measure.setData(value);
+			
+			if(sensorContext != null)
+				sensorContext.saveMeasure(measure);
+			
+			log.info("Saved new measure: " + measure.toString());	
 		
-		if(sensorContext != null)
-			sensorContext.saveMeasure(measure);
+		} catch (Exception e)
+		{
+			log.warn("Unable to save metric: " + metric.getName(), e);
+		}
 		
-		log.info("Saved new measure: " + measure.toString());	
 	}
 
 

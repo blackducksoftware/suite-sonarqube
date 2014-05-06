@@ -32,6 +32,7 @@
 		position: relative;
 		padding: 5px 9px;
 		overflow: hidden;
+		font-size: 11px;
 
 		text-align: left;
 		word-wrap: break-word;

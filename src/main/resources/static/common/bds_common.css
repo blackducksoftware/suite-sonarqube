@@ -22,7 +22,11 @@
 
 .logo
 {
+	margin-left:15px;
+	padding: 2px;
 	float: right;
+	width: 70px;
+	height: 15px;
 }
 
 /* For the selector within the approval table*/
@@ -160,4 +164,44 @@
 .dataTable thead th
 {
 	font-size: 10px;
+}
+
+.cc-link, .protex-link
+{
+  	float: right;
+	color: blue;
+	text-decoration: none;
+	font-weight: bold;
+	padding: 2px;
+}
+
+/* Tool Tip s  */
+/* This is the link that people will see */    		
+.cc-tooltip-info, .protex-tooltip-info
+{
+   cursor: pointer; 
+   float: right;
+   font-size: 14px;
+   font-weight: bold;
+   padding: 2px;
+   color: rgba(0, 100, 180, 1);
+}
+
+.info-tooltip-key
+  {
+    font-weight: bold;
+    font-style: oblique;
+    float: left;
+    font-size: 13px;
+    padding: 2px;
+    height: 20px;
+  }
+  
+.info-tooltip-value
+{
+  float: left;
+  font-size: 13px;
+  padding: 2px;
+  height: 20px;
+  
 }

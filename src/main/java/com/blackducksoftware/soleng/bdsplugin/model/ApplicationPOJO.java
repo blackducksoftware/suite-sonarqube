@@ -20,6 +20,7 @@ public class ApplicationPOJO
 	private String appVersion = "";
 	private String appDescription = "";
 
+
 	/**
 	 * Error Messages
 	 */
@@ -80,6 +81,8 @@ public class ApplicationPOJO
 	// This is the last time Protex had a BOM refresh.  
 	// We track this so that we only update our internal counts when the date is newer.
 	private Date lastrefreshDate = null;
+	private String protexBomURL = null;
+	private ProtexPOJO protexInfo = null;
 	
 	// Map of components based on their request
 	private HashMap<String, String> componentRequestMap = new HashMap<String, String>();
@@ -483,6 +486,26 @@ public class ApplicationPOJO
 
 	public void addAttributes(AttributePOJO attribute) {
 		this.attributes.add(attribute);
+	}
+
+
+	public String getProtexBomURL() {
+		return protexBomURL;
+	}
+
+
+	public void setProtexBomURL(String protexBomURL) {
+		this.protexBomURL = protexBomURL;
+	}
+
+
+	public ProtexPOJO getProtexInfo() {
+		return protexInfo;
+	}
+
+
+	public void setProtexInfo(ProtexPOJO protexInfo) {
+		this.protexInfo = protexInfo;
 	}
 
 

@@ -7,6 +7,12 @@ import org.sonar.api.measures.Metrics;
 import java.util.Arrays;
 import java.util.List;
 
+/**
+ * List of all metrics.
+ * * After each metric is created, it is added to the list at the bottom - DO NOT FORGET!
+ * @author akamen
+ *
+ */
 public final class BDSPluginMetrics implements Metrics {
 
 	/**
@@ -62,6 +68,12 @@ public final class BDSPluginMetrics implements Metrics {
 		  new Metric.Builder(BDSPluginConstants.PROTEX_ASSOCIATED_PROJECT_KEY, "Protex Associated Project", Metric.ValueType.STRING)
   .setDomain(CoreMetrics.DOMAIN_GENERAL)
   .create();
+  
+  public final static Metric PROTEX_INFO_JSON = 
+		  new Metric.Builder(BDSPluginConstants.PROTEX_INFO_KEY, "Protex Info Data", Metric.ValueType.DATA)
+  .setDomain(CoreMetrics.DOMAIN_GENERAL)
+  .create();
+  
   
   /**
    * Code Center Request Metrics
@@ -190,6 +202,7 @@ public final class BDSPluginMetrics implements Metrics {
     		PROTEX_ASSOCIATED_PROJECT,
     		PROTEX_ANALYZED_DATE,
     		PROTEX_LICENSE_CONFLICT_FILES,
+    		PROTEX_INFO_JSON,
     		CC_APP_BOM_URL,
     		CC_REQUESTS_APPROVED,
     		CC_REQUESTS_REJECTED,

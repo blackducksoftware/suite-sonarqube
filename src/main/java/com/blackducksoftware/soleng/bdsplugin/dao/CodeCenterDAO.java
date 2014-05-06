@@ -1,9 +1,5 @@
 package com.blackducksoftware.soleng.bdsplugin.dao;
 
-import java.net.MalformedURLException;
-import java.net.URI;
-import java.net.URISyntaxException;
-import java.net.URL;
 import java.text.DateFormat;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
@@ -20,12 +16,10 @@ import org.slf4j.LoggerFactory;
 import org.sonar.api.config.Settings;
 import org.sonar.api.utils.SonarException;
 
-import soleng.framework.core.config.ConfigurationManager;
 import soleng.framework.standard.codecenter.CodeCenterServerWrapper;
 
 import com.blackducksoftware.sdk.codecenter.application.ApplicationApi;
 import com.blackducksoftware.sdk.codecenter.application.data.Application;
-import com.blackducksoftware.sdk.codecenter.application.data.ApplicationIdToken;
 import com.blackducksoftware.sdk.codecenter.application.data.ApplicationNameVersionOrIdToken;
 import com.blackducksoftware.sdk.codecenter.application.data.ApplicationNameVersionToken;
 import com.blackducksoftware.sdk.codecenter.application.data.Project;
@@ -137,12 +131,12 @@ public class CodeCenterDAO extends CommonDAO
 			ccConfigManager = (BDSPluginCodeCenterConfigManager) collectGeneralSettings(ccConfigManager, settings);
 	        
 			// If app or version is blank, default it.
-			if(APP_NAME.length() == 0)
+			if(APP_NAME == null || APP_NAME.length() == 0)
 			{
 				log.warn("Defaulting application name to: " + sonarProject.getName());
 				APP_NAME = sonarProject.getName();
 			}
-			if(VERSION_ID.length() == 0)
+			if(VERSION_ID == null || VERSION_ID.length() == 0)
 			{
 				log.warn("Defaulting version to: " + sonarProject.getAnalysisVersion());
 				VERSION_ID = sonarProject.getAnalysisVersion();
@@ -160,7 +154,7 @@ public class CodeCenterDAO extends CommonDAO
 		}
 		catch (Throwable e)
 		{
-			throw new Exception("Could not properly authenticate Code Center, error: " + e.getMessage());
+			throw new Exception("Could not properly authenticate Code Center, error: " + e.getMessage(), e);
 		}
 	}
 

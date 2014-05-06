@@ -45,7 +45,7 @@ public class BDSPluginConstants {
 	public static String PROTEX_ERROR_MESSAGE_KEY = "protex-error-message";
 	public static String CODE_CENTER_ERROR_MESSAGE_KEY = "code-center-error-message";
 	
-	// Component Analysis
+	// Component Analysis (Protex Data)
 	public static String PROTEX_TOTAL_FILES_METRIC_KEY = "protex-total-files";
 	public static String PROTEX_TOTAL_PENDING_METRIC_KEY = "protex-total-pending-files";
 	public static String PROTEX_TOTAL_NO_DISCOVERY_METRIC_KEY = "protex-total-no-discovery-files";
@@ -53,6 +53,7 @@ public class BDSPluginConstants {
 	public static String PROTEX_TOTAL_DISCOVERY_METRIC_KEY = "protex-total-discovery-files";
 	public static String PROTEX_TOTAL_LIC_CONFLICT_METRIC_KEY = "protex-total-license-conflict-files";
 	public static String PROTEX_ANALYZED_DATE_KEY = "protex-analyzed-date";
+	public static String PROTEX_INFO_KEY = "protex-info-bean";
 	
 	// Components and related approvals.
 	public static String COMP_LIST_APPROVED_JSON_KEY = "comp-list-approved-json";
@@ -81,7 +82,7 @@ public class BDSPluginConstants {
 	public static String LICENSE_BREAKDOWN_KEY_VALUE_PAIR = "license-breakdown-key-value";
 	public static String LICENSE_BREAKDOWN_JSON_KEY = "license-breakdown-json";
 	
-	// Used on the license info widget
+	// Used on the Code Center Widgets
 	public static String CC_APP_BOM_URL_KEY = "cc-app-bom-url";
 	
 
