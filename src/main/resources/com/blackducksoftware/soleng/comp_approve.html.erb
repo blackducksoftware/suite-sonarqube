@@ -88,6 +88,7 @@
 		addToMasterList(pendingJsonList, fullDataList);
 		addToMasterList(unknownJsonList, fullDataList);
 
+		
 	    $j(function()
 	  	{		
 				// Populate Counts and Colors
@@ -213,8 +214,8 @@
 		$j(function()
 	  	{		
 	  		// Resize
-			var localDataTable = $j(dtTableName).dataTable();		 
-			$j(window).bind('resize', function () {
+			 var localDataTable = $j(dtTableName).dataTable();		 
+			 $j(window).bind('resize', function () {
 			    localDataTable.fnAdjustColumnSizing();
 			 });
 			 

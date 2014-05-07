@@ -236,41 +236,36 @@ jQuery.fn.createTable = function(tableClassName, dataList, columnData, defaultSo
 		'<"class" and '>' - div with a class
 		'<"#id" and '>' - div with an ID	
 	**/
-
+	var oldStart = 0;
 	return $j(document).ready(function() {
 		var tableCss = $j(tableClassName);
 	    oTable = tableCss.dataTable(
 	    {
-	    	"iDisplayLength": 25,
-	    	
+	    	"iDisplayLength": 25,	    	
 	    	"bAutoWidth": false,
 	    	"bFilter": true,
 	    	"sScrollY": "95",
-	    	//"sScrollXInner": "200%",
-	    	//"sScrollX": "100%",
 	    	"aaData": dataList,
 	    	"aaSorting": [[defaultSortPos, "asc"]], 
 	    	"aLengthMenu": [25, 50, 100, 500],
 	    	"bJQueryUI": true,    
 	   		"sDom":'trlpi',	    
-	
 	        "aoColumns": columnData
-	        
 	    });		
 	    
 	    // Tooltip
-		 oTable.$('td').smallipop(
-			{
-		        popupYOffset: 2, // Bubble has a 20px vertical offset
-		        popupDistance: 2, // Bubble travels vertically 
-		        popupOffset: 0, // No horizontal offset
-		        theme: 'blue fat-shadow',
-		        preferredPosition: "right",
-		        popupAnimationSpeed: "100"
-		    });	 
-
+		oTable.$('td').smallipop(
+		{
+	        popupYOffset: 2, // Bubble has a 20px vertical offset
+	        popupDistance: 2, // Bubble travels vertically 
+	        popupOffset: 0, // No horizontal offset
+	        theme: 'blue fat-shadow',
+	        preferredPosition: "right",
+	        popupAnimationSpeed: "100"
+		 });	 				
 	});
 }
+
 
 /*************************
  * ToolTip functionality */

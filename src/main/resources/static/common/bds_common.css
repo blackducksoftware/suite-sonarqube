@@ -63,7 +63,7 @@
 .grouping-numbers-bar
 {
 	text-align: center;
-	min-width: 555px;
+	min-width: 530px;
 }
 
 /* Enforces size on all our widgets */
@@ -77,8 +77,9 @@
 .analysis-title, .license-conflict-type
 {
 	font-family: arial, helvetica, clean, sans-serif;
-	font-size: 12px;
+	font-size: 10px;
 	font-weight: bold;
+	text-align: center;
 	vertical-align: middle;
 	padding-top: 5px;
 	padding-right: 2px;
@@ -111,7 +112,7 @@
 .analysis-number, .license-conflict-count
 {
 	font-family: arial, helvetica, clean, sans-serif;
-	font-size: 15px;
+	font-size: 13px;
 	font-weight: bold;
 	display: inline-block;	
 	padding: 2px;

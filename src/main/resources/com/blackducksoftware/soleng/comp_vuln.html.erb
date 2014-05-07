@@ -133,11 +133,13 @@
 		$j(document).createTable(dtVulnTableName,fullVulnList,vulnColumnData, 0);    
 		
 		$j(function()
-	  	{		
-			var localDataTable = $j(dtVulnTableName).dataTable();		 
-			$j(window).bind('resize', function () {
-			    localDataTable.fnAdjustColumnSizing();
-			 });
+	  {		
+  			var localDataTable = $j(dtVulnTableName).dataTable();		 
+  			$j(window).bind('resize', function () 
+  			{
+  			    localDataTable.fnAdjustColumnSizing();
+  			});
+  
 		});
 	</script>
 
