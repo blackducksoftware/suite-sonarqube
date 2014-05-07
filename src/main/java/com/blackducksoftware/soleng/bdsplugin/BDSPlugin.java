@@ -31,7 +31,7 @@ public class BDSPlugin extends SonarPlugin
 	protected final static String GENERAL_CATEGORY 		= 	" General";
 	
 	// Used for the UI to return static ruby templates 
-	public static final Boolean devMode = new Boolean(true);
+	public static final Boolean devMode = new Boolean(false);
 	
 	private static final Logger log = LoggerFactory.getLogger(ProtexConnector.class);
 	
