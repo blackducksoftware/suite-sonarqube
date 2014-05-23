@@ -90,13 +90,13 @@ public class ProtexDAO extends CommonDAO
 			
 			BDSPluginUser user = new BDSPluginUser(SERVER, USER_NAME, PASSWORD);
 			
-	        // workaround for this here http://fusesource.com/forums/thread.jspa?messageID=10988
-            Thread.currentThread().setContextClassLoader(this.getClass().getClassLoader());
             configManager = new BDSPluginProtexConfigManager(user);
             configManager.setProtexPojectName(PROJECT_NAME);
          
             configManager = (BDSPluginProtexConfigManager) collectGeneralSettings(configManager, settings);
             
+            // workaround for this here http://fusesource.com/forums/thread.jspa?messageID=10988
+            Thread.currentThread().setContextClassLoader(this.getClass().getClassLoader());
             protexWrapper = new ProtexServerWrapper(configManager, true);
             	
 			projectApi = protexWrapper.getInternalApiWrapper().projectApi;
@@ -135,6 +135,8 @@ public class ProtexDAO extends CommonDAO
 			log.info("Getting project information for project name: " + pojoProjectName);
 			
 			// Get the project from the SDK, if the project has a bad name, missing, etc it will bomb.
+			// workaround for this here http://fusesource.com/forums/thread.jspa?messageID=10988
+			Thread.currentThread().setContextClassLoader(this.getClass().getClassLoader());
 			Project project = projectApi.getProjectByName(pojoProjectName);
 			
 			pojo.setProjectID(project.getProjectId());
