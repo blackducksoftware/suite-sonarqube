@@ -1,14 +1,16 @@
 package com.blackducksoftware.soleng.bdsplugin.config;
 
+import soleng.framework.core.config.ConfigConstants;
+import soleng.framework.core.config.ConfigurationManager;
 import soleng.framework.core.config.ProtexConfigurationManager;
 import soleng.framework.core.config.user.CommonUser;
 
-public class BDSPluginProtexConfigManager extends ProtexConfigurationManager {
+public class BDSPluginProtexConfigManager extends ConfigurationManager {
 
 	private String protexPojectName;;
 	
 	public BDSPluginProtexConfigManager(CommonUser user) {
-		super(user);
+		super(user, ConfigConstants.APPLICATION.PROTEX);
 	}
 
 	public String getProtexPojectName() {

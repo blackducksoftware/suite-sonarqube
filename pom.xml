@@ -58,6 +58,8 @@
 			<version>1.7.1</version>
 		  </dependency>
 	            
+	    <!--  Woodstox:  The newer version of woodstox conflicts with Sonar -->
+		           
 		<!--  Put saaj-impl on the classpath to avoid loading it from the JDK -->
 		<dependency>
 			<groupId>com.sun.xml.messaging.saaj</groupId>
@@ -140,6 +142,7 @@
 			<configuration>
 				<pluginClass>com.blackducksoftware.soleng.bdsplugin.BDSPlugin</pluginClass>
 				<encoding>UTF-8</encoding>
+				<useChildFirstClassLoader>true</useChildFirstClassLoader>
 			</configuration>
 		</plugin>	
     </plugins>

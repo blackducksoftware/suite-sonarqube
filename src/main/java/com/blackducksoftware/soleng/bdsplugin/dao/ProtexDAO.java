@@ -4,22 +4,17 @@ import java.text.DateFormat;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.Date;
-import java.util.List;
 import java.util.Locale;
 import java.util.Map;
 
-import org.apache.commons.configuration.Configuration;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.sonar.api.batch.SensorContext;
 import org.sonar.api.config.Settings;
-import org.sonar.api.measures.Measure;
 
-import soleng.framework.core.config.ProtexConfigurationManager;
 import soleng.framework.standard.protex.ProtexServerWrapper;
 
 import com.blackducksoftware.sdk.fault.SdkFault;
-import com.blackducksoftware.sdk.protex.client.util.ProtexServerProxyV6_3;
 import com.blackducksoftware.sdk.protex.license.GlobalLicense;
 import com.blackducksoftware.sdk.protex.license.LicenseApi;
 import com.blackducksoftware.sdk.protex.license.LicenseAttributes;
@@ -29,15 +24,12 @@ import com.blackducksoftware.sdk.protex.project.ProjectApi;
 import com.blackducksoftware.sdk.protex.project.bom.BomApi;
 import com.blackducksoftware.sdk.protex.project.bom.FileCountType;
 import com.blackducksoftware.sdk.protex.project.codetree.CodeTreeApi;
-import com.blackducksoftware.sdk.protex.project.codetree.CodeTreeNode;
 import com.blackducksoftware.sdk.protex.project.codetree.CodeTreeNodeWithCount;
 import com.blackducksoftware.sdk.protex.project.codetree.PartialCodeTree;
 import com.blackducksoftware.sdk.protex.project.codetree.PartialCodeTreeWithCount;
 import com.blackducksoftware.sdk.protex.project.codetree.discovery.DiscoveryApi;
-import com.blackducksoftware.sdk.protex.project.codetree.identification.CodeTreeIdentificationInfo;
 import com.blackducksoftware.sdk.protex.project.codetree.identification.IdentificationApi;
 import com.blackducksoftware.soleng.bdsplugin.BDSPluginConstants;
-import com.blackducksoftware.soleng.bdsplugin.BDSPluginMetrics;
 import com.blackducksoftware.soleng.bdsplugin.config.BDSPluginProtexConfigManager;
 import com.blackducksoftware.soleng.bdsplugin.config.BDSPluginUser;
 import com.blackducksoftware.soleng.bdsplugin.model.ApplicationPOJO;
@@ -97,7 +89,7 @@ public class ProtexDAO extends CommonDAO
             
             // workaround for this here http://fusesource.com/forums/thread.jspa?messageID=10988
             Thread.currentThread().setContextClassLoader(this.getClass().getClassLoader());
-            protexWrapper = new ProtexServerWrapper(configManager, true);
+            protexWrapper = new ProtexServerWrapper(configManager.getServerBean(), configManager, false);
             	
 			projectApi = protexWrapper.getInternalApiWrapper().projectApi;
 			codeTreeApi = protexWrapper.getInternalApiWrapper().codeTreeApi;
