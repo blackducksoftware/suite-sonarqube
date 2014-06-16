@@ -49,15 +49,13 @@ public class ProtexDAO extends CommonDAO
 	private BomApi bomApi = null;
 	
 	private Settings settings = null;
-	private org.sonar.api.resources.Project sonarProject = null;
-	
+
 	private BDSPluginProtexConfigManager configManager = null;
 	private ProtexServerWrapper protexWrapper = null;
 	
 	public ProtexDAO(Settings settings, org.sonar.api.resources.Project sonarProject) throws Exception
 	{
 		this.settings = settings;
-		this.sonarProject = sonarProject;
 		authenticate();		
 	}
 
@@ -141,9 +139,6 @@ public class ProtexDAO extends CommonDAO
 			
 			pojo.setDateLastAnalyzed(prettyDate);
 			
-			// Grab the latest refresh date
-			getRefreshDateFromSonar(pojo);
-			
 			// Grab the url 
 			String SERVER = settings.getString(BDSPluginConstants.PROPERTY_PROTEX_URL);
 			//TODO: This is not working, just brings to main projectString protexBomURL = bomApi.getIdentifyBomUrl(project.getProjectId(), "/");
@@ -175,75 +170,15 @@ public class ProtexDAO extends CommonDAO
 		log.info("Got project information for: " + pojoProjectName);
 	}
 
-	private ApplicationPOJO getRefreshDateFromSonar(ApplicationPOJO pojo) {
-		
-		String refreshDateString= settings.getString(BDSPluginConstants.PROPERTY_PROTEX_REFRESH_BOM_DATE);
-		
-		Date date = null;
-		if(refreshDateString != null)
-		{		
-			try {
-				date = new SimpleDateFormat("MMMM dd, yyyy", Locale.US).parse(refreshDateString);
-			} catch (ParseException e) {
-			}
-		}
 	
-		pojo.setLastrefreshDate(date);
-
-		return pojo;
-	}
-	
-	private Date getRefreshDateFromProtex(ApplicationPOJO pojo) {
-		
-		Date lastRefreshDate = null;
-			
-		try {
-			lastRefreshDate = bomApi.getLastBomRefreshFinishDate(pojo.getProjectID());
-		} catch (SdkFault e) {
-			log.warn("Unable to get or set refresh date", e);
-		}
-	
-		return lastRefreshDate;
-	}
 
 	public void populateProjectFileCounts(ApplicationPOJO pojo, SensorContext sensorContext)
-	{
-		// Grab the refresh date and see if we need to do anything.
-		try
-		{
-			Date sonarRefreshDate = pojo.getLastrefreshDate();
-			Date currentRefreshDate = null;
-			
-			if(sonarRefreshDate == null)
-			{
-				currentRefreshDate = getRefreshDateFromProtex(pojo);
-			}
-			else
-			{			
-				// Compare the dates and if the stored is the same as current, return, otherwise keep going
-				int comparison = sonarRefreshDate.compareTo(currentRefreshDate);
-				if(comparison >= 0)
-				{
-					log.info("The last stored refresh date is the same or equal as the current, skipping Protex analysis");
-					return;
-				}
-			}
-			
-			// If we make it down here, then update the refresh date.
-			// FIXME This is currently not saving at all.
-			settings.setProperty(BDSPluginConstants.PROPERTY_PROTEX_REFRESH_BOM_DATE, currentRefreshDate.toString());
-			
-		} catch (Exception e)
-		{
-			log.warn("Tried to look up refresh date, failed: " + e.getMessage());
-		}
-		
+	{		
 		Integer totalFiles = new Integer(0);
 		Integer totalPendingFiles = new Integer(0);
 		Integer skippedFiles = new Integer(0);
 		Integer noDiscoveryCount = new Integer(0);
 		Integer discoveryCount = new Integer(0);
-		Integer idCount = new Integer(0);
 		Integer licenseConflictCount = new Integer(0);
 		
 		PartialCodeTree partialTree = null;
@@ -326,7 +261,6 @@ public class ProtexDAO extends CommonDAO
 			
 		} catch(Exception e)
 		{
-			log.error("Unable to get license attribuate for license ID: " + lic_id);
 			log.error("Error: " + e.getMessage());
 		}
 		

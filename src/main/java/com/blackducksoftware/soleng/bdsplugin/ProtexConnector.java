@@ -107,6 +107,12 @@ public class ProtexConnector {
 		for(LicensePOJO license : licenses)
 		{
 			Integer reachNumber = license.getLicenseReachNumber();
+			if(reachNumber == null)
+			{		
+				log.warn("No reach number for license id (defaulting to unknown): " + license.getLicenseID());
+				license.setLicenseID("unknown");				
+			}
+			
 			if(license.getLicenseID().equals("unknown"))
 			{
 				populateMap(sortedLicenseMap, BDSPluginConstants.LICENSE_CATEGORY_UNKNOWN,"gray");
@@ -123,6 +129,8 @@ public class ProtexConnector {
 			{
 				populateMap(sortedLicenseMap, BDSPluginConstants.LICENSE_CATEGORY_RECIPROCAL,"red");
 			}
+		
+
 		}
 		
 		pojo.setSortedLicenseMap(sortedLicenseMap);

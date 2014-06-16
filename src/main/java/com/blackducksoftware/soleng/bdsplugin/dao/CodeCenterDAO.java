@@ -605,27 +605,32 @@ public class CodeCenterDAO extends CommonDAO
 			filter.setLastRowIndex(Integer.MAX_VALUE);
 			List<AttributeValue> attributes = app.getAttributeValues();
 			
-			for(AttributeValue attValue : attributes)
-			{		
-				AbstractAttribute attribute = null;
-				try{
-					AttributeNameOrIdToken id = attValue.getAttributeId();
-					attribute = attributeApi.getAttribute(id);
-					log.debug("Examining attribute: " + attribute.getQuestion());
-					
-					// We want to store the question and the answer.
-					// This is a bit kludgy, but the SDK is forcing us into this predicament. 
-					// Because the actual Attribute does not contain the "answer", we must rely on the list of values that we initially grabbed.
-					// TODO:  Although a list comes back, it never appears to actually include a list - so we get the first index.
-					AttributePOJO attPojo = new AttributePOJO(attribute.getQuestion(), attValue.getValues().get(0));
-					applicationPojo.addAttributes(attPojo);
-				} catch (Exception e)
-				{
-					log.error("Unable to get attribute details for: " + attribute.getName());
+			if(attributes != null)
+			{
+				for(AttributeValue attValue : attributes)
+				{		
+					AbstractAttribute attribute = null;
+					try{
+						AttributeNameOrIdToken id = attValue.getAttributeId();
+						attribute = attributeApi.getAttribute(id);
+						log.debug("Examining attribute: " + attribute.getQuestion());
+						
+						// We want to store the question and the answer.
+						// This is a bit kludgy, but the SDK is forcing us into this predicament. 
+						// Because the actual Attribute does not contain the "answer", we must rely on the list of values that we initially grabbed.
+						// TODO:  Although a list comes back, it never appears to actually include a list - so we get the first index.
+						AttributePOJO attPojo = new AttributePOJO(attribute.getQuestion(), attValue.getValues().get(0));
+						applicationPojo.addAttributes(attPojo);
+					} catch (Exception e)
+					{
+						log.error("Unable to get attribute details for: " + attribute.getName());
+					}
 				}
+				
+				log.debug("Found number of attributes: " + attributes.size());
 			}
-			
-			log.debug("Found number of attributes: " + attributes.size());
+			else
+				log.info("No attributes available for this application");
 			
 			
 		} catch (Exception e)
