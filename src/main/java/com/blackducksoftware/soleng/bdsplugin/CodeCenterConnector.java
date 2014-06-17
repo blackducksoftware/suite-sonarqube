@@ -40,6 +40,7 @@ public class CodeCenterConnector
 		} catch (Exception e)
 		{
 			log.error("Unable to populate Code Center data: " + e.getMessage());
+			pojo.setCcErrorMsg(e.getMessage());
 		}
 		
 		log.info("App information: " + pojo.toString());

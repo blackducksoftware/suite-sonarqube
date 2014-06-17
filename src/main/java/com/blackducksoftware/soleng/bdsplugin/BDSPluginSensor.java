@@ -3,11 +3,13 @@ package com.blackducksoftware.soleng.bdsplugin;
 import java.util.Date;
 
 
+
 import org.sonar.api.batch.Sensor;
 import org.sonar.api.batch.SensorContext;
 import org.sonar.api.config.Settings;
 import org.sonar.api.measures.Measure;
 import org.sonar.api.measures.Metric;
+import org.sonar.api.measures.PersistenceMode;
 import org.sonar.api.resources.Project;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -83,11 +85,16 @@ public class BDSPluginSensor implements Sensor {
 		
 		
 		// Get the basic stuff
-		pojo = ccConecctor.populateApplicationPojo(pojo);
-		pojo = protexConnector.populateApplicationWithProtexData(pojo, sensorContext);
-	
-		// Determine license breakdown
-		pojo = protexConnector.populateLicenseData(pojo);
+		if(ccConecctor != null)
+			pojo = ccConecctor.populateApplicationPojo(pojo);
+		
+		if(protexConnector != null)
+		{
+			pojo = protexConnector.populateApplicationWithProtexData(pojo, sensorContext);
+		
+			// Determine license breakdown
+			pojo = protexConnector.populateLicenseData(pojo);
+		}
 		
 		log.info("Finished: " + pojo.toString());
 
@@ -208,6 +215,8 @@ public class BDSPluginSensor implements Sensor {
 		
 		final Measure measure = new Measure(licenseBreakdownJson);
 		measure.setData(value);
+		// TODO: Investigate whether this is the best approach.
+		//measure.setPersistenceMode(PersistenceMode.DATABASE);
 		
 		if(sensorContext != null)
 			sensorContext.saveMeasure(measure);
