@@ -82,7 +82,7 @@ public class ApplicationPOJO
 	// We track this so that we only update our internal counts when the date is newer.
 	private Date lastrefreshDate = null;
 	private String protexBomURL = null;
-	private ProtexPOJO protexInfo = null;
+	private BDSProtexPojo protexInfo = null;
 	
 	// Map of components based on their request
 	private HashMap<String, String> componentRequestMap = new HashMap<String, String>();
@@ -499,12 +499,12 @@ public class ApplicationPOJO
 	}
 
 
-	public ProtexPOJO getProtexInfo() {
+	public BDSProtexPojo getBDSProtexInfo() {
 		return protexInfo;
 	}
 
 
-	public void setProtexInfo(ProtexPOJO protexInfo) {
+	public void setBDSProtexInfo(BDSProtexPojo protexInfo) {
 		this.protexInfo = protexInfo;
 	}
 

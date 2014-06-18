@@ -12,6 +12,9 @@ import org.slf4j.LoggerFactory;
 import org.sonar.api.batch.SensorContext;
 import org.sonar.api.config.Settings;
 
+import soleng.framework.core.exception.CommonFrameworkException;
+import soleng.framework.standard.common.ProjectPojo;
+import soleng.framework.standard.protex.ProtexProjectPojo;
 import soleng.framework.standard.protex.ProtexServerWrapper;
 
 import com.blackducksoftware.sdk.fault.SdkFault;
@@ -34,7 +37,7 @@ import com.blackducksoftware.soleng.bdsplugin.config.BDSPluginProtexConfigManage
 import com.blackducksoftware.soleng.bdsplugin.config.BDSPluginUser;
 import com.blackducksoftware.soleng.bdsplugin.model.ApplicationPOJO;
 import com.blackducksoftware.soleng.bdsplugin.model.LicensePOJO;
-import com.blackducksoftware.soleng.bdsplugin.model.ProtexPOJO;
+import com.blackducksoftware.soleng.bdsplugin.model.BDSProtexPojo;
 
 public class ProtexDAO extends CommonDAO
 {
@@ -127,17 +130,12 @@ public class ProtexDAO extends CommonDAO
 			// Get the project from the SDK, if the project has a bad name, missing, etc it will bomb.
 			// workaround for this here http://fusesource.com/forums/thread.jspa?messageID=10988
 			Thread.currentThread().setContextClassLoader(this.getClass().getClassLoader());
-			Project project = projectApi.getProjectByName(pojoProjectName);
+
+			ProtexProjectPojo projectPojo = (ProtexProjectPojo)protexWrapper.getProjectByName(pojoProjectName);
 			
-			pojo.setProjectID(project.getProjectId());
-			pojo.setProjectName(project.getName());
-			
-			// Format last analyzed date
-			Date lastAnalyzed = project.getLastAnalyzedDate();
-			DateFormat df = new SimpleDateFormat("MMMM dd, yyyy", Locale.US);
-			String prettyDate = df.format(lastAnalyzed);
-			
-			pojo.setDateLastAnalyzed(prettyDate);
+			pojo.setProjectID(projectPojo.getProjectKey());
+			pojo.setProjectName(projectPojo.getProjectName());
+			pojo.setDateLastAnalyzed(projectPojo.getAnalyzedDate());
 			
 			// Grab the url 
 			String SERVER = settings.getString(BDSPluginConstants.PROPERTY_PROTEX_URL);
@@ -145,28 +143,30 @@ public class ProtexDAO extends CommonDAO
 			// TODO: Figure it out, this hard-coded stuff is terrible.
 			String protexBomURL = SERVER
 					+ "/protex/ProtexIPIdentifyFolderBillOfMaterialsContainer?isAtTop=true&ProtexIPProjectId="
-					+ project.getProjectId()
+					+ projectPojo.getProjectKey()
 					+ "&ProtexIPIdentifyFileViewLevel=folder&ProtexIPIdentifyFileId=-1";
 	
 			pojo.setProtexBomURL(protexBomURL);
 			
 			// Pack some information about Protex
-			ProtexPOJO protexInfo = new ProtexPOJO();
+			BDSProtexPojo protexInfo = new BDSProtexPojo(projectPojo);
 			protexInfo.setProtexServer(SERVER);
-			protexInfo.setProtexProjectName(project.getName());
-			protexInfo.setProtexAnalyzedDate(prettyDate);
 			protexInfo.setProtexBomURL(protexBomURL);
 			
-			pojo.setProtexInfo(protexInfo);
+			pojo.setBDSProtexInfo(protexInfo);
 			
-			
-		} catch (Exception e)
+		} catch (CommonFrameworkException cfe)
 		{
 			log.error("Could not get project information for: " + pojoProjectName);
-			log.error("Error: " + e.getMessage());
-			pojo.setProtexErrorMsg(e.getMessage());
+			log.error("Error: " + cfe.getMessage());
+			log.error("Configuration Information: " + cfe.getConfigurationInformation());
+			pojo.setProtexErrorMsg(cfe.getMessage());
 		}
-		
+		catch (Exception e)
+		{
+			log.error("Error: " + e.getMessage());
+			pojo.setProtexErrorMsg(e.getMessage());	
+		}
 		log.info("Got project information for: " + pojoProjectName);
 	}
 

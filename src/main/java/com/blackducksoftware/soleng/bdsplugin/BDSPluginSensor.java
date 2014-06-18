@@ -122,7 +122,7 @@ public class BDSPluginSensor implements Sensor {
 			saveMetricInt(sensorContext, pojo.getTotalLicenseConflictCount(), BDSPluginMetrics.PROTEX_LICENSE_CONFLICT_FILES);	
 			saveMetricString(sensorContext, pojo.getProjectName(), BDSPluginMetrics.PROTEX_ASSOCIATED_PROJECT);	
 			saveMetricString(sensorContext, pojo.getDateLastAnalyzed(), BDSPluginMetrics.PROTEX_ANALYZED_DATE);	
-			saveMetricJson(sensorContext, pojo.getProtexInfo(), BDSPluginMetrics.PROTEX_INFO_JSON);	
+			saveMetricJson(sensorContext, pojo.getBDSProtexInfo(), BDSPluginMetrics.PROTEX_INFO_JSON);	
 			
 			/*
 			 * REQUESTS
