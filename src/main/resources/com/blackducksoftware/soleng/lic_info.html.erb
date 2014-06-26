@@ -35,12 +35,14 @@
 
 <script>
 	
-
+<% if cc_error_msg %>
+     console.log("License info widget, nothing to display");
+<% else %>
 	  jQuery(function()
 	  {
 	
 		var dataArr = [];
-		var licJson = <%=lic_json_string.data%>
+		var licJson = <%=lic_json_string.data%>;
 		
 		
 		console.log("License json: " + licJson);
@@ -121,7 +123,7 @@
 	    });
 	  });
 		
-		
+	  <% end %>		
 		
 		
 	</script>
@@ -133,7 +135,8 @@
       Component License Information 
      </h1> 
   </div>
-<% if cc_error_msg.data %>
+<% if cc_error_msg %>
+<br><br>
 	<div class="error-message">
 		Error: <%=cc_error_msg.data %>
 	</div>

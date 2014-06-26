@@ -1,5 +1,5 @@
 <%
-  cc_error_msg = measure('code-center-error-message')
+  cc_error_msg_approvals = measure('code-center-error-message')
   cc_bom_url = measure('cc-app-bom-url')
 
 	comp_list_pending_json = measure('comp-list-pending-json')
@@ -80,7 +80,7 @@
 		var rejectedJsonList = <%=comp_list_rejected_json.data%>;
 		var pendingJsonList = <%=comp_list_pending_json.data%>;
 		var unknownJsonList = <%=comp_list_unknown_json.data%>;
-		
+
 		var fullDataList = [];
 	
 		addToMasterList(approvedJsonList, fullDataList);
@@ -304,10 +304,11 @@
   
   <!-- HANDLE ERROR CASE -->
   
-  <% if cc_error_msg.data %>
-    <br>
+ 
+  <% if cc_error_msg_approvals %>
+    <br><br>
     <div class="error-message">
-      Error: <%=cc_error_msg.data %>
+      Error: <%=cc_error_msg_approvals.data %>
     </div>
   <% else %>
 	

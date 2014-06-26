@@ -1,5 +1,5 @@
 <%
-  cc_error_msg = measure('code-center-error-message')
+  cc_error_msg_vuln = measure('code-center-error-message')
   cc_bom_url = measure('cc-app-bom-url')
 
   vuln_high_json = measure('vuln-high-list-json')
@@ -153,14 +153,17 @@
       Component Vulnerabilities 
      </h1>
 </div>
+
+
+
 <div class="cc-link"> 
      <a href="<%=cc_bom_url.data%>" target="_new" title="Code Center BOM"><i class="fa fa-share-square-o"></i></a>
  </div>
  <br>
-<% if cc_error_msg.data %>
+<% if cc_error_msg_vuln %>
   <br>
   <div class="error-message">
-    Error: <%=cc_error_msg.data %>
+    Error: <%=cc_error_msg_vuln.data %>
   </div>
 <% else %>
   

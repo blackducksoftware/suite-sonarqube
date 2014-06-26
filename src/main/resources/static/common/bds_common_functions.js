@@ -254,15 +254,19 @@ jQuery.fn.createTable = function(tableClassName, dataList, columnData, defaultSo
 	    });		
 	    
 	    // Tooltip
-		oTable.$('td').smallipop(
-		{
-	        popupYOffset: 2, // Bubble has a 20px vertical offset
-	        popupDistance: 2, // Bubble travels vertically 
-	        popupOffset: 0, // No horizontal offset
-	        theme: 'blue fat-shadow',
-	        preferredPosition: "right",
-	        popupAnimationSpeed: "100"
-		 });	 				
+	    var tdElements = oTable.$('td');
+	    if(tdElements != null && tdElements.length > 0)
+    	{
+	    	tdElements.smallipop(
+			{
+		        popupYOffset: 2, // Bubble has a 20px vertical offset
+		        popupDistance: 2, // Bubble travels vertically 
+		        popupOffset: 0, // No horizontal offset
+		        theme: 'blue fat-shadow',
+		        preferredPosition: "right",
+		        popupAnimationSpeed: "100"
+			 });	
+    	}
 	});
 }
 
