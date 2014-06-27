@@ -57,7 +57,6 @@ public class BDSPlugin extends SonarPlugin
 	
     return ImmutableList.of(
     	      PropertyDefinition.builder(BDSPluginConstants.PROPERTY_CC_URL)
-    	        .defaultValue("http://satemplatecc1/")
     	        .name("Code Center Server URL")
     	        .description("The full URL of the code center server, example: http://your server/")
     	        .category(BD_CATEGORY)
@@ -66,7 +65,6 @@ public class BDSPlugin extends SonarPlugin
     	        .index(0)
     	        .build(),
     	        PropertyDefinition.builder(BDSPluginConstants.PROPERTY_CC_USERNAME)
-    	        .defaultValue("akamen")
     	        .name("Code Center user name")
     	        .description("Your code center login name")
     	        .category(BD_CATEGORY)
@@ -75,7 +73,6 @@ public class BDSPlugin extends SonarPlugin
     	        .index(1)
     	        .build(),
     	        PropertyDefinition.builder(BDSPluginConstants.PROPERTY_CC_PASSSWORD)
-    	        .defaultValue("")
     	        .name("Code Center Password")
     	        .description("Your CC password")
     	        .category(BD_CATEGORY)
@@ -105,7 +102,6 @@ public class BDSPlugin extends SonarPlugin
     	        
     	        // Protex Properties
     	        PropertyDefinition.builder(BDSPluginConstants.PROPERTY_PROTEX_URL)
-    	        .defaultValue("https://kiowa.blackducksoftware.com/")
     	        .name("Protex Server URL")
     	        .description("The full URL of the protex server.")
     	        .category(BD_CATEGORY)
@@ -115,7 +111,6 @@ public class BDSPlugin extends SonarPlugin
     	        .index(0)
     	        .build(),
     	        PropertyDefinition.builder(BDSPluginConstants.PROPERTY_PROTEX_USERNAME)
-    	        .defaultValue("akamen@blackducksoftware.com")
     	        .name("Protex User Name")
     	        .description("Your Protex account user name")
     	        .category(BD_CATEGORY)
@@ -153,7 +148,6 @@ public class BDSPlugin extends SonarPlugin
     	        .index(4)
     	        .build(),
     	        PropertyDefinition.builder(BDSPluginConstants.PROPERTY_PROTEX_LICENSE_COLORS)
-    	        .defaultValue("")
     	        .name("Protex License Category Colors")
     	        .description("Assign colors per license type, example: permissive=red,unknown=orange")
     	        .category(BD_CATEGORY)
