@@ -130,17 +130,19 @@
             
         ]
 	  
-		$j(document).createTable(dtVulnTableName,fullVulnList,vulnColumnData, 0);    
-		
-		$j(function()
-	  {		
-  			var localDataTable = $j(dtVulnTableName).dataTable();		 
-  			$j(window).bind('resize', function () 
-  			{
-  			    localDataTable.fnAdjustColumnSizing();
-  			});
-  
-		});
+
+      $j(document).createTable(dtVulnTableName,fullVulnList,vulnColumnData, 0);    
+
+    
+  		$j(function()
+  	  {		
+    			var localDataTable = $j(dtVulnTableName).dataTable();		 
+    			$j(window).bind('resize', function () 
+    			{
+    			    localDataTable.fnAdjustColumnSizing();
+    			});
+    
+  		});
 	</script>
 
 </head>
@@ -160,7 +162,7 @@
      <a href="<%=cc_bom_url.data%>" target="_new" title="Code Center BOM"><i class="fa fa-share-square-o"></i></a>
  </div>
  <br>
-<% if cc_error_msg_vuln %>
+<% if !cc_error_msg_vuln.nil? and !cc_error_msg_vuln.data.nil? %>   
   <br>
   <div class="error-message">
     Error: <%=cc_error_msg_vuln.data %>

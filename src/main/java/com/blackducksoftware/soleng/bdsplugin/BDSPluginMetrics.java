@@ -22,12 +22,14 @@ public final class BDSPluginMetrics implements Metrics {
   public final static Metric PROTEX_ERROR_MESSAGE = 
 		  new Metric.Builder(BDSPluginConstants.PROTEX_ERROR_MESSAGE_KEY, "Protex Error", Metric.ValueType.STRING)
   .setDomain(CoreMetrics.DOMAIN_GENERAL)
+  .setDeleteHistoricalData(true)
   .create();
   
   
   public final static Metric CC_ERROR_MESSAGE = 
 		  new Metric.Builder(BDSPluginConstants.CODE_CENTER_ERROR_MESSAGE_KEY, "Code Center Error", Metric.ValueType.STRING)
   .setDomain(CoreMetrics.DOMAIN_GENERAL)
+  .setDeleteHistoricalData(true)
   .create();
 	
 	/**
@@ -88,18 +90,21 @@ public final class BDSPluginMetrics implements Metrics {
   .setDescription("JSON list of approved components")
   .setDirection(Metric.DIRECTION_NONE)
   .setDomain(CoreMetrics.DOMAIN_GENERAL)
+   .setDeleteHistoricalData(true)
   .create();
 
   public static final Metric COMP_LIST_PENDING_JSON = new Metric.Builder(BDSPluginConstants.COMP_LIST_PENDING_JSON_KEY, "Pending Components", Metric.ValueType.DATA)
   .setDescription("JSON list of pending components")
   .setDirection(Metric.DIRECTION_NONE)
   .setDomain(CoreMetrics.DOMAIN_GENERAL)
+   .setDeleteHistoricalData(true)
   .create();
   
   public static final Metric COMP_LIST_NS_JSON = new Metric.Builder(BDSPluginConstants.COMP_LIST_NS_JSON_KEY, "Unknown Components", Metric.ValueType.DATA)
   .setDescription("JSON list of unknown components")
   .setDirection(Metric.DIRECTION_NONE)
   .setDomain(CoreMetrics.DOMAIN_GENERAL)
+   .setDeleteHistoricalData(true)
   .create();
  
   
@@ -107,6 +112,7 @@ public final class BDSPluginMetrics implements Metrics {
   .setDescription("JSON list of rejected components")
   .setDirection(Metric.DIRECTION_NONE)
   .setDomain(CoreMetrics.DOMAIN_GENERAL)
+   .setDeleteHistoricalData(true)
   .create();
   
   public final static Metric CC_REQUESTS_APPROVED = 
@@ -160,18 +166,21 @@ public final class BDSPluginMetrics implements Metrics {
   .setDescription("JSON list of high vulns")
   .setDirection(Metric.DIRECTION_NONE)
   .setDomain(CoreMetrics.DOMAIN_GENERAL)
+   .setDeleteHistoricalData(true)
   .create();
   
   public static final Metric VULN_LIST_MED_JSON = new Metric.Builder(BDSPluginConstants.VULNERABILITY_MED_JSON_KEY, "Medium Vulnerabilities", Metric.ValueType.DATA)
   .setDescription("JSON list of medium vulns")
   .setDirection(Metric.DIRECTION_NONE)
   .setDomain(CoreMetrics.DOMAIN_GENERAL)
+   .setDeleteHistoricalData(true)
   .create();
   
   public static final Metric VULN_LIST_LOW_JSON = new Metric.Builder(BDSPluginConstants.VULNERABILITY_LOW_JSON_KEY, "Low Vulnerabilities", Metric.ValueType.DATA)
   .setDescription("JSON list of low vulns")
   .setDirection(Metric.DIRECTION_NONE)
   .setDomain(CoreMetrics.DOMAIN_GENERAL)
+   .setDeleteHistoricalData(true)
   .create();
   
   /**
@@ -186,6 +195,7 @@ public final class BDSPluginMetrics implements Metrics {
   .setDescription("This is the breakdown of the licenses by conflict")
   .setDirection(Metric.DIRECTION_NONE)
   .setDomain(CoreMetrics.DOMAIN_GENERAL)
+  .setDeleteHistoricalData(true)
   .create();
 
   

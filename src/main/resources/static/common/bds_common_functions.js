@@ -213,9 +213,10 @@ jQuery.fn.createTable = function(tableClassName, dataList, columnData, defaultSo
 	/**
 	 * Check to see if data arrived
 	 */
-	if(dataList == null)
+	if(dataList == null || dataList.length == 0)
 	{
 		console.log("Data or column information is null or empty, for table: " + tableClassName);
+		return;
 		
 	}
 	

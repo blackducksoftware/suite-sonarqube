@@ -10,11 +10,17 @@ public class BDSPluginUser implements CommonUser {
 	private String password;
 
 	
-	public BDSPluginUser(String server, String user, String password)
+	public BDSPluginUser(String server, String user, String password) throws Exception
 	{
 		this.server = server;
+		if(server == null || server.isEmpty())
+		    throw new Exception("Server URL cannot be empty!");
 		this.user = user;
+		if(user == null || user.isEmpty())
+		    throw new Exception("User name cannot be empty!");
 		this.password = password;
+		if(password == null || password.isEmpty())
+		    throw new Exception("Password cannot be empty!");
 	}
 	
 	@Override

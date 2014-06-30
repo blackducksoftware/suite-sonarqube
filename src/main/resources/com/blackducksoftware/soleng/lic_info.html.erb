@@ -1,6 +1,7 @@
 <!-- GLOBALS -->
 <%
 	cc_error_msg = measure('code-center-error-message')
+  protex_error_msg = measure('protex-error-message')
 
 	lic_json_string = measure('license-breakdown-json')
 	lic_conflict_measure = measure('protex-total-license-conflict-files')
@@ -35,7 +36,7 @@
 
 <script>
 	
-<% if cc_error_msg %>
+<% if cc_error_msg.nil? or protex_error_msg.nil? %>
      console.log("License info widget, nothing to display");
 <% else %>
 	  jQuery(function()
@@ -135,10 +136,11 @@
       Component License Information 
      </h1> 
   </div>
-<% if cc_error_msg %>
+  
+<% if (!cc_error_msg.nil? and !cc_error_msg.data.nil?) or (!protex_error_msg.nil? and !protex_error_msg.data.nil?) %>
 <br><br>
 	<div class="error-message">
-		Error: <%=cc_error_msg.data %>
+		Error: <%=cc_error_msg.data %> <br> <%=protex_error_msg.data%>
 	</div>
 <% else %>
   <img class="logo" src="<%= url_for_static(:plugin => 'BDSPlugin', :path => 'common/bd_logo.png') -%>  ">  

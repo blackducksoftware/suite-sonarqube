@@ -146,6 +146,10 @@ public class ApplicationPOJO
 			buff.append("Sorted License Map: " + this.getSortedLicenseMap());
 			buff.append("\n");
 			buff.append("Attributes: " + this.getAttributes().size());
+			buff.append("\n");
+			buff.append("Protex error: " + this.getProtexErrorMsg());
+			buff.append("\n");
+			buff.append("CC error: " + this.getCcErrorMsg());
 		} catch (Exception e)
 		{
 			// ignore

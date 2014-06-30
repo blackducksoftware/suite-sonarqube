@@ -186,6 +186,8 @@ public class BDSPluginSensor implements Sensor {
 			final Measure measure = new Measure(metric);
 			measure.setData(value);
 			
+			measure.setPersistenceMode(PersistenceMode.DATABASE);
+			
 			if(sensorContext != null)
 				sensorContext.saveMeasure(measure);
 			
