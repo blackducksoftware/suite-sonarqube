@@ -10,8 +10,6 @@
 	vuln_med_count = measure('vuln-med')
 	vuln_low_count = measure('vuln-low')
 %>
-<head>
-
 	<link rel="stylesheet" type="text/css" href="<%= url_for_static(:plugin => 'BDSPlugin', :path => 'font-awesome/css/font-awesome.min.css') -%>" />	
 	
 	<link rel="stylesheet" type="text/css" href="<%= url_for_static(:plugin => 'BDSPlugin', :path => 'datatables/css/demo_table_jui.css') -%>" />	
@@ -145,18 +143,11 @@
   		});
 	</script>
 
-</head>
-
-
-<body>
-
 <div class="title-header">
     <h1>
       Component Vulnerabilities 
      </h1>
 </div>
-
-
 
 <div class="cc-link"> 
      <a href="<%=cc_bom_url.data%>" target="_blank" title="Code Center BOM"><i class="fa fa-share-square-o"></i></a>
@@ -218,4 +209,3 @@
   	 <img class="logo" src="<%= url_for_static(:plugin => 'BDSPlugin', :path => 'common/bd_logo.png') -%> ">
   </div>
   	<% end %>
-</body>

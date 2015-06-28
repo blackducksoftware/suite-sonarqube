@@ -14,10 +14,6 @@
 	ns_count = measure('requests-not-submitted')
 
 %>
-<head>
-
-	
-
 	<link rel="stylesheet" type="text/css" href="<%= url_for_static(:plugin => 'BDSPlugin', :path => 'datatables/css/demo_table_jui.css') -%>" />	
 	<link rel="stylesheet" type="text/css" href="<%= url_for_static(:plugin => 'BDSPlugin', :path => 'datatables/css/jquery.dataTables.css') -%>" />	
 	<link rel="stylesheet" type="text/css" href="<%= url_for_static(:plugin => 'BDSPlugin', :path => 'jquery-ui/themes/flick/jquery.ui.theme.css') -%>" />
@@ -294,8 +290,7 @@
         <% end %> 
 		});	 
 	</script>
-</head>
-<body>
+
   <div class="title-header">
     <h1> Component Approvals</h1>
 	</div>
@@ -384,5 +379,3 @@
 	</div>
 	
 <% end %>
-</body>
-</html>

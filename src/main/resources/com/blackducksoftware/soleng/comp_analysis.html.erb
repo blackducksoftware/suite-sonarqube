@@ -19,7 +19,6 @@ formatted_disc = format_measure(measure_protex_discovery_total, :suffix => '')
 formatted_date = format_measure(measure_protex_analyzed_date, :suffix => '')
 %>
 
-<head>
   <link rel="stylesheet" type="text/css" href="<%= url_for_static(:plugin => 'BDSPlugin', :path => 'font-awesome/css/font-awesome.min.css') -%>" />  
 	<link rel="stylesheet" type="text/css" href="<%= url_for_static(:plugin => 'BDSPlugin', :path => 'comp_analysis/comp_an_css.css') -%>" />
 	<link rel="stylesheet" type="text/css" href="<%= url_for_static(:plugin => 'BDSPlugin', :path => 'common/grids-min.css') -%>" />
@@ -151,9 +150,6 @@ formatted_date = format_measure(measure_protex_analyzed_date, :suffix => '')
 		  });
   		      <% end %>
 	</script>
-</head>
-
-<body>
 
    <div class="title-header">
        <h1>Component Analysis</h1>
@@ -251,4 +247,3 @@ formatted_date = format_measure(measure_protex_analyzed_date, :suffix => '')
   </div>
   
   <% end %>
-</body>
