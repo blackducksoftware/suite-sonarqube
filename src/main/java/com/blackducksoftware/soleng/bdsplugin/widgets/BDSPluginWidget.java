@@ -33,9 +33,9 @@ public final class BDSPluginWidget extends AbstractRubyTemplate implements RubyR
   protected String getTemplatePath() 
   {
 	//TODO:  Revert back to relative pathing after you are done testing.
-	String file = "C:\\eclipse_workspaces\\BDSPlugin\\src\\main\\resources\\com\\blackducksoftware\\soleng\\ccsonar_widget.html.erb";
+//	String file = "C:\\eclipse_workspaces\\BDSPlugin\\src\\main\\resources\\com\\blackducksoftware\\soleng\\ccsonar_widget.html.erb";
 
-    //return "/com/blackducksoftware/soleng/ccsonar_widget.html.erb";
+    String file = "/com/blackducksoftware/soleng/ccsonar_widget.html.erb";
 	
 	return file;
   }

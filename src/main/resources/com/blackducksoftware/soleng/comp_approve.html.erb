@@ -14,60 +14,41 @@
 	ns_count = measure('requests-not-submitted')
 
 %>
-	<link rel="stylesheet" type="text/css" href="<%= url_for_static(:plugin => 'BDSPlugin', :path => 'datatables/css/demo_table_jui.css') -%>">	
-	<link rel="stylesheet" type="text/css" href="<%= url_for_static(:plugin => 'BDSPlugin', :path => 'datatables/css/jquery.dataTables.css') -%>">	
-	<link rel="stylesheet" type="text/css" href="<%= url_for_static(:plugin => 'BDSPlugin', :path => 'jquery-ui/themes/flick/jquery.ui.theme.css') -%>">
-	<link rel="stylesheet" type="text/css" href="<%= url_for_static(:plugin => 'BDSPlugin', :path => 'font-awesome/css/font-awesome.min.css') -%>">	
-	<link rel="stylesheet" type="text/css" href="<%= url_for_static(:plugin => 'BDSPlugin', :path => 'common/bds_common.css') -%>">
-	<link rel="stylesheet" type="text/css" href="<%= url_for_static(:plugin => 'BDSPlugin', :path => 'spop/css/jquery.smallipop.css') -%>">	
-	<link rel="stylesheet" type="text/css" href="<%= url_for_static(:plugin => 'BDSPlugin', :path => 'qtip/jquery.qtip.css') -%>">
-  
-	
+<script type="text/javascript">
+function loadjsfile(filename){
+    var fileref=document.createElement('script')
+    fileref.setAttribute("type","text/javascript")
+    fileref.setAttribute("src", filename)
+    if (typeof fileref!="undefined")
+        document.getElementsByTagName("head")[0].appendChild(fileref)
+}
+function loadcssfile(filename){
+    var fileref=document.createElement("link")
+    fileref.setAttribute("rel", "stylesheet")
+    fileref.setAttribute("type", "text/css")
+    fileref.setAttribute("href", filename)
+    if (typeof fileref!="undefined")
+        document.getElementsByTagName("head")[0].appendChild(fileref)
+}
+
+loadcssfile("<%= url_for_static(:plugin => 'BDSPlugin', :path => 'font-awesome/css/font-awesome.min.css') -%>")	
+loadcssfile("<%= url_for_static(:plugin => 'BDSPlugin', :path => 'datatables/css/demo_table_jui.css') -%>")	
+loadcssfile("<%= url_for_static(:plugin => 'BDSPlugin', :path => 'datatables/css/jquery.dataTables.css') -%>")	
+loadcssfile("<%= url_for_static(:plugin => 'BDSPlugin', :path => 'jquery-ui/themes/flick/jquery.ui.theme.css') -%>")	
+loadcssfile("<%= url_for_static(:plugin => 'BDSPlugin', :path => 'common/bds_common.css') -%>")	
+loadcssfile("<%= url_for_static(:plugin => 'BDSPlugin', :path => 'spop/css/jquery.smallipop.css') -%>")	
+loadcssfile("<%= url_for_static(:plugin => 'BDSPlugin', :path => 'qtip/jquery.qtip.css') -%>")
+loadcssfile("<%= url_for_static(:plugin => 'BDSPlugin', :path => 'comp_approve/comp_approve.css') -%>")	
+</script>
 	<!-- UI Theme -->
 
-	<style scoped> <!-- HTML 5 -->
-
-		/* Styles for rendering icons within status column*/
-		
-		.column-icon
-		{
-			padding-left: 4px;
-			text-align: center;
-		}
-		
-		.approved-icon
-		{
-			color: green;
-		}
-		.rejected-icon
-		{
-			color: red;
-		}
-		.pending-icon
-		{
-			color: blue;
-		}
-		.ns-icon
-		{
-			color: black;
-		}
-		
-		/* CSS for the table */
-		.columnGroup { border-left: 1px solid black; }
-	</style>
-
-	
-	
 	<script type="text/javascript"  src="<%= url_for_static(:plugin => 'BDSPlugin', :path => 'datatables/jquery.dataTables.min.js') -%>  "></script>
 	<script type="text/javascript" src="<%= url_for_static(:plugin => 'BDSPlugin', :path => 'datatables/jquery.dataTables.columnFilter.js') -%>  "></script>
 	<script type="text/javascript" src="<%= url_for_static(:plugin => 'BDSPlugin', :path => 'jquery-ui/jquery-ui-1.10.4.min.js') -%>  "></script>
 	<script type="text/javascript" src="<%= url_for_static(:plugin => 'BDSPlugin', :path => 'common/bds_common_functions.js') -%>  "></script>
 	<script type="text/javascript" src="<%= url_for_static(:plugin => 'BDSPlugin', :path => 'spop/jquery.smallipop.min.js') -%>  "></script>
 	<script type="text/javascript" src="<%= url_for_static(:plugin => 'BDSPlugin', :path => 'spop/contrib/modernizr.js') -%>  "></script>
-  <script type="text/javascript" src="<%= url_for_static(:plugin => 'BDSPlugin', :path => 'qtip/jquery.qtip.min.js') -%>  "></script>
- 
-	
-
+  	<script type="text/javascript" src="<%= url_for_static(:plugin => 'BDSPlugin', :path => 'qtip/jquery.qtip.min.js') -%>  "></script>
 
 	<script>	
 		var localDataTable; // global	
@@ -305,13 +286,13 @@
     </div>
   <% else %>
 	
-	<! -- START CONTENT -->
+	<!-- START CONTENT -->
     
-  <% if cc_custom_attributes_json %>
+    <% if cc_custom_attributes_json %>
      <div class="cc-tooltip-info">
   	   <i class="fa fa-info-circle"></i>
-  	</div>
-   <% end %> 	   
+  	 </div>
+    <% end %> 	   
     <div class="cc-link"> 
       <a href="<%=cc_bom_url.data%>" target="_blank" title="Code Center BOM"><i class="fa fa-share-square-o"></i></a>
     </div>
@@ -322,7 +303,7 @@
 	
 
 
-<br><p>
+<br>
 
 	<div class="table-outer">
 		<div class="grouping-numbers-bar">
@@ -377,5 +358,4 @@
 		<br>
 		<img class="logo" src="<%= url_for_static(:plugin => 'BDSPlugin', :path => 'common/bd_logo.png') -%> ">
 	</div>
-	
 <% end %>

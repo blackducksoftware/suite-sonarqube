@@ -2,7 +2,26 @@
 <%
 	lic_json_string = measure('license-breakdown-json')
 %>
-<link href="//netdna.bootstrapcdn.com/font-awesome/3.2.1/css/font-awesome.css" rel="stylesheet">	
+<script type="text/javascript">
+function loadjsfile(filename){
+    var fileref=document.createElement('script')
+    fileref.setAttribute("type","text/javascript")
+    fileref.setAttribute("src", filename)
+    if (typeof fileref!="undefined")
+        document.getElementsByTagName("head")[0].appendChild(fileref)
+}
+function loadcssfile(filename){
+    var fileref=document.createElement("link")
+    fileref.setAttribute("rel", "stylesheet")
+    fileref.setAttribute("type", "text/css")
+    fileref.setAttribute("href", filename)
+    if (typeof fileref!="undefined")
+        document.getElementsByTagName("head")[0].appendChild(fileref)
+}
+
+loadcssfile("<%= url_for_static(:plugin => 'BDSPlugin', :path => 'font-awesome/css/font-awesome.min.css') -%>")	
+</script>
+
 <script src="<%= url_for_static(:plugin => 'BDSPlugin', :path => 'highcharts.js') -%>  "></script>
 
 <h1> scratch pad </h1>

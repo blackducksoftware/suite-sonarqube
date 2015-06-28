@@ -10,10 +10,28 @@
 	vuln_med_count = measure('vuln-med')
 	vuln_low_count = measure('vuln-low')
 %>
-	<link rel="stylesheet" type="text/css" href="<%= url_for_static(:plugin => 'BDSPlugin', :path => 'font-awesome/css/font-awesome.min.css') -%>">	
-	
-	<link rel="stylesheet" type="text/css" href="<%= url_for_static(:plugin => 'BDSPlugin', :path => 'datatables/css/demo_table_jui.css') -%>">	
-	<link rel="stylesheet" type="text/css" href="<%= url_for_static(:plugin => 'BDSPlugin', :path => 'datatables/css/jquery.dataTables.css') -%>">	
+<script type="text/javascript">
+function loadjsfile(filename){
+    var fileref=document.createElement('script')
+    fileref.setAttribute("type","text/javascript")
+    fileref.setAttribute("src", filename)
+    if (typeof fileref!="undefined")
+        document.getElementsByTagName("head")[0].appendChild(fileref)
+}
+function loadcssfile(filename){
+    var fileref=document.createElement("link")
+    fileref.setAttribute("rel", "stylesheet")
+    fileref.setAttribute("type", "text/css")
+    fileref.setAttribute("href", filename)
+    if (typeof fileref!="undefined")
+        document.getElementsByTagName("head")[0].appendChild(fileref)
+}
+
+loadcssfile("<%= url_for_static(:plugin => 'BDSPlugin', :path => 'font-awesome/css/font-awesome.min.css') -%>")	
+loadcssfile("<%= url_for_static(:plugin => 'BDSPlugin', :path => 'datatables/css/demo_table_jui.css') -%>")
+loadcssfile("<%= url_for_static(:plugin => 'BDSPlugin', :path => 'datatables/css/jquery.dataTables.css') -%>")	
+loadcssfile("<%= url_for_static(:plugin => 'BDSPlugin', :path => 'font-awesome/css/font-awesome.min.css') -%>")	
+</script>
 	
 	<!-- UI Theme -->
 	
@@ -199,12 +217,16 @@
   	<table id="vuln-table-data" class="display">
   		<thead></thead>
   		<tbody></tbody>
-  		<tfoot>	
+  		<tfoot>
+  		  <tr>
+  		  <td>	
 	  		<div class="filter-info-box" title="Click to clear" id="filterBox" onclick="javascript:clearFilterSelection(dtVulnTableName)"></div>
+	  	  </td>
+	  	  </tr>
   		</tfoot>
   	</table>
   			
   	<br>
   	 <img class="logo" src="<%= url_for_static(:plugin => 'BDSPlugin', :path => 'common/bd_logo.png') -%> ">
   </div>
-  	<% end %>
+<% end %>

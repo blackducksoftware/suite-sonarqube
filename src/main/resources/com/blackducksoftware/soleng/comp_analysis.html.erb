@@ -18,12 +18,29 @@ formatted_no_disc = format_measure(measure_protex_no_discovery_total, :suffix =>
 formatted_disc = format_measure(measure_protex_discovery_total, :suffix => '')
 formatted_date = format_measure(measure_protex_analyzed_date, :suffix => '')
 %>
+<script type="text/javascript">
+function loadjsfile(filename){
+    var fileref=document.createElement('script')
+    fileref.setAttribute("type","text/javascript")
+    fileref.setAttribute("src", filename)
+    if (typeof fileref!="undefined")
+        document.getElementsByTagName("head")[0].appendChild(fileref)
+}
+function loadcssfile(filename){
+    var fileref=document.createElement("link")
+    fileref.setAttribute("rel", "stylesheet")
+    fileref.setAttribute("type", "text/css")
+    fileref.setAttribute("href", filename)
+    if (typeof fileref!="undefined")
+        document.getElementsByTagName("head")[0].appendChild(fileref)
+}
 
-  <link rel="stylesheet" type="text/css" href="<%= url_for_static(:plugin => 'BDSPlugin', :path => 'font-awesome/css/font-awesome.min.css') -%>">  
-	<link rel="stylesheet" type="text/css" href="<%= url_for_static(:plugin => 'BDSPlugin', :path => 'comp_analysis/comp_an_css.css') -%>">
-	<link rel="stylesheet" type="text/css" href="<%= url_for_static(:plugin => 'BDSPlugin', :path => 'common/grids-min.css') -%>">
-	<link rel="stylesheet" type="text/css" href="<%= url_for_static(:plugin => 'BDSPlugin', :path => 'common/bds_common.css') -%>">		
-	<link rel="stylesheet" type="text/css" href="<%= url_for_static(:plugin => 'BDSPlugin', :path => 'qtip/jquery.qtip.css') -%>">
+loadcssfile("<%= url_for_static(:plugin => 'BDSPlugin', :path => 'font-awesome/css/font-awesome.min.css') -%>")	
+loadcssfile("<%= url_for_static(:plugin => 'BDSPlugin', :path => 'comp_analysis/comp_an_css.css') -%>")	
+loadcssfile("<%= url_for_static(:plugin => 'BDSPlugin', :path => 'common/grids-min.css') -%>")	
+loadcssfile("<%= url_for_static(:plugin => 'BDSPlugin', :path => 'common/bds_common.css') -%>")	
+loadcssfile("<%= url_for_static(:plugin => 'BDSPlugin', :path => 'qtip/jquery.qtip.css') -%>")	
+</script>
 	
 	<script type="text/javascript" src="<%= url_for_static(:plugin => 'BDSPlugin', :path => 'common/bds_common_functions.js') -%>  "></script>
 	<script type="text/javascript" src="<%= url_for_static(:plugin => 'BDSPlugin', :path => 'qtip/jquery.qtip.min.js') -%>  "></script>
@@ -148,7 +165,7 @@ formatted_date = format_measure(measure_protex_analyzed_date, :suffix => '')
             }
 
 		  });
-  		      <% end %>
+      <% end %>
 	</script>
 
    <div class="title-header">

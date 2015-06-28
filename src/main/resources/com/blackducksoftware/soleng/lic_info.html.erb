@@ -10,27 +10,28 @@
 	pp_measure = measure('protex-project')
 	
 %>
-<link rel="stylesheet" type="text/css" href="<%= url_for_static(:plugin => 'BDSPlugin', :path => 'font-awesome/css/font-awesome.min.css') -%>">	
-<link rel="stylesheet" type="text/css" href="<%= url_for_static(:plugin => 'BDSPlugin', :path => 'common/bds_common.css') -%>">
-
-
-<style scoped> <!-- HTML 5 -->
-
-.conflict-count-color
-{
-	background-color: DarkRed;
+<script type="text/javascript">
+function loadjsfile(filename){
+    var fileref=document.createElement('script')
+    fileref.setAttribute("type","text/javascript")
+    fileref.setAttribute("src", filename)
+    if (typeof fileref!="undefined")
+        document.getElementsByTagName("head")[0].appendChild(fileref)
+}
+function loadcssfile(filename){
+    var fileref=document.createElement("link")
+    fileref.setAttribute("rel", "stylesheet")
+    fileref.setAttribute("type", "text/css")
+    fileref.setAttribute("href", filename)
+    if (typeof fileref!="undefined")
+        document.getElementsByTagName("head")[0].appendChild(fileref)
 }
 
-.chart-container
-{
-	min-width: 280px;
-	min-height: 160px;
-}
-</style>
-
-
-<script src="<%= url_for_static(:plugin => 'BDSPlugin', :path => 'highcharts.js') -%>  "></script>
-
+loadcssfile("<%= url_for_static(:plugin => 'BDSPlugin', :path => 'font-awesome/css/font-awesome.min.css') -%>")	
+loadcssfile("<%= url_for_static(:plugin => 'BDSPlugin', :path => 'common/bds_common.css') -%>")	
+loadcssfile("<%= url_for_static(:plugin => 'BDSPlugin', :path => 'lic_info/lic_info.css') -%>")	
+</script>
+<script type="text/javascript" src="<%= url_for_static(:plugin => 'BDSPlugin', :path => 'highcharts.js') -%>"></script>
 
 <script>
 	

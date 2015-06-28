@@ -1,0 +1,28 @@
+
+		/* Styles for rendering icons within status column*/
+		
+		.column-icon
+		{
+			padding-left: 4px;
+			text-align: center;
+		}
+		
+		.approved-icon
+		{
+			color: green;
+		}
+		.rejected-icon
+		{
+			color: red;
+		}
+		.pending-icon
+		{
+			color: blue;
+		}
+		.ns-icon
+		{
+			color: black;
+		}
+		
+		/* CSS for the table */
+		.columnGroup { border-left: 1px solid black; }
