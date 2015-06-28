@@ -1,0 +1,1 @@
+Don't delete this file, as it keeps the folder that M2E needs. Reports classpath errors otherwise
