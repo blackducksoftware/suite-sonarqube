@@ -88,7 +88,8 @@ table.display thead th div.DataTables_sort_wrapper span {
 	position: absolute;
 	top: 50%;
 	margin-top: -8px;
-	right: 0;
+	/*BDS modified; The arrows ride up on the words, this forces it to the right*/
+	right: -15px;
 }
 
 

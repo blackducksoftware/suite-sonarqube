@@ -94,6 +94,34 @@ function clearFilterSelection(cssTableName)
 }
 
 
+function createQtipTooltip(cssInfoElement, title, content)
+{
+	$j(function()
+	{
+		  $j(cssInfoElement).qtip(
+          {
+              show: 'click',
+              hide: 'click',                   
+              content:
+              {
+                  text: content,
+                  title: title,                 
+              },
+              style:
+              {
+                classes: 'qtip-blue qtip-shadow',
+              },
+              position:
+              {
+                my: 'top left',
+                at: 'bottom center'
+              }
+          });  
+	 });
+}
+
+
+
 /**
  * Filters by version and component name
  * @param compName
@@ -181,8 +209,17 @@ function filterTable(value, pos, cssName)
  */
 jQuery.fn.createTable = function(tableClassName, dataList, columnData, defaultSortPos)
 {
-	// Overwrite classes
-	$j.fn.dataTableExt.oJUIClasses = 'page-pulldown';
+	
+	/**
+	 * Check to see if data arrived
+	 */
+	if(dataList == null || dataList.length == 0)
+	{
+		console.log("Data or column information is null or empty, for table: " + tableClassName);
+		return;
+		
+	}
+	
 	/**
 		 * 	For sDom:
 		The following options are allowed:
@@ -200,39 +237,87 @@ jQuery.fn.createTable = function(tableClassName, dataList, columnData, defaultSo
 		'<"class" and '>' - div with a class
 		'<"#id" and '>' - div with an ID	
 	**/
-
+	var oldStart = 0;
 	return $j(document).ready(function() {
 		var tableCss = $j(tableClassName);
 	    oTable = tableCss.dataTable(
 	    {
-	    	"iDisplayLength": 25,
-	    	
+	    	"iDisplayLength": 25,	    	
 	    	"bAutoWidth": false,
 	    	"bFilter": true,
 	    	"sScrollY": "95",
-	    	//"sScrollXInner": "200%",
-	    	//"sScrollX": "100%",
 	    	"aaData": dataList,
 	    	"aaSorting": [[defaultSortPos, "asc"]], 
 	    	"aLengthMenu": [25, 50, 100, 500],
 	    	"bJQueryUI": true,    
 	   		"sDom":'trlpi',	    
-	
 	        "aoColumns": columnData
-	        
 	    });		
 	    
 	    // Tooltip
-		 oTable.$('td').smallipop(
+	    var tdElements = oTable.$('td');
+	    if(tdElements != null && tdElements.length > 0)
+    	{
+	    	tdElements.smallipop(
 			{
-		        popupYOffset: 5, // Bubble has a 20px vertical offset
+		        popupYOffset: 2, // Bubble has a 20px vertical offset
 		        popupDistance: 2, // Bubble travels vertically 
 		        popupOffset: 0, // No horizontal offset
 		        theme: 'blue fat-shadow',
 		        preferredPosition: "right",
 		        popupAnimationSpeed: "100"
-		    });	 
-
+			 });	
+    	}
 	});
+}
+
+
+/*************************
+ * ToolTip functionality */
+
+/**
+ * Creates a qtip2 tooltip on the passed in element
+ */
+function buildToolTip(cssElement, title, html_list)
+{
+	$j(function()		  	
+	{
+		$j(cssElement).qtip(
+	      {
+	          show: 'click',
+	          hide: 'click',                   
+	          content:
+	          {
+	              text: html_list,
+	              title: title,
+	              
+	          },
+	          style:
+	          {
+	            classes: 'qtip-blue qtip-shadow',
+	          },
+	          position:
+	          {
+	            my: 'top left',
+	            at: 'bottom center'
+	          }
+	      });  
+  	});
+}
+
+/**
+ * Constructs a working html out of the key value pair.
+ * @param key
+ * @param value
+ * @returns {String}
+ */
+function buildHtmlToolTip(key, value)
+{
+    
+	var htmlList =  "<div class='info-tooltip-key'>" + key + ":" +"</div>"
+				+ 
+				"<div class='info-tooltip-value'>" + value + "</div><br><br>";
+	
+	return htmlList;
 }
 

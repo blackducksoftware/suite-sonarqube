@@ -1,6 +1,32 @@
+.title-header /* The main title*/
+{
+	float: left;
+}
+.error-message
+{
+	position: relative;
+	color: #D8000C;
+	background-color: #FAD1D1;
+	border: 1px solid #FF3A2C;
+	border-radius:5px;
+	padding: 5px;
+
+}
+
+.error-message:before
+{
+	font-size: 14px;
+	font-family: FontAwesome;
+    content: "\F071";
+}
+
 .logo
 {
+	margin-left:15px;
+	padding: 2px;
 	float: right;
+	width: 70px;
+	height: 15px;
 }
 
 /* For the selector within the approval table*/
@@ -28,21 +54,22 @@
 {
 	display: inline-block;
 	vertical-align: middle;
-	min-width: 130px;
-	text-align: center;
+	min-width: 120px;
+	text-align: start;
+	padding-right: 3px;
 }
 
 /* This holds all the individual groupings */
 .grouping-numbers-bar
 {
-	padding-left: 2px;
 	text-align: center;
+	min-width: 530px;
 }
 
-/* Enforces size on the table */
+/* Enforces size on all our widgets */
 .table-outer
 {
-	min-width: 555px;
+	min-width: 495px;
 }
 
 .status-approved-title,.status-pending-title,.status-rejected-title,.status-ns-title, 
@@ -50,8 +77,9 @@
 .analysis-title, .license-conflict-type
 {
 	font-family: arial, helvetica, clean, sans-serif;
-	font-size: 12px;
+	font-size: 10px;
 	font-weight: bold;
+	text-align: center;
 	vertical-align: middle;
 	padding-top: 5px;
 	padding-right: 2px;
@@ -71,9 +99,8 @@
 
 .title-highlite
 {
-	font-size: 12px;
+	padding-bottom: 5px;
 	color: darkRed;
-	padding: 8px;
 	background-color: rgba(255,238,0,.4);
 	border-radius:3px;
 	border: 1px solid #FFB900;
@@ -85,7 +112,7 @@
 .analysis-number, .license-conflict-count
 {
 	font-family: arial, helvetica, clean, sans-serif;
-	font-size: 15px;
+	font-size: 13px;
 	font-weight: bold;
 	display: inline-block;	
 	padding: 2px;
@@ -96,7 +123,8 @@
 	/*default color, set by jquery in the code*/
 	background-color: #FFCF53;
 }
-.status-approved-trend, .status-rejected-trend, .status-pending-trend, .status-ns-trend, .vuln-high-trend, .vuln-med-trend, .vuln-low-trend
+.status-approved-trend, .status-rejected-trend, .status-pending-trend, .status-ns-trend, 
+.vuln-high-trend, .vuln-med-trend, .vuln-low-trend, .component-analysis-trend, .component-license-trend
 {
 	display: inline-block;	
 	text-align: center;
@@ -137,4 +165,44 @@
 .dataTable thead th
 {
 	font-size: 10px;
+}
+
+.cc-link, .protex-link
+{
+  	float: right;
+	color: blue;
+	text-decoration: none;
+	font-weight: bold;
+	padding: 2px;
+}
+
+/* Tool Tip s  */
+/* This is the link that people will see */    		
+.cc-tooltip-info, .protex-tooltip-info
+{
+   cursor: pointer; 
+   float: right;
+   font-size: 14px;
+   font-weight: bold;
+   padding: 2px;
+   color: rgba(0, 100, 180, 1);
+}
+
+.info-tooltip-key
+  {
+    font-weight: bold;
+    font-style: oblique;
+    float: left;
+    font-size: 13px;
+    padding: 2px;
+    height: 20px;
+  }
+  
+.info-tooltip-value
+{
+  float: left;
+  font-size: 13px;
+  padding: 2px;
+  height: 20px;
+  
 }

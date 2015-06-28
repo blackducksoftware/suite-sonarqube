@@ -1,6 +1,8 @@
 <%
+  cc_error_msg_vuln = measure('code-center-error-message')
+  cc_bom_url = measure('cc-app-bom-url')
 
-	vuln_high_json = measure('vuln-high-list-json')
+  vuln_high_json = measure('vuln-high-list-json')
 	vuln_med_json = measure('vuln-med-list-json')
 	vuln_low_json = measure('vuln-low-list-json')
 	
@@ -36,6 +38,8 @@
 		addToMasterList(medJsonList, fullVulnList);
 		addToMasterList(lowJsonList, fullVulnList);
 
+		console.log("Vulnerabilities: Count of master list: " + fullVulnList.length)
+		
 	    $j(function()
 	  	{		
 				// Populate Counts and Colors
@@ -57,6 +61,11 @@
             	"mData": "componentName",
             	"sTitle": "Component Name",
             	"sWidth": "18%",
+              'fnCreatedCell': function(nTd, sData, oData, iRow, iCol) 
+                  {
+                    // This is used by the tooltip
+                    nTd.title = oData.componentName;
+                  },
             }, 
             { 
            	 	"mData": "componentVersion", 
@@ -78,12 +87,35 @@
             { 
            	 	"mData": "severity", 
            	 	"sTitle": "Sev",
-           	 	"sWidth": "6%"
+           	 	"sWidth": "5%",
+              "mRender" : function (data, type, row)
+              { 
+                  if(type === 'display')
+                  {
+                      // We want to alter the display, but keep the content to preserve filtering
+                      switch(data)
+                      {   
+                        
+                          // Only alter the medium
+                          case "MEDIUM":
+                          {
+                              return "MED";
+                          }
+                     } // switch
+                  } // display
+                    
+                  return data;
+              } 
             }, 
             { 
            	 	"mData": "publishDate", 
            	 	"sTitle": "Date",
-           	 	"sWidth": "8%"
+           	 	"sWidth": "8%",
+              'fnCreatedCell': function(nTd, sData, oData, iRow, iCol) 
+                {
+                  // This is used by the tooltip
+                  nTd.title = oData.publishDate;
+                },
             }, 
             { 
            	 	"mData": "description", 
@@ -92,21 +124,25 @@
            	 	'fnCreatedCell': function(nTd, sData, oData, iRow, iCol) 
             	{
             		// This is used by the tooltip
-			        nTd.title = oData.description;
-			    },
+            		nTd.title = oData.description;
+			        },
             }, 
             
         ]
 	  
-		$j(document).createTable(dtVulnTableName,fullVulnList,vulnColumnData, 0);    
-		
-		$j(function()
-	  	{		
-			var localDataTable = $j(dtVulnTableName).dataTable();		 
-			$j(window).bind('resize', function () {
-			    localDataTable.fnAdjustColumnSizing();
-			 });
-		});
+
+      $j(document).createTable(dtVulnTableName,fullVulnList,vulnColumnData, 0);    
+
+    
+  		$j(function()
+  	  {		
+    			var localDataTable = $j(dtVulnTableName).dataTable();		 
+    			$j(window).bind('resize', function () 
+    			{
+    			    localDataTable.fnAdjustColumnSizing();
+    			});
+    
+  		});
 	</script>
 
 </head>
@@ -114,54 +150,72 @@
 
 <body>
 
-
-<H1> Component Vulnerabilities </h1>
-<br><p>
-
-<div class="table-outer">
-	<div class="grouping-numbers-bar">
-		<div class="vuln-grouping-high">
-			<div class="vuln-high-title" onclick="javascript:filterColumnByValue(3, dtVulnTableName, this)">
-				High
-			</div>
-			<div class="vuln-high-count">
-			</div>
-			<div class="vuln-high-trend">
-				<%=trend_icon(vuln_high_count, :big => true)%>
-			</div>
-		</div>
-	
-		<div class="vuln-grouping-med">
-			<div class="vuln-med-title" onclick="javascript:filterColumnByValue(3, dtVulnTableName, this)">
-				Medium
-			</div>
-			<div class="vuln-med-count"></div>
-				<div class="vuln-med-trend">
-				<%=trend_icon(vuln_med_count, :big => true)%>
-			</div>
-		</div>
-		
-		<div class="vuln-grouping-low">
-			<div class="vuln-low-title" onclick="javascript:filterColumnByValue(3, dtVulnTableName, this)">
-				Low
-			</div>
-			<div class="vuln-low-count"></div>
-				<div class="vuln-low-trend">
-				<%=trend_icon(vuln_low_count, :big => true)%>
-			</div>
-		</div>
-	</div>
-	
-	<table id="vuln-table-data" class="display">
-		<thead></thead>
-		<tbody></tbody>
-		<tfoot>	
-		</tfoot>
-		<div class="filter-info-box" title="Click to clear" id="filterBox" onclick="javascript:clearFilterSelection(dtVulnTableName)"></div>
-		
-	</table>
-			
-	<br>
-	 <img class="logo" src="<%= url_for_static(:plugin => 'BDSPlugin', :path => 'common/bd_logo.png') -%> ">
+<div class="title-header">
+    <h1>
+      Component Vulnerabilities 
+     </h1>
 </div>
+
+
+
+<div class="cc-link"> 
+     <a href="<%=cc_bom_url.data%>" target="_new" title="Code Center BOM"><i class="fa fa-share-square-o"></i></a>
+ </div>
+ <br>
+<% if !cc_error_msg_vuln.nil? and !cc_error_msg_vuln.data.nil? %>   
+  <br>
+  <div class="error-message">
+    Error: <%=cc_error_msg_vuln.data %>
+  </div>
+<% else %>
+  
+  <br><p>
+  
+  <div class="table-outer">
+  	<div class="grouping-numbers-bar">
+  		<div class="vuln-grouping-high">
+  			<div class="vuln-high-title" onclick="javascript:filterColumnByValue(3, dtVulnTableName, this)">
+  				High
+  			</div>
+  			<div class="vuln-high-count">
+  			</div>
+  			<div class="vuln-high-trend">
+  				<%=trend_icon(vuln_high_count, :big => true)%>
+  			</div>
+  		</div>
+  	
+  		<div class="vuln-grouping-med">
+  			<div class="vuln-med-title" onclick="javascript:filterColumnByValue(3, dtVulnTableName, this)">
+  				Medium
+  			</div>
+  			<div class="vuln-med-count"></div>
+  				<div class="vuln-med-trend">
+  				<%=trend_icon(vuln_med_count, :big => true)%>
+  			</div>
+  		</div>
+  		
+  		<div class="vuln-grouping-low">
+  			<div class="vuln-low-title" onclick="javascript:filterColumnByValue(3, dtVulnTableName, this)">
+  				Low
+  			</div>
+  			<div class="vuln-low-count"></div>
+  				<div class="vuln-low-trend">
+  				<%=trend_icon(vuln_low_count, :big => true)%>
+  			</div>
+  		</div>
+  	</div>
+  	
+  	<table id="vuln-table-data" class="display">
+  		<thead></thead>
+  		<tbody></tbody>
+  		<tfoot>	
+  		</tfoot>
+  		<div class="filter-info-box" title="Click to clear" id="filterBox" onclick="javascript:clearFilterSelection(dtVulnTableName)"></div>
+  		
+  	</table>
+  			
+  	<br>
+  	 <img class="logo" src="<%= url_for_static(:plugin => 'BDSPlugin', :path => 'common/bd_logo.png') -%> ">
+  </div>
+  	<% end %>
 </body>

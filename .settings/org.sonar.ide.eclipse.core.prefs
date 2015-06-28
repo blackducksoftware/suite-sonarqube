@@ -1,6 +1,0 @@
-analyseLocally=false
-eclipse.preferences.version=1
-extraProperties=sonar.jdbc.password\=sonar\r\nsonar.version\=3.7.2\r\nsonar.server.location\=C\:\\apps\\sonar\\extensions\\plugins\r\nsonar.jdbc.username\=sonar\r\nsonar.jdbc.url\=jdbc\:h2\:tcp\://localhost\:9092/sonar\r\nsonar.pluginName\=BlackDuck Plugin\r\nsonar.host.url\=http\://localhost\:9000
-projectKey=com.blackducksofware.soleng.poc.ccsonarplugin\:BDSPlugin
-serverUrl=
-version=2
