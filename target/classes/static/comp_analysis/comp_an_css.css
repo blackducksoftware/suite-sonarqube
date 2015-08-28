@@ -23,9 +23,9 @@ filter: progid:DXImageTransform.Microsoft.gradient( startColorstr='#e80408', end
   font-family: "open sans",Helvetica;
   background-color: #ffffff;
   margin: 0px 0px;
-  padding: 0px 15px;
   position: relative;
-  min-width: 550px;
+  min-width: 500px;
+  padding-right: 5px;
 }
 
 .widget-tile h4 
@@ -44,8 +44,9 @@ filter: progid:DXImageTransform.Microsoft.gradient( startColorstr='#e80408', end
 .widget-scale
 {
 	margin-left: -.5%;
-  height: 40px;  
-  margin-top:8px;
+  	height: 40px;  
+ 	margin-top:8px;
+    padding-right: 5px;  /* The end number needs some space*/
 }
 
 .widget-row p {
@@ -154,5 +155,6 @@ filter: progid:DXImageTransform.Microsoft.gradient( startColorstr='#e80408', end
   border-left: 1px solid black;
   margin-top: -20px!important;
   padding: 8px;
+  padding-right: 5px;
 }
 

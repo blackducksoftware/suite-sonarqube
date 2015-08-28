@@ -1,9 +1,12 @@
 <%
+  cc_error_msg_approvals = measure('code-center-error-message')
+  cc_bom_url = measure('cc-app-bom-url')
 
 	comp_list_pending_json = measure('comp-list-pending-json')
 	comp_list_approved_json = measure('comp-list-approved-json')
 	comp_list_rejected_json = measure('comp-list-rejected-json')
 	comp_list_unknown_json = measure('comp-list-ns-json')
+	cc_custom_attributes_json = measure('custom-attributes')
 	
 	approved_count = measure('requests-approved')
 	rejected_count = measure('requests-rejected')
@@ -21,7 +24,8 @@
 	<link rel="stylesheet" type="text/css" href="<%= url_for_static(:plugin => 'BDSPlugin', :path => 'font-awesome/css/font-awesome.min.css') -%>" /></link>	
 	<link rel="stylesheet" type="text/css" href="<%= url_for_static(:plugin => 'BDSPlugin', :path => 'common/bds_common.css') -%>" /></link>	
 	<link rel="stylesheet" type="text/css" href="<%= url_for_static(:plugin => 'BDSPlugin', :path => 'spop/css/jquery.smallipop.css') -%>" /></link>	
-	
+	<link rel="stylesheet" type="text/css" href="<%= url_for_static(:plugin => 'BDSPlugin', :path => 'qtip/jquery.qtip.css') -%>" /></link> 
+  
 	
 	<!-- UI Theme -->
 
@@ -54,7 +58,6 @@
 		
 		/* CSS for the table */
 		.columnGroup { border-left: 1px solid black; }
-
 	</style>
 
 	
@@ -63,10 +66,10 @@
 	<script type="text/javascript" src="<%= url_for_static(:plugin => 'BDSPlugin', :path => 'datatables/jquery.dataTables.columnFilter.js') -%>  "></script>
 	<script type="text/javascript" src="<%= url_for_static(:plugin => 'BDSPlugin', :path => 'jquery-ui/jquery-ui-1.10.4.min.js') -%>  "></script>
 	<script type="text/javascript" src="<%= url_for_static(:plugin => 'BDSPlugin', :path => 'common/bds_common_functions.js') -%>  "></script>
-	<script type="text/javascript" src="<%= url_for_static(:plugin => 'BDSPlugin', :path => 'common/bds_common_functions.js') -%>  "></script>
 	<script type="text/javascript" src="<%= url_for_static(:plugin => 'BDSPlugin', :path => 'spop/jquery.smallipop.min.js') -%>  "></script>
 	<script type="text/javascript" src="<%= url_for_static(:plugin => 'BDSPlugin', :path => 'spop/contrib/modernizr.js') -%>  "></script>
-	
+  <script type="text/javascript" src="<%= url_for_static(:plugin => 'BDSPlugin', :path => 'qtip/jquery.qtip.min.js') -%>  "></script>
+ 
 	
 
 
@@ -77,7 +80,7 @@
 		var rejectedJsonList = <%=comp_list_rejected_json.data%>;
 		var pendingJsonList = <%=comp_list_pending_json.data%>;
 		var unknownJsonList = <%=comp_list_unknown_json.data%>;
-		
+
 		var fullDataList = [];
 	
 		addToMasterList(approvedJsonList, fullDataList);
@@ -85,6 +88,7 @@
 		addToMasterList(pendingJsonList, fullDataList);
 		addToMasterList(unknownJsonList, fullDataList);
 
+		
 	    $j(function()
 	  	{		
 				// Populate Counts and Colors
@@ -92,16 +96,19 @@
 				setColorAndValue($appCountUI, "darkGreen", <%=approved_count.value%>);
 
 				var $rejCountUI = $j('.status-rejected-count');		
-				setColorAndValue($rejCountUI, "darkRed", <%=rejected_count.value%>)
+				setColorAndValue($rejCountUI, "darkRed", <%=rejected_count.value%>);
 				
 				var $penCountUI = $j('.status-pending-count');		
-				setColorAndValue($penCountUI, "darkOrange", <%=pending_count.value%>)
+				setColorAndValue($penCountUI, "darkOrange", <%=pending_count.value%>);
 				
 				var $nsCountUI = $j('.status-ns-count');		
-				setColorAndValue($nsCountUI, "black", <%=ns_count.value%>)
+				setColorAndValue($nsCountUI, "black", <%=ns_count.value%>);
+
+        
 		});	
 		
 		// Function for centering
+				
 		var centerFunction = function (data, type, row)
             	{	            		
             		return  '<center>' + data + '</center>';
@@ -202,80 +209,125 @@
         ];
 
 		// Create the table
-        $j(document).createTable(dtTableName,fullDataList,columnData, 0);    
-        
-		$j(function()
-	  	{		
-	  		// Resize
-			var localDataTable = $j(dtTableName).dataTable();		 
-			$j(window).bind('resize', function () {
-			    localDataTable.fnAdjustColumnSizing();
-			 });
-			 
-			 // Row selector
-			 var prevClickedRowNum;
-			 var filterBoxCss = $j(divFilterInfoBoxName);
-			 var sameRow = false;
-			 $j(dtTableName + ' tbody').on( 'click', 'tr', function(event)
-			 { 
-			 	var clickedRowNum = localDataTable.fnGetPosition(this);
-			
-			 	// Remove everything
-			 	$j("td."+divRowSelectedName, localDataTable.fnGetNodes()).removeClass(divRowSelectedName);					
-			
-				
-				// Only perform the class selection if the user did not select the same row	
-				if(prevClickedRowNum == null || prevClickedRowNum != clickedRowNum)
-				{
-					// This is a hack, however when certain columns are clicked
-					// The parent is not the TR, but the TD, thus the 'find' does not return anything.
-					// This checks to see if the adequate number of children exist, if not, finds the grandparent.
-					prevClickedRowNum = clickedRowNum;
-					var parent = $j(event.target).parent();
-					if(parent.children().length == 1)
-						parent = parent.parent();
-					parent.find("td").addClass(divRowSelectedName);	
-				}
- 				else
- 				{
- 					sameRow = true;
- 				}
-		        
-		        ////////////////////////
-		        // Grab the row's data
-		        var aPos = localDataTable.fnGetPosition(this);
-           		var aData = localDataTable.fnGetData(aPos);
-           	
-       			// Issue filter based on component name
-       			var compName = aData.componentName;
-       			var versionNumber = aData.version;
-       			filterByComponentAndVersion(compName, 0, versionNumber, 1, "#"+vulnTableName);
-       			
-       			// Expose the filter-info-box and inject information into it.  
-       			if(sameRow)   
-       			{
-       				filterBoxCss.hide();
-       				sameRow = false;
-   				}
-       			else   	
-       			{		
-       				filterBoxCss.show();
 
-       			}
-       			var infoBoxMsg = "Filtering on component: " + compName + ", Version: " + versionNumber;
-       			filterBoxCss.text(infoBoxMsg);
-           		
-		        
-			 });
+        $j(document).createTable(dtTableName,fullDataList,columnData, 0);      
+   
+    		$j(function()
+    	  	{		
+    	  		// Resize
+    			 var localDataTable = $j(dtTableName).dataTable();		 
+    			 $j(window).bind('resize', function () {
+    			    localDataTable.fnAdjustColumnSizing();
+    			 });
+    			 
+    			 // Row selector
+    			 var prevClickedRowNum;
+    			 var filterBoxCss = $j(divFilterInfoBoxName);
+    			 var sameRow = false;
+    			 $j(dtTableName + ' tbody').on( 'click', 'tr', function(event)
+    			 { 
+    			 	var clickedRowNum = localDataTable.fnGetPosition(this);
+    			
+    			 	// Remove everything
+    			 	$j("td."+divRowSelectedName, localDataTable.fnGetNodes()).removeClass(divRowSelectedName);					
+    			
+    				
+    				// Only perform the class selection if the user did not select the same row	
+    				if(prevClickedRowNum == null || prevClickedRowNum != clickedRowNum)
+    				{
+    					// This is a hack, however when certain columns are clicked
+    					// The parent is not the TR, but the TD, thus the 'find' does not return anything.
+    					// This checks to see if the adequate number of children exist, if not, finds the grandparent.
+    					prevClickedRowNum = clickedRowNum;
+    					var parent = $j(event.target).parent();
+    					if(parent.children().length == 1)
+    						parent = parent.parent();
+    					parent.find("td").addClass(divRowSelectedName);	
+    				}
+     				else
+     				{
+     					sameRow = true;
+     				}
+    		        
+    		        ////////////////////////
+    		        // Grab the row's data
+    		        var aPos = localDataTable.fnGetPosition(this);
+               		var aData = localDataTable.fnGetData(aPos);
+               	
+           			// Issue filter based on component name
+           			var compName = aData.componentName;
+           			var versionNumber = aData.version;
+           			filterByComponentAndVersion(compName, 0, versionNumber, 1, "#"+vulnTableName);
+           			
+           			// Expose the filter-info-box and inject information into it.  
+           			if(sameRow)   
+           			{
+           				filterBoxCss.hide();
+           				sameRow = false;
+       				}
+           			else   	
+           			{		
+           				filterBoxCss.show();
+    
+           			}
+           			var infoBoxMsg = "Filtering on component: " + compName + ", Version: " + versionNumber;
+           			filterBoxCss.text(infoBoxMsg);
+               				        
+    			 });
 			 
-			 
+			  // Custom attributes          
+        // Populate custom attributes if any
+        <% if cc_custom_attributes_json %>
+          var cc_att_json = <%=cc_custom_attributes_json.data%>;
+          var html_attrib_list = "";
+          for(var i=0; i < cc_att_json.length; i++)
+          {
+              var attrib_element = cc_att_json[i];
+              // Keep on building the 
+              if(attrib_element != null)
+                  html_attrib_list = html_attrib_list + buildHtmlToolTip(attrib_element.question, attrib_element.answer);
+          }
+          console.log("HTML:" + html_attrib_list);
+          
+          // Create a tooltip for the info button
+          buildToolTip(".cc-tooltip-info", "Application Attributes", html_attrib_list);          
+        <% end %> 
 		});	 
 	</script>
 </head>
 <body>
+  <div class="title-header">
+    <h1> Component Approvals</h1>
+	</div>
+  
+  <!-- HANDLE ERROR CASE -->
+  
+ 
+  <% if !cc_error_msg_approvals.nil? and !cc_error_msg_approvals.data.nil? %>
+    <br><br>
+    <div class="error-message">
+      Error: <%=cc_error_msg_approvals.data %>
+    </div>
+  <% else %>
+	
+	<! -- START CONTENT -->
+    
+  <% if cc_custom_attributes_json %>
+     <div class="cc-tooltip-info">
+  	   <i class="fa fa-info-circle"></i>
+  	</div>
+   <% end %> 	   
+    <div class="cc-link"> 
+      <a href="<%=cc_bom_url.data%>" target="_new" title="Code Center BOM"><i class="fa fa-share-square-o"></i></a>
+    </div>
 
-	<h1> Component Approvals </h1>
+	   
+	<!-- Separate the top divs from the bottom divs, important or behavior changes -->
 	<br>
+	
+
+
+<br><p>
 
 	<div class="table-outer">
 		<div class="grouping-numbers-bar">
@@ -330,6 +382,7 @@
 		<br>
 		<img class="logo" src="<%= url_for_static(:plugin => 'BDSPlugin', :path => 'common/bd_logo.png') -%> ">
 	</div>
-
+	
+<% end %>
 </body>
 </html>
