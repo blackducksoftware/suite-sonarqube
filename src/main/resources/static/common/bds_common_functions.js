@@ -252,7 +252,7 @@ jQuery.fn.createTable = function(tableClassName, dataList, columnData, defaultSo
 	    	"bJQueryUI": true,    
 	   		"sDom":'trlpi',	    
 	        "aoColumns": columnData
-	    };		
+	    });		
 	    
 	    // Tooltip
 	    var tdElements = oTable.$('td');
