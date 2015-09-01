@@ -152,14 +152,14 @@ public class ProtexDAO extends CommonDAO
 	    pojo.setDateLastAnalyzed(projectPojo.getAnalyzedDate());
 
 	    // Grab the url
-	    String SERVER = settings
+	    String server = settings
 		    .getString(BDSPluginConstants.PROPERTY_PROTEX_URL);
 	    // TODO: This is not working, just brings to main projectString
 	    // protexBomURL = bomApi.getIdentifyBomUrl(project.getProjectId(),
 	    // "/");
 	    // TODO: Figure it out, this hard-coded stuff is terrible.
-	    String protexBomURL = SERVER
-		    + "/protex/ProtexIPIdentifyFolderBillOfMaterialsContainer?isAtTop=true&ProtexIPProjectId="
+	    String protexBomURL = server + (server.endsWith("/") ? "" :  "/")
+		    + "protex/ProtexIPIdentifyFolderBillOfMaterialsContainer?isAtTop=true&ProtexIPProjectId="
 		    + projectPojo.getProjectKey()
 		    + "&ProtexIPIdentifyFileViewLevel=folder&ProtexIPIdentifyFileId=-1";
 
@@ -167,7 +167,7 @@ public class ProtexDAO extends CommonDAO
 
 	    // Pack some information about Protex
 	    BDSProtexPojo protexInfo = new BDSProtexPojo(projectPojo);
-	    protexInfo.setProtexServer(SERVER);
+	    protexInfo.setProtexServer(server);
 	    protexInfo.setProtexBomURL(protexBomURL);
 
 	    pojo.setBDSProtexInfo(protexInfo);

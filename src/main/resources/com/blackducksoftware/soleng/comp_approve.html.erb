@@ -41,7 +41,7 @@ loadcssfile("<%= url_for_static(:plugin => 'BDSPlugin', :path => 'qtip/jquery.qt
 loadcssfile("<%= url_for_static(:plugin => 'BDSPlugin', :path => 'comp_approve/comp_approve.css') -%>")	
 </script>
 	<!-- UI Theme -->
-
+<!--
 	<script type="text/javascript"  src="<%= url_for_static(:plugin => 'BDSPlugin', :path => 'datatables/jquery.dataTables.min.js') -%>  "></script>
 	<script type="text/javascript" src="<%= url_for_static(:plugin => 'BDSPlugin', :path => 'datatables/jquery.dataTables.columnFilter.js') -%>  "></script>
 	<script type="text/javascript" src="<%= url_for_static(:plugin => 'BDSPlugin', :path => 'jquery-ui/jquery-ui-1.10.4.min.js') -%>  "></script>
@@ -49,8 +49,8 @@ loadcssfile("<%= url_for_static(:plugin => 'BDSPlugin', :path => 'comp_approve/c
 	<script type="text/javascript" src="<%= url_for_static(:plugin => 'BDSPlugin', :path => 'spop/jquery.smallipop.min.js') -%>  "></script>
 	<script type="text/javascript" src="<%= url_for_static(:plugin => 'BDSPlugin', :path => 'spop/contrib/modernizr.js') -%>  "></script>
   	<script type="text/javascript" src="<%= url_for_static(:plugin => 'BDSPlugin', :path => 'qtip/jquery.qtip.min.js') -%>  "></script>
-
-	<script>	
+-->
+<script type="text/javascript">
 		var localDataTable; // global	
 		var dtTableName = "#comp-request-table-data"; // id of the table that will be generated
 		var approvedJsonList = <%=comp_list_approved_json.data%>;
@@ -60,13 +60,30 @@ loadcssfile("<%= url_for_static(:plugin => 'BDSPlugin', :path => 'comp_approve/c
 
 		var fullDataList = [];
 	
-		addToMasterList(approvedJsonList, fullDataList);
-		addToMasterList(rejectedJsonList, fullDataList);
-		addToMasterList(pendingJsonList, fullDataList);
-		addToMasterList(unknownJsonList, fullDataList);
+		require(["<%= url_for_static(:plugin => 'BDSPlugin', :path => 'common/bds_common_functions.js') -%>"],
+	    function()
+	  	{		
+			addToMasterList(approvedJsonList, fullDataList);
+		console.log("Approved: Count of master list: " + approvedJsonList.length)
+			addToMasterList(rejectedJsonList, fullDataList);
+		console.log("Rejected: Count of master list: " + rejectedJsonList.length)
+			addToMasterList(pendingJsonList, fullDataList);
+		console.log("Pending: Count of master list: " + pendingJsonList.length)
+			addToMasterList(unknownJsonList, fullDataList);
+		console.log("Unknown: Count of master list: " + unknownJsonList.length)
+		});
 
-		
-	    $j(function()
+		console.log("Approvals: Count of master list: " + fullDataList.length)
+	
+		require(["<%= url_for_static(:plugin => 'BDSPlugin', :path => 'datatables/jquery.dataTables.min.js') -%>",
+				"<%= url_for_static(:plugin => 'BDSPlugin', :path => 'datatables/jquery.dataTables.columnFilter.js') -%>",
+				"<%= url_for_static(:plugin => 'BDSPlugin', :path => 'jquery-ui/jquery-ui-1.10.4.min.js') -%>",
+				"<%= url_for_static(:plugin => 'BDSPlugin', :path => 'common/bds_common_functions.js') -%>",
+				"<%= url_for_static(:plugin => 'BDSPlugin', :path => 'spop/jquery.smallipop.min.js') -%>",
+				"<%= url_for_static(:plugin => 'BDSPlugin', :path => 'spop/contrib/modernizr.js') -%>",
+				"<%= url_for_static(:plugin => 'BDSPlugin', :path => 'qtip/jquery.qtip.min.js') -%>"
+				],
+	    function()
 	  	{		
 				// Populate Counts and Colors
 				var $appCountUI = $j('.status-approved-count');		
@@ -80,8 +97,6 @@ loadcssfile("<%= url_for_static(:plugin => 'BDSPlugin', :path => 'comp_approve/c
 				
 				var $nsCountUI = $j('.status-ns-count');		
 				setColorAndValue($nsCountUI, "black", <%=ns_count.value%>);
-
-        
 		});	
 		
 		// Function for centering
@@ -187,14 +202,33 @@ loadcssfile("<%= url_for_static(:plugin => 'BDSPlugin', :path => 'comp_approve/c
 
 		// Create the table
 
-        $j(document).createTable(dtTableName,fullDataList,columnData, 0);      
+		require(["<%= url_for_static(:plugin => 'BDSPlugin', :path => 'datatables/jquery.dataTables.min.js') -%>",
+				"<%= url_for_static(:plugin => 'BDSPlugin', :path => 'datatables/jquery.dataTables.columnFilter.js') -%>",
+				"<%= url_for_static(:plugin => 'BDSPlugin', :path => 'jquery-ui/jquery-ui-1.10.4.min.js') -%>",
+				"<%= url_for_static(:plugin => 'BDSPlugin', :path => 'common/bds_common_functions.js') -%>",
+				"<%= url_for_static(:plugin => 'BDSPlugin', :path => 'spop/jquery.smallipop.min.js') -%>",
+				"<%= url_for_static(:plugin => 'BDSPlugin', :path => 'spop/contrib/modernizr.js') -%>",
+				"<%= url_for_static(:plugin => 'BDSPlugin', :path => 'qtip/jquery.qtip.min.js') -%>"
+				],
+			function()
+    	  	{	
+        		$j(document).createTable(dtTableName,fullDataList,columnData, 0);
+        	});      
    
-    		$j(function()
+		require(["<%= url_for_static(:plugin => 'BDSPlugin', :path => 'datatables/jquery.dataTables.min.js') -%>",
+				"<%= url_for_static(:plugin => 'BDSPlugin', :path => 'datatables/jquery.dataTables.columnFilter.js') -%>",
+				"<%= url_for_static(:plugin => 'BDSPlugin', :path => 'jquery-ui/jquery-ui-1.10.4.min.js') -%>",
+				"<%= url_for_static(:plugin => 'BDSPlugin', :path => 'common/bds_common_functions.js') -%>",
+				"<%= url_for_static(:plugin => 'BDSPlugin', :path => 'spop/jquery.smallipop.min.js') -%>",
+				"<%= url_for_static(:plugin => 'BDSPlugin', :path => 'spop/contrib/modernizr.js') -%>",
+				"<%= url_for_static(:plugin => 'BDSPlugin', :path => 'qtip/jquery.qtip.min.js') -%>"
+				],
+    		function()
     	  	{		
     	  		// Resize
-    			 var localDataTable = $j(dtTableName).dataTable();		 
+//    			 var localDataTable = $j(dtTableName).dataTable;		 
     			 $j(window).bind('resize', function () {
-    			    localDataTable.fnAdjustColumnSizing();
+    			    $j(dtTableName).fnAdjustColumnSizing();
     			 });
     			 
     			 // Row selector
@@ -348,11 +382,9 @@ loadcssfile("<%= url_for_static(:plugin => 'BDSPlugin', :path => 'comp_approve/c
 				</div>
 			</div>
 		</div>
-		<table id="comp-request-table-data" class="display">
-			<thead>
-
-				</thead>
-				<tbody></tbody>
+		<table id="comp-request-table-data" class="table display">
+			<thead></thead>
+			<tbody></tbody>
 			<tfoot></tfoot>
 		</table>
 		<br>

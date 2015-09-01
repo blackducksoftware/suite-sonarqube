@@ -201,13 +201,13 @@ function filterTable(value, pos, cssName)
 
 /**
  * Creates a jquery datatable, sets the table variable into the global window var.
- * @param tableClassName
+ * @param tableId
  * @param fullDataList
  * @param columnData
  * @param defaultSortPos - The defaulted column to sort by
  * @returns
  */
-jQuery.fn.createTable = function(tableClassName, dataList, columnData, defaultSortPos)
+jQuery.fn.createTable = function(tableId, dataList, columnData, defaultSortPos)
 {
 	
 	/**
@@ -215,12 +215,11 @@ jQuery.fn.createTable = function(tableClassName, dataList, columnData, defaultSo
 	 */
 	if(dataList == null || dataList.length == 0)
 	{
-		console.log("Data or column information is null or empty, for table: " + tableClassName);
+		console.log("Data or column information is null or empty, for table: " + tableId);
 		return;
-		
-	}
-	
-	/**
+	} else {
+		console.log("***** '"+tableId+"': "+dataList.length+" -- '"+dataList+"'");
+		/**
 		 * 	For sDom:
 		The following options are allowed:
 		'l' - Length changing
@@ -236,39 +235,42 @@ jQuery.fn.createTable = function(tableClassName, dataList, columnData, defaultSo
 		'<' and '>' - div elements
 		'<"class" and '>' - div with a class
 		'<"#id" and '>' - div with an ID	
-	**/
-	var oldStart = 0;
-	return $j(document).ready(function() {
-		var tableCss = $j(tableClassName);
-	    oTable = tableCss.dataTable(
-	    {
-	    	"iDisplayLength": 25,	    	
-	    	"bAutoWidth": false,
-	    	"bFilter": true,
-	    	"sScrollY": "95",
-	    	"aaData": dataList,
-	    	"aaSorting": [[defaultSortPos, "asc"]], 
-	    	"aLengthMenu": [25, 50, 100, 500],
-	    	"bJQueryUI": true,    
-	   		"sDom":'trlpi',	    
-	        "aoColumns": columnData
-	    });		
-	    
-	    // Tooltip
-	    var tdElements = oTable.$('td');
-	    if(tdElements != null && tdElements.length > 0)
-    	{
-	    	tdElements.smallipop(
-			{
-		        popupYOffset: 2, // Bubble has a 20px vertical offset
-		        popupDistance: 2, // Bubble travels vertically 
-		        popupOffset: 0, // No horizontal offset
-		        theme: 'blue fat-shadow',
-		        preferredPosition: "right",
-		        popupAnimationSpeed: "100"
-			 });	
-    	}
-	});
+		 **/
+		var oldStart = 0;
+		return $j(document).ready(function() {
+			console.log("***** '"+tableId+"'");
+			var tableCss = $j(tableId).dataTable();
+		    oTable = tableCss.dataTable(
+		    {
+		    	"iDisplayLength": 25,	    	
+		    	"bAutoWidth": false,
+		    	"bFilter": true,
+		    	"sScrollY": "95",
+		    	"aaData": dataList,
+		    	"aaSorting": [[defaultSortPos, "asc"]], 
+		    	"aLengthMenu": [25, 50, 100, 500],
+		    	"bJQueryUI": true,    
+		   		"sDom":'trlpi',	    
+		        "aoColumns": columnData
+		    });		
+		    
+		    // Tooltip
+		    var tdElements = oTable.$('td');
+		    if(tdElements != null && tdElements.length > 0)
+	    	{
+		    	tdElements.smallipop(
+				{
+			        popupYOffset: 2, // Bubble has a 20px vertical offset
+			        popupDistance: 2, // Bubble travels vertically 
+			        popupOffset: 0, // No horizontal offset
+			        theme: 'blue fat-shadow',
+			        preferredPosition: "right",
+			        popupAnimationSpeed: "100"
+				 });	
+	    	}
+			console.log("===== '"+tableClassName+"'");
+		});
+	}
 }
 
 

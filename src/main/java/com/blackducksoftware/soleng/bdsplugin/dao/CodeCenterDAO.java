@@ -542,9 +542,12 @@ public class CodeCenterDAO extends CommonDAO
 			
 			try 
 			{
+				if (!server.endsWith("/")) {
+					server += "/";
+				}
 				String urlString = 	
 						URIUtil.encodeQuery(server + 
-								"/codecenter/CCRedirectPage?isAtTop=true&CCRedirectPageName=Component&CCComponentName=" + compName.trim() + "&CCComponentVersion=" + compVersion);					
+								"codecenter/CCRedirectPage?isAtTop=true&CCRedirectPageName=Component&CCComponentName=" + compName.trim() + "&CCComponentVersion=" + compVersion);					
 				pojo.setUrl(urlString);
 								
 			} catch (URIException e) 
@@ -575,10 +578,13 @@ public class CodeCenterDAO extends CommonDAO
 		if(server != null)
 		{
 			try 
-			{
+			{	
+				if (!server.endsWith("/")) {
+					server += "/";
+				}
 				String urlString = 	
 						URIUtil.encodeQuery(server + 
-								"codecenter/CCRedirectPage?isAtTop=true&CCRedirectPageName=REquest&CCApplicationName=" + appName + "&CCApplicationVersion=" + versionName);
+								"codecenter/CCRedirectPage?isAtTop=true&CCRedirectPageName=Request&CCApplicationName=" + appName + "&CCApplicationVersion=" + versionName);
 				
 				pojo.setCodeCenterBomPage(urlString);
 				

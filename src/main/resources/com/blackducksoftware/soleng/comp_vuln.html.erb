@@ -34,14 +34,7 @@ loadcssfile("<%= url_for_static(:plugin => 'BDSPlugin', :path => 'font-awesome/c
 </script>
 	
 	<!-- UI Theme -->
-	
-	
-	<script type="text/javascript"  src="<%= url_for_static(:plugin => 'BDSPlugin', :path => 'datatables/jquery.dataTables.min.js') -%>  "></script>
-	<script type="text/javascript" src="<%= url_for_static(:plugin => 'BDSPlugin', :path => 'datatables/jquery.dataTables.columnFilter.js') -%>  "></script>
-	<script type="text/javascript" src="<%= url_for_static(:plugin => 'BDSPlugin', :path => 'jquery-ui/jquery-ui-1.10.4.min.js') -%>  "></script>
-	<script type="text/javascript" src="<%= url_for_static(:plugin => 'BDSPlugin', :path => 'common/bds_common_functions.js') -%>  "></script>
-
-	<script>
+<script type="text/javascript">
 		var dtVulnTableName = "#vuln-table-data";
 		
 		var approvedJsonList = <%=vuln_high_json.data%>;
@@ -50,12 +43,19 @@ loadcssfile("<%= url_for_static(:plugin => 'BDSPlugin', :path => 'font-awesome/c
 	
 		var fullVulnList = [];
 
-		addToMasterList(approvedJsonList, fullVulnList);
-		addToMasterList(medJsonList, fullVulnList);
-		addToMasterList(lowJsonList, fullVulnList);
+		require(["<%= url_for_static(:plugin => 'BDSPlugin', :path => 'common/bds_common_functions.js') -%>"],
+	    function()
+	  	{		
+			addToMasterList(approvedJsonList, fullVulnList);
+			addToMasterList(medJsonList, fullVulnList);
+			addToMasterList(lowJsonList, fullVulnList);
+		});	
 
 		console.log("Vulnerabilities: Count of master list: " + fullVulnList.length)
-		
+		require(["<%= url_for_static(:plugin => 'BDSPlugin', :path => 'datatables/jquery.dataTables.min.js') -%>",
+				"<%= url_for_static(:plugin => 'BDSPlugin', :path => 'datatables/jquery.dataTables.columnFilter.js') -%>",
+				"<%= url_for_static(:plugin => 'BDSPlugin', :path => 'jquery-ui/jquery-ui-1.10.4.min.js') -%>",
+				"<%= url_for_static(:plugin => 'BDSPlugin', :path => 'common/bds_common_functions.js') -%>"],
 	    $j(function()
 	  	{		
 				// Populate Counts and Colors
@@ -67,7 +67,8 @@ loadcssfile("<%= url_for_static(:plugin => 'BDSPlugin', :path => 'font-awesome/c
 				
 				var $penCountUI = $j('.vuln-low-count');		
 				setColorAndValue($penCountUI, "#FFDF00", <%=vuln_low_count.value%>)
-		});	
+		})
+		);	
 			
 		var vulnWidthSize = "10%";	
 		var  vulnColumnData =  
@@ -147,19 +148,31 @@ loadcssfile("<%= url_for_static(:plugin => 'BDSPlugin', :path => 'font-awesome/c
         ]
 	  
 
-      $j(document).createTable(dtVulnTableName,fullVulnList,vulnColumnData, 0);    
+		require(["<%= url_for_static(:plugin => 'BDSPlugin', :path => 'datatables/jquery.dataTables.min.js') -%>",
+				"<%= url_for_static(:plugin => 'BDSPlugin', :path => 'datatables/jquery.dataTables.columnFilter.js') -%>",
+				"<%= url_for_static(:plugin => 'BDSPlugin', :path => 'jquery-ui/jquery-ui-1.10.4.min.js') -%>",
+				"<%= url_for_static(:plugin => 'BDSPlugin', :path => 'common/bds_common_functions.js') -%>"],
+  		$j(function()
+	  	  {		
+    		  $j(document).createTable(dtVulnTableName,fullVulnList,vulnColumnData, 0);
+    	  }));    
 
     
+		require(["<%= url_for_static(:plugin => 'BDSPlugin', :path => 'datatables/jquery.dataTables.min.js') -%>",
+				"<%= url_for_static(:plugin => 'BDSPlugin', :path => 'datatables/jquery.dataTables.columnFilter.js') -%>",
+				"<%= url_for_static(:plugin => 'BDSPlugin', :path => 'jquery-ui/jquery-ui-1.10.4.min.js') -%>",
+				"<%= url_for_static(:plugin => 'BDSPlugin', :path => 'common/bds_common_functions.js') -%>"],
   		$j(function()
-  	  {		
-    			var localDataTable = $j(dtVulnTableName).dataTable();		 
+  	  		{		
+    			var localDataTable = $j(dtVulnTableName); // .DataTable();		 
     			$j(window).bind('resize', function () 
     			{
     			    localDataTable.fnAdjustColumnSizing();
     			});
     
-  		});
-	</script>
+  		})
+  	);
+</script>
 
 <div class="title-header">
     <h1>

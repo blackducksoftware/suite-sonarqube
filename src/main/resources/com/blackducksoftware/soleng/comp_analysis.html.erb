@@ -41,130 +41,120 @@ loadcssfile("<%= url_for_static(:plugin => 'BDSPlugin', :path => 'common/grids-m
 loadcssfile("<%= url_for_static(:plugin => 'BDSPlugin', :path => 'common/bds_common.css') -%>")	
 loadcssfile("<%= url_for_static(:plugin => 'BDSPlugin', :path => 'qtip/jquery.qtip.css') -%>")	
 </script>
-	
-	<script type="text/javascript" src="<%= url_for_static(:plugin => 'BDSPlugin', :path => 'common/bds_common_functions.js') -%>  "></script>
-	<script type="text/javascript" src="<%= url_for_static(:plugin => 'BDSPlugin', :path => 'qtip/jquery.qtip.min.js') -%>  "></script>
-
-	<script>
+<script type="text/javascript">
       <% if protex_err_msg.nil? %>
        console.log("No protex data to load");
       <% else %>
-		   $j(function()
-	  	 {		 
-          console.log("Started processing component analysis.");
+		require(["<%= url_for_static(:plugin => 'BDSPlugin', :path => 'common/bds_common_functions.js') -%>",
+			"<%= url_for_static(:plugin => 'BDSPlugin', :path => 'qtip/jquery.qtip.min.js') -%>"],
+		   $j(function() {		 
+          		console.log("Started processing component analysis.");
 		 
-            var infoJson = null;
+            	var infoJson = null;
             <% if !protex_info_json.nil? %>
               <% if !protex_info_json.data and !protex_info_json.empty %>
                   infoJson = <%=protex_info_json.data%>;
               <% end %>
-	  	      <% end %>
+  	        <% end %>
             
-            if(infoJson != null)
-            {
-              var protexBomUrl = infoJson.protexBomURL;
-              var protexLinkUI = $j('#protex_bom_anchor_tag');
-              protexLinkUI.attr('href',protexBomUrl);
-            }
+            	if(infoJson != null) {
+              		var protexBomUrl = infoJson.protexBomURL;
+              		var protexLinkUI = $j('#protex_bom_anchor_tag');
+              		protexLinkUI.attr('href',protexBomUrl);
+            	}
             
             
-  		      var discoveredFiles = <%=measure_protex_discovery_total.value%>;
-  		      console.log("Discovered files: " + discoveredFiles);
+  		      	var discoveredFiles = <%=measure_protex_discovery_total.value%>;
+  		      	console.log("Discovered files: " + discoveredFiles);
   			    var pendingFiles = <%=measure_protex_pending_total.value%>;
   		
   			    // We want to subtract from 1 to showcase how much percent is REMAINING rather than is absolute
-  		      var percentage_float = 1 - (pendingFiles / discoveredFiles);
-  		      var percentage = Math.floor(percentage_float * 100);
+  		      	var percentage_float = 1 - (pendingFiles / discoveredFiles);
+  		      	var percentage = Math.floor(percentage_float * 100);
   		    
-  		      var $percentageUI = $j('.percentage');
-  		      var $scaleUI = $j('.scale');
+  		      	var $percentageUI = $j('.percentage');
+  		      	var $scaleUI = $j('.scale');
   		    
-  		      var $startNumber = $j('.start.number');  
-  		      var $endNumber = $j('.end.number');  
-  		      var $tile = $j('#identifiedFiles');
+  		      	var $startNumber = $j('.start.number');  
+  		      	var $endNumber = $j('.end.number');  
+  		      	var $tile = $j('#identifiedFiles');
   		      
-  		      var mainWidgetId = $tile.length;
-  		      if(mainWidgetId == 0)
-  		      {
-  		          console.log("Main widget not initialized, aborting");
-  		          return;
-  		      }
+  		      	var mainWidgetId = $tile.length;
+  		      	if(mainWidgetId == 0) {
+  		        	console.log("Main widget not initialized, aborting");
+  		          	return;
+  		      	}
   		      
-  		      
-  		      var range = $j('#identifiedFiles .end.value').offset().left 
-  		      	-    	($j('#identifiedFiles .start.value').offset().left 
-  		      	+     	 $j('#identifiedFiles .start.value').outerWidth());
-  		      var max_left = $j('#identifiedFiles .end.value').offset().left - $percentageUI.outerWidth();
+  		      	var range = $j('#identifiedFiles .end.value').offset().left 
+  		      		-    	($j('#identifiedFiles .start.value').offset().left 
+  		      		+     	 $j('#identifiedFiles .start.value').outerWidth());
+  		      	var max_left = $j('#identifiedFiles .end.value').offset().left - $percentageUI.outerWidth();
   		
-  		  	  var min_left = ( $j('#identifiedFiles .start.value').offset().left + 
-  		  	  	$j('#identifiedFiles .start.value').outerWidth()) - 
-  		  	  	$tile.offset().left;
+  		  	  	var min_left = ( $j('#identifiedFiles .start.value').offset().left + 
+  		  	  		$j('#identifiedFiles .start.value').outerWidth()) - 
+  		  	  		$tile.offset().left;
   		  	  	
   		  	  	var boxHeight = $j('#identifiedFiles').offset().top;
   			 
   		  	  	// TODO:  The fixed 15 will not work when browser is resized
   		  	  	var top = $j('.gradient').offset().top - boxHeight - 15;
   		
-  		      
   		       // Populate the starting and ending numbers
   		       // Previous bug -- need to populate "start number" with text before
   		       // calculating the var. left_offset, below, b/c populating "start number"
   		       // makes the left_offset larger.
-  		      $startNumber.html(0);
-  		      $endNumber.html(discoveredFiles); 
+	  		      $startNumber.html(0);
+  			      $endNumber.html(discoveredFiles); 
   		       
-  		      var left_offset = $scaleUI.offset().left - $tile.offset().left;
+  			      var left_offset = $scaleUI.offset().left - $tile.offset().left;
   		      
-  		      // Calculate based on the width of the scale less the width of the % box
-  		      // Subtract from the total the "width" of the percentage box by grabbing its left-most position
-  		      var ranged_left = ((range * (percentage_float)) + left_offset) - $percentageUI.position().left;
+  		    	// Calculate based on the width of the scale less the width of the % box
+  		      	// Subtract from the total the "width" of the percentage box by grabbing its left-most position
+  		      	var ranged_left = ((range * (percentage_float)) + left_offset) - $percentageUI.position().left;
   		
-  		      console.log("Range: " + range);
-  		      console.log("Max Left: " +  max_left);
-  		      console.log("Ranged left: " + ranged_left);
-  		      console.log("Starting value of ending block: " + $j('#identifiedFiles .end.value').offset().left);
-  		      console.log("Ending value of percentage block: " + $percentageUI.offset().left);
+  		      	console.log("Range: " + range);
+  		      	console.log("Max Left: " +  max_left);
+  		      	console.log("Ranged left: " + ranged_left);
+  		      	console.log("Starting value of ending block: " + $j('#identifiedFiles .end.value').offset().left);
+  		      	console.log("Ending value of percentage block: " + $percentageUI.offset().left);
   		      
-  		     if( ranged_left < min_left )
-  		     {
-  		     	console.log("Resetting ranged left");
-          		ranged_left = min_left;
-          	  }
-  
+  		     	if( ranged_left < min_left ) {
+  		     		console.log("Resetting ranged left");
+          			ranged_left = min_left;
+          	  	}
           		
-          	 if( ranged_left > max_left)
-          	 	console.log("Exceeded max!");
+	          	if( ranged_left > max_left)
+          	 		console.log("Exceeded max!");
   		      
-  		      // Animate 2 seconds max -- otherwise, a percentage of that...
-  		      var anim_time = 4000 * percentage_float;
+  		      	// Animate 2 seconds max -- otherwise, a percentage of that...
+  		      	var anim_time = 4000 * percentage_float;
   		    
-  		      // Add a new top for percentage box based on location of gradient
-  		      $percentageUI.css({top: top + "px" });
-  		      // Setting the left also removes the bounce from adding the "start number"
-  		      $percentageUI.css({left: left_offset + "px" });
-  		      // Populate the percentage box
-  		      $percentageUI.animate({ left: ranged_left + "px" }, anim_time);
-  		      $percentageUI.find(".value").html(percentage + "%");
+  		      	// Add a new top for percentage box based on location of gradient
+  		      	$percentageUI.css({top: top + "px" });
+  		      	// Setting the left also removes the bounce from adding the "start number"
+  		      	$percentageUI.css({left: left_offset + "px" });
+  		      	// Populate the percentage box
+  		      	$percentageUI.animate({ left: ranged_left + "px" }, anim_time);
+  		      	$percentageUI.find(".value").html(percentage + "%");
   		      
-  		      console.log("Done processing, the percent is: " + percentage);
+  		      	console.log("Done processing, the percent is: " + percentage);
   		      
-             // Build the Protex info Tip        
-             if(infoJson != null)
-             {
-                 var protexInfoList = "";
-                 var html_info_list = "";  
+             	// Build the Protex info Tip        
+             	if(infoJson != null) {
+                 	var protexInfoList = "";
+                 	var html_info_list = "";  
        
-                 html_info_list = buildHtmlToolTip("Server", infoJson.protexServer);
-                 html_info_list = html_info_list + buildHtmlToolTip("Project", infoJson.protexProjectPojo.projectName);
-                 html_info_list = html_info_list + buildHtmlToolTip("Analyzed Date", infoJson.protexProjectPojo.analyzedDate);
+	                html_info_list = buildHtmlToolTip("Server", infoJson.protexServer);
+                 	html_info_list = html_info_list + buildHtmlToolTip("Project", infoJson.protexProjectPojo.projectName);
+                 	html_info_list = html_info_list + buildHtmlToolTip("Analyzed Date", infoJson.protexProjectPojo.analyzedDate);
                 
-                 console.log("Protex Info HTML:" + html_info_list);
+                 	console.log("Protex Info HTML:" + html_info_list);
   
-                // Create a tooltip for the protex info button
-                buildToolTip(".protex-tooltip-info", "Protex Information", html_info_list);     
-            }
-
-		  });
+                	// Create a tooltip for the protex info button
+                	buildToolTip(".protex-tooltip-info", "Protex Information", html_info_list);     
+            	}
+			})
+		);
       <% end %>
 	</script>
 

@@ -31,13 +31,23 @@ loadcssfile("<%= url_for_static(:plugin => 'BDSPlugin', :path => 'font-awesome/c
 loadcssfile("<%= url_for_static(:plugin => 'BDSPlugin', :path => 'common/bds_common.css') -%>")	
 loadcssfile("<%= url_for_static(:plugin => 'BDSPlugin', :path => 'lic_info/lic_info.css') -%>")	
 </script>
-<script type="text/javascript" src="<%= url_for_static(:plugin => 'BDSPlugin', :path => 'highcharts.js') -%>"></script>
-
+<!-- <script type="text/javascript" src="<%= url_for_static(:plugin => 'BDSPlugin', :path => 'highcharts.js') -%>"></script> -->
+<!--
 <script>
-	
-<% if cc_error_msg.nil? or protex_error_msg.nil? %>
-     console.log("License info widget, nothing to display");
-<% else %>
+require(['<%= url_for_static(:plugin => 'BDSPlugin', :path => 'highcharts.js') -%>'], function() {
+    // Configuration loaded now, safe to do other require calls
+    // that depend on that config.
+    //require(['<%= url_for_static(:plugin => 'BDSPlugin', :path => 'highcharts.js') -%>'], function(foo) {
+
+    });
+});
+</script>
+-->
+<script type="text/javascript">
+	<% if cc_error_msg.nil? or protex_error_msg.nil? %>
+    	console.log("License info widget, nothing to display");
+	<% else %>
+		require(["<%= url_for_static(:plugin => 'BDSPlugin', :path => 'highcharts.js') -%>"],
 	  jQuery(function()
 	  {
 	
@@ -121,8 +131,8 @@ loadcssfile("<%= url_for_static(:plugin => 'BDSPlugin', :path => 'lic_info/lic_i
 	        },
 	        series: [ seriesSet ]
 	    });
-	  });
-		
+	  })
+	  );
 	  <% end %>		
 		
 		
