@@ -62,7 +62,7 @@
 
 	<properties>
 		<license.owner>Ari Kamen</license.owner>
-		<sonar.version>3.7.2</sonar.version>
+		<sonar.version>5.1</sonar.version>
 		<sonar.pluginName>Black Duck Suite Plugin</sonar.pluginName>
 	</properties>
 
@@ -71,6 +71,7 @@
 			<groupId>org.slf4j</groupId>
 			<artifactId>slf4j-api</artifactId>
 			<version>1.7.5</version>
+			<scope>provided</scope>
 		</dependency>
 		<dependency>
 			<groupId>org.codehaus.sonar</groupId>
