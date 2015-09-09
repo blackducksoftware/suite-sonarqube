@@ -63,10 +63,6 @@ loadcssfile("<%= url_for_static(:plugin => pluginName, :path => 'comp_approve/co
 	});
 			var localDataTable; // global	
 			var dtTableName = "#comp-request-table-data"; // id of the table that will be generated
-			var approvedJsonList = <%=comp_list_approved_json.data%>;
-			var rejectedJsonList = <%=comp_list_rejected_json.data%>;
-			var pendingJsonList = <%=comp_list_pending_json.data%>;
-			var unknownJsonList = <%=comp_list_unknown_json.data%>;
 	
 			var fullDataList = [];
 		
@@ -195,15 +191,20 @@ loadcssfile("<%= url_for_static(:plugin => pluginName, :path => 'comp_approve/co
 				],			
 			function()
 	   	  	{	
-			addToMasterList(approvedJsonList, fullDataList);
-		console.log("Approved: Count of approved list: " + approvedJsonList.length+"  approved:"+approvedJsonList);
-			addToMasterList(rejectedJsonList, fullDataList);
-		console.log("Rejected: Count of rejected list: " + rejectedJsonList.length+"  rejected:"+rejectedJsonList);
-			addToMasterList(pendingJsonList, fullDataList);
-		console.log("Pending: Count of pending list: " + pendingJsonList.length+"  pending:"+pendingJsonList);
-			addToMasterList(unknownJsonList, fullDataList);
-		console.log("Unknown: Count of unknown list: " + unknownJsonList.length+"  unknown:"+unknownJsonList);
-		console.log("Approvals: Count of master list: " + fullDataList.length)
+	   	  		var approvedJsonList = <%=comp_list_approved_json.data%>;
+				var rejectedJsonList = <%=comp_list_rejected_json.data%>;
+				var pendingJsonList = <%=comp_list_pending_json.data%>;
+				var unknownJsonList = <%=comp_list_unknown_json.data%>;
+	   	  	
+				addToMasterList(approvedJsonList, fullDataList);
+			console.log("Approved: Count of approved list: " + approvedJsonList.length+"  approved:"+approvedJsonList);
+				addToMasterList(rejectedJsonList, fullDataList);
+			console.log("Rejected: Count of rejected list: " + rejectedJsonList.length+"  rejected:"+rejectedJsonList);
+				addToMasterList(pendingJsonList, fullDataList);
+			console.log("Pending: Count of pending list: " + pendingJsonList.length+"  pending:"+pendingJsonList);
+				addToMasterList(unknownJsonList, fullDataList);
+			console.log("Unknown: Count of unknown list: " + unknownJsonList.length+"  unknown:"+unknownJsonList);
+			console.log("Approvals: Count of master list: " + fullDataList.length)
 
 	      		createTable(dtTableName, fullDataList, columnData, 0);
         	}
