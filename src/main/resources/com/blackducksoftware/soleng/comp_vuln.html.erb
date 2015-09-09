@@ -45,10 +45,6 @@ loadcssfile("<%= url_for_static(:plugin => pluginName, :path => 'font-awesome/cs
 
 		var dtVulnTableName = "#vuln-table-data";
 		
-		var approvedJsonList = <%=vuln_high_json.data%>;
-		var medJsonList = <%=vuln_med_json.data%>;
-		var lowJsonList = <%=vuln_low_json.data%>;
-	
 		var fullVulnList = [];
 
 		console.log("Vulnerabilities: Count of master list: " + fullVulnList.length)
@@ -73,7 +69,6 @@ loadcssfile("<%= url_for_static(:plugin => pluginName, :path => 'font-awesome/cs
 		var vulnWidthSize = "10%";	
 		var  vulnColumnData =  
 		[
-     
             { 
             	"mData": "componentName",
             	"sTitle": "Component Name",
@@ -100,7 +95,6 @@ loadcssfile("<%= url_for_static(:plugin => pluginName, :path => 'font-awesome/cs
            	 		return  '<a href="'+ nvdURLFull+'" target=_new>' + data + '</a>';
            	 	}
             }, 
-      
             { 
            	 	"mData": "severity", 
            	 	"sTitle": "Sev",
@@ -112,7 +106,6 @@ loadcssfile("<%= url_for_static(:plugin => pluginName, :path => 'font-awesome/cs
                       // We want to alter the display, but keep the content to preserve filtering
                       switch(data)
                       {   
-                        
                           // Only alter the medium
                           case "MEDIUM":
                           {
@@ -120,7 +113,6 @@ loadcssfile("<%= url_for_static(:plugin => pluginName, :path => 'font-awesome/cs
                           }
                      } // switch
                   } // display
-                    
                   return data;
               } 
             }, 
@@ -144,9 +136,7 @@ loadcssfile("<%= url_for_static(:plugin => pluginName, :path => 'font-awesome/cs
             		nTd.title = oData.description;
 			        },
             }, 
-            
         ]
-	  
 
 		bdRequire([
 				"<%= url_for_static(:plugin => pluginName, :path => 'datatables/jquery.dataTables.min.js') -%>",
@@ -155,9 +145,16 @@ loadcssfile("<%= url_for_static(:plugin => pluginName, :path => 'font-awesome/cs
 				"<%= url_for_static(:plugin => pluginName, :path => 'common/bds_common_functions.js') -%>"],
   		function()
 		{		
-  	  		addToMasterList(approvedJsonList, fullVulnList);
+			var highJsonList = <%=vuln_high_json.data%>;
+			var medJsonList = <%=vuln_med_json.data%>;
+			var lowJsonList = <%=vuln_low_json.data%>;
+	
+  	  		addToMasterList(highJsonList, fullVulnList);
+			console.log("High: Count of high list: " + highJsonList.length+"  high:"+highJsonList);
 			addToMasterList(medJsonList, fullVulnList);
+			console.log("Medium: Count of medium list: " + medJsonList.length+"  medium:"+medJsonList);
 			addToMasterList(lowJsonList, fullVulnList);
+			console.log("Low: Count of low list: " + lowJsonList.length+"  low:"+lowJsonList);
 	  	  	
     		createTable(dtVulnTableName,fullVulnList,vulnColumnData, 0);
     	});    
@@ -170,7 +167,7 @@ loadcssfile("<%= url_for_static(:plugin => pluginName, :path => 'font-awesome/cs
 				"<%= url_for_static(:plugin => pluginName, :path => 'common/bds_common_functions.js') -%>"],
   		function()
   	  		{		
-    			var localDataTable = jQuery(dtVulnTableName); // .DataTable();		 
+    			var localDataTable = jQuery(dtVulnTableName).dataTable;		 
     			jQuery(window).bind('resize', function () 
     			{
     			    localDataTable.fnAdjustColumnSizing();
