@@ -55,7 +55,7 @@ loadcssfile("<%= url_for_static(:plugin => pluginName, :path => 'qtip/jquery.qti
 			"<%= url_for_static(:plugin => pluginName, :path => 'qtip/jquery.qtip.min.js') -%>",
 			"<%= url_for_static(:plugin => pluginName, :path => 'common/bds_common_functions.js') -%>"
 		   ]
-		   jQuery(function() {		 
+		   function() {		 
           		console.log("Started processing component analysis.");
 		 
             	var infoJson = null;
@@ -161,8 +161,7 @@ loadcssfile("<%= url_for_static(:plugin => pluginName, :path => 'qtip/jquery.qti
                 	// Create a tooltip for the protex info button
                 	buildToolTip(".protex-tooltip-info", "Protex Information", html_info_list);     
             	}
-			})
-		);
+			});
       <% end %>
 	</script>
 

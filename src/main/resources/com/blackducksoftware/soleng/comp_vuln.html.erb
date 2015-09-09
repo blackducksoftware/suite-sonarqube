@@ -168,7 +168,7 @@ loadcssfile("<%= url_for_static(:plugin => pluginName, :path => 'font-awesome/cs
 				"<%= url_for_static(:plugin => pluginName, :path => 'datatables/jquery.dataTables.columnFilter.js') -%>",
 				"<%= url_for_static(:plugin => pluginName, :path => 'jquery-ui-1.11.4/jquery-ui.min.js') -%>",
 				"<%= url_for_static(:plugin => pluginName, :path => 'common/bds_common_functions.js') -%>"],
-  		jQuery(function()
+  		function()
   	  		{		
     			var localDataTable = jQuery(dtVulnTableName); // .DataTable();		 
     			jQuery(window).bind('resize', function () 
@@ -176,8 +176,7 @@ loadcssfile("<%= url_for_static(:plugin => pluginName, :path => 'font-awesome/cs
     			    localDataTable.fnAdjustColumnSizing();
     			});
     
-  		})
-  	);
+  		});
 </script>
 
 <div class="title-header">
