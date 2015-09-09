@@ -36,3 +36,11 @@ BD Suite plugin for SonarQube (Sonar)
 	
 	
 (*) The project/code used for the sonarqube analysis and the code represented in Protex or Code Center, does not need to have any similarities or connections. All three are independent and the data is simply displayed in the dashboard.
+
+!Release Notes
+Version 2.0.0
+* New version supporting the UI of SonarQube 5.1+
+Version 1.2.2
+* Fixed bug with password authentication failing
+Version 1.2.0
+* Initial release
