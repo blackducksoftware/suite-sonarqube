@@ -53,7 +53,7 @@ function filterColumnByValue(pos, cssTableName, cssToHighlite)
 	
 	value = value.trim();
 	value = value.toUpperCase();
-	var oTable = $j(cssTableName).dataTable();
+	var oTable = jQuery(cssTableName).dataTable();
 	var oSettings = oTable.fnSettings();	 
 	var searchValue = oSettings.aoPreSearchCols[ pos ].sSearch;
 	console.log("Previous filter: " + searchValue);
@@ -77,47 +77,45 @@ function filterColumnByValue(pos, cssTableName, cssToHighlite)
  */
 function clearFilterSelection(cssTableName)
 {
-	var oTable = $j(cssTableName).dataTable();
+	var oTable = jQuery(cssTableName).dataTable();
 	
 	oTable.fnFilter('', 0);
 	oTable.fnFilter('', 1);
 
-	$j(function()
+	jQuery(function()
   	{
 		// Hide the div box
-		var filterBoxCss = $j(divFilterInfoBoxName);
+		var filterBoxCss = jQuery(divFilterInfoBoxName);
 		filterBoxCss.hide();
 		// Clear selection from approval table
-		var approvalTable = $j("#comp-request-table-data").dataTable();
-		$j("td."+divRowSelectedName, approvalTable.fnGetNodes()).removeClass(divRowSelectedName);	
+		var approvalTable = jQuery("#comp-request-table-data").dataTable();
+		jQuery("td."+divRowSelectedName, approvalTable.fnGetNodes()).removeClass(divRowSelectedName);	
   	});
 }
 
 
 function createQtipTooltip(cssInfoElement, title, content)
 {
-	$j(function()
-	{
-		  $j(cssInfoElement).qtip(
+	  var $element = jQuery(cssInfoElement);
+	  $element.qtip(
+      {
+          show: 'click',
+          hide: 'click',                   
+          content:
           {
-              show: 'click',
-              hide: 'click',                   
-              content:
-              {
-                  text: content,
-                  title: title,                 
-              },
-              style:
-              {
-                classes: 'qtip-blue qtip-shadow',
-              },
-              position:
-              {
-                my: 'top left',
-                at: 'bottom center'
-              }
-          });  
-	 });
+              text: content,
+              title: title,                 
+          },
+          style:
+          {
+            classes: 'qtip-blue qtip-shadow',
+          },
+          position:
+          {
+            my: 'top left',
+            at: 'bottom center'
+          }
+      });  
 }
 
 
@@ -132,7 +130,7 @@ function createQtipTooltip(cssInfoElement, title, content)
  */
 function filterByComponentAndVersion(compName, compPos, versionNumber, versionPos, cssTableName)
 {
-	var oTable = $j(cssTableName).dataTable();
+	var oTable = jQuery(cssTableName).dataTable();
 	var oSettings = oTable.fnSettings();	 
 	var compFilter = oSettings.aoPreSearchCols[ compPos ].sSearch;
 	var versionFilter = oSettings.aoPreSearchCols[ versionPos ].sSearch;
@@ -166,10 +164,10 @@ function highliteCss(cssElement)
 		vulnWidget = true;
 
 	// Perform the highlite
-	$j(function()
+	jQuery(function()
   	{
 		// Previously filtered div (if any)
-		var prevSelectedDiv = $j('[class$=title-highlite]');
+		var prevSelectedDiv = jQuery('[class$=title-highlite]');
 		var prevElement = prevSelectedDiv[0];
 		if(prevElement != null)
 		{
@@ -177,17 +175,17 @@ function highliteCss(cssElement)
 			var prevSelectedDiv;
 			if(statusWidget)
 			{
-				prevSelectedDiv = $j('[class^=status][class$=title-highlite]');
+				prevSelectedDiv = jQuery('[class^=status][class$=title-highlite]');
 	
 			}
 			else if(vulnWidget)
 			{
-				prevSelectedDiv = $j('[class^=vuln][class$=title-highlite]');
+				prevSelectedDiv = jQuery('[class^=vuln][class$=title-highlite]');
 			}
 			prevSelectedDiv.removeClass('title-highlite');	
 		}
 				
-		var newSelectedDiv = $j('.' + highLiteOurCss);
+		var newSelectedDiv = jQuery('.' + highLiteOurCss);
 		newSelectedDiv.addClass('title-highlite');
   	});
 }
@@ -207,7 +205,8 @@ function filterTable(value, pos, cssName)
  * @param defaultSortPos - The defaulted column to sort by
  * @returns
  */
-jQuery.fn.createTable = function(tableId, dataList, columnData, defaultSortPos)
+//jQuery.fn.createTable = 
+function createTable(tableId, dataList, columnData, defaultSortPos)
 {
 	
 	/**
@@ -215,7 +214,11 @@ jQuery.fn.createTable = function(tableId, dataList, columnData, defaultSortPos)
 	 */
 	if(dataList == null || dataList.length == 0)
 	{
-		console.log("Data or column information is null or empty, for table: " + tableId);
+		console.log("Data is null or empty, for table: " + tableId);
+		return;
+	} else if(columnData == null || columnData.length == 0)
+	{
+		console.log("Column information is null or empty, for table: " + tableId);
 		return;
 	} else {
 		console.log("***** '"+tableId+"': "+dataList.length+" -- '"+dataList+"'");
@@ -237,9 +240,9 @@ jQuery.fn.createTable = function(tableId, dataList, columnData, defaultSortPos)
 		'<"#id" and '>' - div with an ID	
 		 **/
 		var oldStart = 0;
-		return $j(document).ready(function() {
+		return jQuery(document).ready(function() {
 			console.log("***** '"+tableId+"'");
-			var tableCss = $j(tableId).dataTable();
+			var tableCss = jQuery(tableId);
 		    oTable = tableCss.dataTable(
 		    {
 		    	"iDisplayLength": 25,	    	
@@ -268,7 +271,7 @@ jQuery.fn.createTable = function(tableId, dataList, columnData, defaultSortPos)
 			        popupAnimationSpeed: "100"
 				 });	
 	    	}
-			console.log("===== '"+tableClassName+"'");
+			console.log("===== '"+tableId+"'");
 		});
 	}
 }
@@ -282,9 +285,10 @@ jQuery.fn.createTable = function(tableId, dataList, columnData, defaultSortPos)
  */
 function buildToolTip(cssElement, title, html_list)
 {
-	$j(function()		  	
-	{
-		$j(cssElement).qtip(
+//	jQuery(function()		  	
+//	{
+		var $element = jQuery(cssElement);
+		$element.qtip(
 	      {
 	          show: 'click',
 	          hide: 'click',                   
@@ -304,7 +308,7 @@ function buildToolTip(cssElement, title, html_list)
 	            at: 'bottom center'
 	          }
 	      });  
-  	});
+//  	});
 }
 
 /**

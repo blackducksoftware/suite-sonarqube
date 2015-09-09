@@ -51,60 +51,54 @@ loadcssfile("<%= url_for_static(:plugin => 'BDSPlugin', :path => 'comp_approve/c
   	<script type="text/javascript" src="<%= url_for_static(:plugin => 'BDSPlugin', :path => 'qtip/jquery.qtip.min.js') -%>  "></script>
 -->
 <script type="text/javascript">
-		var localDataTable; // global	
-		var dtTableName = "#comp-request-table-data"; // id of the table that will be generated
-		var approvedJsonList = <%=comp_list_approved_json.data%>;
-		var rejectedJsonList = <%=comp_list_rejected_json.data%>;
-		var pendingJsonList = <%=comp_list_pending_json.data%>;
-		var unknownJsonList = <%=comp_list_unknown_json.data%>;
 
-		var fullDataList = [];
+/*	var bdRequire = require.config({
+	  context: "bd",
+	  baseUrl: "<%= url_for_static(:plugin => 'BDSPlugin', :path => '') -%>"
+	  paths: {
+	  	jquery: 
+	  }
+*/
+	var bdRequire = require.config({
+//	  context: "bd",
+//	  baseUrl: "<%= url_for_static(:plugin => 'BDSPlugin', :path => '') -%>"
+	  paths: {
+	  	jquery: "..<%= url_for_static(:plugin => 'BDSPlugin', :path => 'jquery-ui-1.11.4/external/jquery/jquery') -%>"
+	  }
+	});
+			var localDataTable; // global	
+			var dtTableName = "#comp-request-table-data"; // id of the table that will be generated
+			var approvedJsonList = <%=comp_list_approved_json.data%>;
+			var rejectedJsonList = <%=comp_list_rejected_json.data%>;
+			var pendingJsonList = <%=comp_list_pending_json.data%>;
+			var unknownJsonList = <%=comp_list_unknown_json.data%>;
 	
-		require(["<%= url_for_static(:plugin => 'BDSPlugin', :path => 'common/bds_common_functions.js') -%>"],
-	    function()
-	  	{		
-			addToMasterList(approvedJsonList, fullDataList);
-		console.log("Approved: Count of master list: " + approvedJsonList.length)
-			addToMasterList(rejectedJsonList, fullDataList);
-		console.log("Rejected: Count of master list: " + rejectedJsonList.length)
-			addToMasterList(pendingJsonList, fullDataList);
-		console.log("Pending: Count of master list: " + pendingJsonList.length)
-			addToMasterList(unknownJsonList, fullDataList);
-		console.log("Unknown: Count of master list: " + unknownJsonList.length)
-		});
-
-		console.log("Approvals: Count of master list: " + fullDataList.length)
+			var fullDataList = [];
+		
+				// Function for centering
+					
+			var centerFunction = function (data, type, row)
+	            	{	            		
+	            		return  '<center>' + data + '</center>';
+	            	}
 	
-		require(["<%= url_for_static(:plugin => 'BDSPlugin', :path => 'datatables/jquery.dataTables.min.js') -%>",
-				"<%= url_for_static(:plugin => 'BDSPlugin', :path => 'datatables/jquery.dataTables.columnFilter.js') -%>",
-				"<%= url_for_static(:plugin => 'BDSPlugin', :path => 'jquery-ui/jquery-ui-1.10.4.min.js') -%>",
-				"<%= url_for_static(:plugin => 'BDSPlugin', :path => 'common/bds_common_functions.js') -%>",
-				"<%= url_for_static(:plugin => 'BDSPlugin', :path => 'spop/jquery.smallipop.min.js') -%>",
-				"<%= url_for_static(:plugin => 'BDSPlugin', :path => 'spop/contrib/modernizr.js') -%>",
-				"<%= url_for_static(:plugin => 'BDSPlugin', :path => 'qtip/jquery.qtip.min.js') -%>"
-				],
-	    function()
-	  	{		
+		bdRequire(["<%= url_for_static(:plugin => 'BDSPlugin', :path => 'common/bds_common_functions.js') -%>"],
+		    function()
+		  	{		
 				// Populate Counts and Colors
-				var $appCountUI = $j('.status-approved-count');		
+				var $appCountUI = jQuery('.status-approved-count');		
 				setColorAndValue($appCountUI, "darkGreen", <%=approved_count.value%>);
 
-				var $rejCountUI = $j('.status-rejected-count');		
+				var $rejCountUI = jQuery('.status-rejected-count');		
 				setColorAndValue($rejCountUI, "darkRed", <%=rejected_count.value%>);
 				
-				var $penCountUI = $j('.status-pending-count');		
+				var $penCountUI = jQuery('.status-pending-count');		
 				setColorAndValue($penCountUI, "darkOrange", <%=pending_count.value%>);
 				
-				var $nsCountUI = $j('.status-ns-count');		
+				var $nsCountUI = jQuery('.status-ns-count');		
 				setColorAndValue($nsCountUI, "black", <%=ns_count.value%>);
-		});	
+			});
 		
-		// Function for centering
-				
-		var centerFunction = function (data, type, row)
-            	{	            		
-            		return  '<center>' + data + '</center>';
-            	}
 		// Create table data
 		var vulnWidth = "7%";	
 		var columnData =  [
@@ -133,21 +127,18 @@ loadcssfile("<%= url_for_static(:plugin => 'BDSPlugin', :path => 'comp_approve/c
 	            			{
 	            				className = "rejected-icon";
 	            				fontAwesomeIcon = "<i class='fa fa-times'>";
-	           					
 	            			 	break;
 	            			}
             				case "PENDING":
 	            			{
 	            				className = "pending-icon";
 	            				fontAwesomeIcon = "<i class='fa fa-question'>";
-	            				
 	            			 	break;
 	            			}
             				case "NOTSUBMITTED":
 	            			{
 	            				className = "ns-icon";
 	            				fontAwesomeIcon = "<i class='fa fa-shopping-cart'>";
-	            				
 	            			 	break;
 	            			}			            			
 	            		}
@@ -163,14 +154,14 @@ loadcssfile("<%= url_for_static(:plugin => 'BDSPlugin', :path => 'comp_approve/c
             	"mData": "componentName",
             	"sTitle": "Component Name",
             	"sWidth": "18%",
-            	'fnCreatedCell': function(nTd, sData, oData, iRow, iCol) 
+            	"fnCreatedCell": function(nTd, sData, oData, iRow, iCol) 
             	{
             		// This is used by the tooltip
 			        nTd.title = oData.componentName;
 			    },
             	"mRender": function (data, type, row)
             	{	            		
-            		return  '<a href="'+ row.url +'" target=_new>' + data + '</a>';
+            		return  '<a href="'+ row.url +'" target="_new">' + data + '</a>';
             	}
             }, 
             { 
@@ -184,63 +175,74 @@ loadcssfile("<%= url_for_static(:plugin => 'BDSPlugin', :path => 'comp_approve/c
            	 	"sTitle": "High Vuln",
            	 	"sWidth": vulnWidth,
             	"mRender": centerFunction
-           	 	
             }, 
-              { 
+            { 
            	 	"mData": "vulnMed", 
            	 	"sTitle": "Med Vuln",
            	 	"sWidth": vulnWidth,
             	"mRender": centerFunction
             }, 
-               { 
+            { 
            	 	"mData": "vulnLow", 
            	 	"sTitle": "Low Vuln",
            	 	"sWidth": vulnWidth,
             	"mRender": centerFunction
-            }, 
+            }
         ];
 
 		// Create the table
 
-		require(["<%= url_for_static(:plugin => 'BDSPlugin', :path => 'datatables/jquery.dataTables.min.js') -%>",
+		bdRequire([
+				"<%= url_for_static(:plugin => 'BDSPlugin', :path => 'datatables/jquery.dataTables.min.js') -%>",
 				"<%= url_for_static(:plugin => 'BDSPlugin', :path => 'datatables/jquery.dataTables.columnFilter.js') -%>",
-				"<%= url_for_static(:plugin => 'BDSPlugin', :path => 'jquery-ui/jquery-ui-1.10.4.min.js') -%>",
-				"<%= url_for_static(:plugin => 'BDSPlugin', :path => 'common/bds_common_functions.js') -%>",
 				"<%= url_for_static(:plugin => 'BDSPlugin', :path => 'spop/jquery.smallipop.min.js') -%>",
-				"<%= url_for_static(:plugin => 'BDSPlugin', :path => 'spop/contrib/modernizr.js') -%>",
-				"<%= url_for_static(:plugin => 'BDSPlugin', :path => 'qtip/jquery.qtip.min.js') -%>"
-				],
+//				"<%= url_for_static(:plugin => 'BDSPlugin', :path => 'spop/contrib/modernizr.js') -%>",
+//				"<%= url_for_static(:plugin => 'BDSPlugin', :path => 'qtip/jquery.qtip.min.js') -%>",
+				"<%= url_for_static(:plugin => 'BDSPlugin', :path => 'common/bds_common_functions.js') -%>"
+				],			
 			function()
-    	  	{	
-        		$j(document).createTable(dtTableName,fullDataList,columnData, 0);
-        	});      
-   
-		require(["<%= url_for_static(:plugin => 'BDSPlugin', :path => 'datatables/jquery.dataTables.min.js') -%>",
+	   	  	{	
+			addToMasterList(approvedJsonList, fullDataList);
+		console.log("Approved: Count of approved list: " + approvedJsonList.length+"  approved:"+approvedJsonList);
+			addToMasterList(rejectedJsonList, fullDataList);
+		console.log("Rejected: Count of rejected list: " + rejectedJsonList.length+"  rejected:"+rejectedJsonList);
+			addToMasterList(pendingJsonList, fullDataList);
+		console.log("Pending: Count of pending list: " + pendingJsonList.length+"  approved:"+pendingJsonList);
+			addToMasterList(unknownJsonList, fullDataList);
+		console.log("Unknown: Count of unknown list: " + unknownJsonList.length+"  approved:"+unknownJsonList);
+		console.log("Approvals: Count of master list: " + fullDataList.length)
+
+	      		createTable(dtTableName, fullDataList, columnData, 0);
+        	}
+        	);      
+
+		bdRequire(["<%= url_for_static(:plugin => 'BDSPlugin', :path => 'datatables/jquery.dataTables.min.js') -%>",
 				"<%= url_for_static(:plugin => 'BDSPlugin', :path => 'datatables/jquery.dataTables.columnFilter.js') -%>",
-				"<%= url_for_static(:plugin => 'BDSPlugin', :path => 'jquery-ui/jquery-ui-1.10.4.min.js') -%>",
-				"<%= url_for_static(:plugin => 'BDSPlugin', :path => 'common/bds_common_functions.js') -%>",
-				"<%= url_for_static(:plugin => 'BDSPlugin', :path => 'spop/jquery.smallipop.min.js') -%>",
-				"<%= url_for_static(:plugin => 'BDSPlugin', :path => 'spop/contrib/modernizr.js') -%>",
-				"<%= url_for_static(:plugin => 'BDSPlugin', :path => 'qtip/jquery.qtip.min.js') -%>"
+//				"<%= url_for_static(:plugin => 'BDSPlugin', :path => 'jquery-ui/jquery-ui-1.10.4.min.js') -%>",
+//				"<%= url_for_static(:plugin => 'BDSPlugin', :path => 'spop/jquery.smallipop.min.js') -%>",
+//				"<%= url_for_static(:plugin => 'BDSPlugin', :path => 'spop/contrib/modernizr.js') -%>",
+//				"jquery",
+				"<%= url_for_static(:plugin => 'BDSPlugin', :path => 'qtip/jquery.qtip.min.js') -%>",
+				"<%= url_for_static(:plugin => 'BDSPlugin', :path => 'common/bds_common_functions.js') -%>"
 				],
-    		function()
+	   		function()
     	  	{		
     	  		// Resize
-//    			 var localDataTable = $j(dtTableName).dataTable;		 
-    			 $j(window).bind('resize', function () {
-    			    $j(dtTableName).fnAdjustColumnSizing();
+    			 var localDataTable = jQuery(dtTableName).dataTable;		 
+    			 jQuery(window).bind('resize', function () {
+    			    localDataTable.fnAdjustColumnSizing();
     			 });
     			 
     			 // Row selector
     			 var prevClickedRowNum;
-    			 var filterBoxCss = $j(divFilterInfoBoxName);
+    			 var filterBoxCss = jQuery(divFilterInfoBoxName);
     			 var sameRow = false;
-    			 $j(dtTableName + ' tbody').on( 'click', 'tr', function(event)
+    			 jQuery(dtTableName + ' tbody').on( 'click', 'tr', function(event)
     			 { 
     			 	var clickedRowNum = localDataTable.fnGetPosition(this);
     			
     			 	// Remove everything
-    			 	$j("td."+divRowSelectedName, localDataTable.fnGetNodes()).removeClass(divRowSelectedName);					
+    			 	jQuery("td."+divRowSelectedName, localDataTable.fnGetNodes()).removeClass(divRowSelectedName);					
     			
     				
     				// Only perform the class selection if the user did not select the same row	
@@ -250,7 +252,7 @@ loadcssfile("<%= url_for_static(:plugin => 'BDSPlugin', :path => 'comp_approve/c
     					// The parent is not the TR, but the TD, thus the 'find' does not return anything.
     					// This checks to see if the adequate number of children exist, if not, finds the grandparent.
     					prevClickedRowNum = clickedRowNum;
-    					var parent = $j(event.target).parent();
+    					var parent = jQuery(event.target).parent();
     					if(parent.children().length == 1)
     						parent = parent.parent();
     					parent.find("td").addClass(divRowSelectedName);	
@@ -279,31 +281,30 @@ loadcssfile("<%= url_for_static(:plugin => 'BDSPlugin', :path => 'comp_approve/c
            			else   	
            			{		
            				filterBoxCss.show();
-    
            			}
            			var infoBoxMsg = "Filtering on component: " + compName + ", Version: " + versionNumber;
            			filterBoxCss.text(infoBoxMsg);
-               				        
     			 });
 			 
 			  // Custom attributes          
-        // Populate custom attributes if any
+		      // Populate custom attributes if any
         <% if cc_custom_attributes_json %>
-          var cc_att_json = <%=cc_custom_attributes_json.data%>;
-          var html_attrib_list = "";
-          for(var i=0; i < cc_att_json.length; i++)
-          {
-              var attrib_element = cc_att_json[i];
-              // Keep on building the 
-              if(attrib_element != null)
+              var cc_att_json = <%=cc_custom_attributes_json.data%>;
+              var html_attrib_list = "";
+              for(var i=0; i < cc_att_json.length; i++)
+              {
+              	var attrib_element = cc_att_json[i];
+              	// Keep on building the 
+              	if(attrib_element != null)
                   html_attrib_list = html_attrib_list + buildHtmlToolTip(attrib_element.question, attrib_element.answer);
-          }
-          console.log("HTML:" + html_attrib_list);
+          	  }
+          	  console.log("HTML:" + html_attrib_list);
           
-          // Create a tooltip for the info button
-          buildToolTip(".cc-tooltip-info", "Application Attributes", html_attrib_list);          
+              // Create a tooltip for the info button
+              buildToolTip(".cc-tooltip-info", "Application Attributes", html_attrib_list);          
         <% end %> 
-		});	 
+		});
+		
 	</script>
 
   <div class="title-header">
