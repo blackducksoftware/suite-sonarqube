@@ -54,16 +54,7 @@ loadcssfile("<%= url_for_static(:plugin => 'BDSPlugin', :path => 'comp_approve/c
 -->
 <script type="text/javascript">
 
-/*	var bdRequire = require.config({
-	  context: "bd",
-	  baseUrl: "<%= url_for_static(:plugin => 'BDSPlugin', :path => '') -%>"
-	  paths: {
-	  	jquery: 
-	  }
-*/
 	var bdRequire = require.config({
-//	  context: "bd",
-//	  baseUrl: "<%= url_for_static(:plugin => 'BDSPlugin', :path => '') -%>"
 	  paths: {
 	  	jquery: "..<%= url_for_static(:plugin => 'BDSPlugin', :path => 'jquery-ui-1.11.4/external/jquery/jquery') -%>"
 	  }

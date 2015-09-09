@@ -45,9 +45,17 @@ loadcssfile("<%= url_for_static(:plugin => 'BDSPlugin', :path => 'qtip/jquery.qt
       <% if protex_err_msg.nil? %>
        console.log("No protex data to load");
       <% else %>
-		require(["<%= url_for_static(:plugin => 'BDSPlugin', :path => 'common/bds_common_functions.js') -%>",
-			"<%= url_for_static(:plugin => 'BDSPlugin', :path => 'qtip/jquery.qtip.min.js') -%>"],
-		   $j(function() {		 
+      	var bdRequire = require.config({
+	  		paths: {
+	  			jquery: "..<%= url_for_static(:plugin => 'BDSPlugin', :path => 'jquery-ui-1.11.4/external/jquery/jquery') -%>"
+	  		}
+		});
+      
+		bdRequire([
+			"<%= url_for_static(:plugin => 'BDSPlugin', :path => 'qtip/jquery.qtip.min.js') -%>",
+			"<%= url_for_static(:plugin => 'BDSPlugin', :path => 'common/bds_common_functions.js') -%>"
+		   ]
+		   jQuery(function() {		 
           		console.log("Started processing component analysis.");
 		 
             	var infoJson = null;
@@ -59,7 +67,7 @@ loadcssfile("<%= url_for_static(:plugin => 'BDSPlugin', :path => 'qtip/jquery.qt
             
             	if(infoJson != null) {
               		var protexBomUrl = infoJson.protexBomURL;
-              		var protexLinkUI = $j('#protex_bom_anchor_tag');
+              		var protexLinkUI = jQuery('#protex_bom_anchor_tag');
               		protexLinkUI.attr('href',protexBomUrl);
             	}
             
@@ -72,12 +80,12 @@ loadcssfile("<%= url_for_static(:plugin => 'BDSPlugin', :path => 'qtip/jquery.qt
   		      	var percentage_float = 1 - (pendingFiles / discoveredFiles);
   		      	var percentage = Math.floor(percentage_float * 100);
   		    
-  		      	var $percentageUI = $j('.percentage');
-  		      	var $scaleUI = $j('.scale');
+  		      	var $percentageUI = jQuery('.percentage');
+  		      	var $scaleUI = jQuery('.scale');
   		    
-  		      	var $startNumber = $j('.start.number');  
-  		      	var $endNumber = $j('.end.number');  
-  		      	var $tile = $j('#identifiedFiles');
+  		      	var $startNumber = jQuery('.start.number');  
+  		      	var $endNumber = jQuery('.end.number');  
+  		      	var $tile = jQuery('#identifiedFiles');
   		      
   		      	var mainWidgetId = $tile.length;
   		      	if(mainWidgetId == 0) {
@@ -85,19 +93,19 @@ loadcssfile("<%= url_for_static(:plugin => 'BDSPlugin', :path => 'qtip/jquery.qt
   		          	return;
   		      	}
   		      
-  		      	var range = $j('#identifiedFiles .end.value').offset().left 
-  		      		-    	($j('#identifiedFiles .start.value').offset().left 
-  		      		+     	 $j('#identifiedFiles .start.value').outerWidth());
-  		      	var max_left = $j('#identifiedFiles .end.value').offset().left - $percentageUI.outerWidth();
+  		      	var range = jQuery('#identifiedFiles .end.value').offset().left 
+  		      		-    	(jQuery('#identifiedFiles .start.value').offset().left 
+  		      		+     	 jQuery('#identifiedFiles .start.value').outerWidth());
+  		      	var max_left = jQuery('#identifiedFiles .end.value').offset().left - $percentageUI.outerWidth();
   		
-  		  	  	var min_left = ( $j('#identifiedFiles .start.value').offset().left + 
-  		  	  		$j('#identifiedFiles .start.value').outerWidth()) - 
+  		  	  	var min_left = ( jQuery('#identifiedFiles .start.value').offset().left + 
+  		  	  		jQuery('#identifiedFiles .start.value').outerWidth()) - 
   		  	  		$tile.offset().left;
   		  	  	
-  		  	  	var boxHeight = $j('#identifiedFiles').offset().top;
+  		  	  	var boxHeight = jQuery('#identifiedFiles').offset().top;
   			 
   		  	  	// TODO:  The fixed 15 will not work when browser is resized
-  		  	  	var top = $j('.gradient').offset().top - boxHeight - 15;
+  		  	  	var top = jQuery('.gradient').offset().top - boxHeight - 15;
   		
   		       // Populate the starting and ending numbers
   		       // Previous bug -- need to populate "start number" with text before
@@ -115,7 +123,7 @@ loadcssfile("<%= url_for_static(:plugin => 'BDSPlugin', :path => 'qtip/jquery.qt
   		      	console.log("Range: " + range);
   		      	console.log("Max Left: " +  max_left);
   		      	console.log("Ranged left: " + ranged_left);
-  		      	console.log("Starting value of ending block: " + $j('#identifiedFiles .end.value').offset().left);
+  		      	console.log("Starting value of ending block: " + jQuery('#identifiedFiles .end.value').offset().left);
   		      	console.log("Ending value of percentage block: " + $percentageUI.offset().left);
   		      
   		     	if( ranged_left < min_left ) {
