@@ -33,34 +33,21 @@ loadcssfile("<%= url_for_static(:plugin => pluginName, :path => 'font-awesome/cs
 loadcssfile("<%= url_for_static(:plugin => pluginName, :path => 'common/bds_common.css') -%>")	
 loadcssfile("<%= url_for_static(:plugin => pluginName, :path => 'lic_info/lic_info.css') -%>")	
 </script>
-<!-- <script type="text/javascript" src="<%= url_for_static(:plugin => pluginName, :path => 'highcharts.js') -%>"></script> -->
-<!--
-<script>
-require(['<%= url_for_static(:plugin => pluginName, :path => 'highcharts.js') -%>'], function() {
-    // Configuration loaded now, safe to do other require calls
-    // that depend on that config.
-    //require(['<%= url_for_static(:plugin => pluginName, :path => 'highcharts.js') -%>'], function(foo) {
-
-    });
-});
-</script>
--->
 <script type="text/javascript">
-	<% if cc_error_msg.nil? or protex_error_msg.nil? %>
+	<% if !(cc_error_msg.nil? or protex_error_msg.nil?) %>
+	    console.log("Code Center error:"<% cc_error_msg -%>);
+		console.log("Protex error:"<% protex_error_msg -%>);		
     	console.log("License info widget, nothing to display");
 	<% else %>
 		require(["<%= url_for_static(:plugin => pluginName, :path => 'highcharts.js') -%>"],
-	  jQuery(function()
+	  function()
 	  {
-	
 		var dataArr = [];
 		var licJson = <%=lic_json_string.data%>;
-		
 		
 		console.log("License json: " + licJson);
 		for(key in licJson)
 		{
-		
 		    console.log("Category License: " + key);  
 		    var licenseCategory = licJson[key];
 	
@@ -76,9 +63,7 @@ require(['<%= url_for_static(:plugin => pluginName, :path => 'highcharts.js') -%
 			}
 			
 			dataArr.push(dataSlice);
-			
 		}
-		
 	
 		console.log("Data Array: " + dataArr);
 	
@@ -89,12 +74,12 @@ require(['<%= url_for_static(:plugin => pluginName, :path => 'highcharts.js') -%
 	            data: dataArr      
 	        };
 	
-   // Check to make sure there is something worth rendering.
-    if(dataArr == null || dataArr.length == 0)
-    {
-      console.log("No data to populate the pie chart with.")
-      return;
-    }
+		// Check to make sure there is something worth rendering.
+	    if(dataArr == null || dataArr.length == 0)
+	    {
+	      console.log("No data to populate the pie chart with.")
+	      return;
+	    }
 		
 	    var chart = new Highcharts.Chart({
 	        chart: {
@@ -102,10 +87,7 @@ require(['<%= url_for_static(:plugin => pluginName, :path => 'highcharts.js') -%
 	            spacing: 1,
 	            renderTo: 'lic_chart_container',
 	            type: 'pie',
-	           
-     
 	        },
-	
 	        title: 
 	        {
 	        	text: "",
@@ -114,7 +96,6 @@ require(['<%= url_for_static(:plugin => pluginName, :path => 'highcharts.js') -%
 	            x: 10,
 	            y: 50
 	        },
-	
 	        plotOptions: {
 	            pie: {
 	                startAngle: 90,
@@ -133,12 +114,9 @@ require(['<%= url_for_static(:plugin => pluginName, :path => 'highcharts.js') -%
 	        },
 	        series: [ seriesSet ]
 	    });
-	  })
-	  );
-	  <% end %>		
-		
-		
-	</script>
+	  });
+	<% end %>		
+</script>
 
   <div class="title-header">
     <h1>
