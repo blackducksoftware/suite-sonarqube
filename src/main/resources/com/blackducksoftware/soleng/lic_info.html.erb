@@ -1,7 +1,9 @@
 <!-- GLOBALS -->
 <%
+	pluginName = 'BDSPlugin';
+
 	cc_error_msg = measure('code-center-error-message')
-  protex_error_msg = measure('protex-error-message')
+  	protex_error_msg = measure('protex-error-message')
 
 	lic_json_string = measure('license-breakdown-json')
 	lic_conflict_measure = measure('protex-total-license-conflict-files')
@@ -27,17 +29,17 @@ function loadcssfile(filename){
         document.getElementsByTagName("head")[0].appendChild(fileref)
 }
 
-loadcssfile("<%= url_for_static(:plugin => 'BDSPlugin', :path => 'font-awesome/css/font-awesome.min.css') -%>")	
-loadcssfile("<%= url_for_static(:plugin => 'BDSPlugin', :path => 'common/bds_common.css') -%>")	
-loadcssfile("<%= url_for_static(:plugin => 'BDSPlugin', :path => 'lic_info/lic_info.css') -%>")	
+loadcssfile("<%= url_for_static(:plugin => pluginName, :path => 'font-awesome/css/font-awesome.min.css') -%>")	
+loadcssfile("<%= url_for_static(:plugin => pluginName, :path => 'common/bds_common.css') -%>")	
+loadcssfile("<%= url_for_static(:plugin => pluginName, :path => 'lic_info/lic_info.css') -%>")	
 </script>
-<!-- <script type="text/javascript" src="<%= url_for_static(:plugin => 'BDSPlugin', :path => 'highcharts.js') -%>"></script> -->
+<!-- <script type="text/javascript" src="<%= url_for_static(:plugin => pluginName, :path => 'highcharts.js') -%>"></script> -->
 <!--
 <script>
-require(['<%= url_for_static(:plugin => 'BDSPlugin', :path => 'highcharts.js') -%>'], function() {
+require(['<%= url_for_static(:plugin => pluginName, :path => 'highcharts.js') -%>'], function() {
     // Configuration loaded now, safe to do other require calls
     // that depend on that config.
-    //require(['<%= url_for_static(:plugin => 'BDSPlugin', :path => 'highcharts.js') -%>'], function(foo) {
+    //require(['<%= url_for_static(:plugin => pluginName, :path => 'highcharts.js') -%>'], function(foo) {
 
     });
 });
@@ -47,7 +49,7 @@ require(['<%= url_for_static(:plugin => 'BDSPlugin', :path => 'highcharts.js') -
 	<% if cc_error_msg.nil? or protex_error_msg.nil? %>
     	console.log("License info widget, nothing to display");
 	<% else %>
-		require(["<%= url_for_static(:plugin => 'BDSPlugin', :path => 'highcharts.js') -%>"],
+		require(["<%= url_for_static(:plugin => pluginName, :path => 'highcharts.js') -%>"],
 	  jQuery(function()
 	  {
 	
@@ -150,7 +152,7 @@ require(['<%= url_for_static(:plugin => 'BDSPlugin', :path => 'highcharts.js') -
 		Error: <%=cc_error_msg.data %> <br> <%=protex_error_msg.data%>
 	</div>
 <% else %>
-  <img class="logo" src="<%= url_for_static(:plugin => 'BDSPlugin', :path => 'common/bd_logo.png') -%>  ">  
+  <img class="logo" src="<%= url_for_static(:plugin => pluginName, :path => 'common/bd_logo.png') -%>  ">  
   <div class="cc-link"> 
       <a href="<%=cc_bom_url.data%>" target="_blank" title="Code Center BOM"><i class="fa fa-share-square-o"></i></a>
   </div>

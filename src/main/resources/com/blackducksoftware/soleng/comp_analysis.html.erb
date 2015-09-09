@@ -1,22 +1,22 @@
 <!-- GLOBALS -->
 <%
-measure_protex_total =measure('protex-total-files')
-measure_protex_pending_total =measure('protex-total-pending-files')
-measure_protex_no_discovery_total =measure('protex-total-no-discovery-files')
-measure_protex_discovery_total =measure('protex-total-discovery-files')
-measure_protex_analyzed_date =measure('protex-analyzed-date')
+	pluginName = 'BDSPlugin';
 
-protex_info_json =measure('protex-info-bean')
-
-protex_err_msg = measure('protex-error-message')
-
-
-
-fomatted_total = format_measure(measure_protex_total, :suffix => '')
-formatted_pending = format_measure(measure_protex_pending_total, :suffix => '')
-formatted_no_disc = format_measure(measure_protex_no_discovery_total, :suffix => '')
-formatted_disc = format_measure(measure_protex_discovery_total, :suffix => '')
-formatted_date = format_measure(measure_protex_analyzed_date, :suffix => '')
+	measure_protex_total =measure('protex-total-files')
+	measure_protex_pending_total =measure('protex-total-pending-files')
+	measure_protex_no_discovery_total =measure('protex-total-no-discovery-files')
+	measure_protex_discovery_total =measure('protex-total-discovery-files')
+	measure_protex_analyzed_date =measure('protex-analyzed-date')
+	
+	protex_info_json =measure('protex-info-bean')
+	
+	protex_err_msg = measure('protex-error-message')
+	
+	fomatted_total = format_measure(measure_protex_total, :suffix => '')
+	formatted_pending = format_measure(measure_protex_pending_total, :suffix => '')
+	formatted_no_disc = format_measure(measure_protex_no_discovery_total, :suffix => '')
+	formatted_disc = format_measure(measure_protex_discovery_total, :suffix => '')
+	formatted_date = format_measure(measure_protex_analyzed_date, :suffix => '')
 %>
 <script type="text/javascript">
 function loadjsfile(filename){
@@ -35,11 +35,11 @@ function loadcssfile(filename){
         document.getElementsByTagName("head")[0].appendChild(fileref)
 }
 
-loadcssfile("<%= url_for_static(:plugin => 'BDSPlugin', :path => 'font-awesome/css/font-awesome.min.css') -%>")	
-loadcssfile("<%= url_for_static(:plugin => 'BDSPlugin', :path => 'comp_analysis/comp_an_css.css') -%>")	
-loadcssfile("<%= url_for_static(:plugin => 'BDSPlugin', :path => 'common/grids-min.css') -%>")	
-loadcssfile("<%= url_for_static(:plugin => 'BDSPlugin', :path => 'common/bds_common.css') -%>")	
-loadcssfile("<%= url_for_static(:plugin => 'BDSPlugin', :path => 'qtip/jquery.qtip.css') -%>")	
+loadcssfile("<%= url_for_static(:plugin => pluginName, :path => 'font-awesome/css/font-awesome.min.css') -%>")	
+loadcssfile("<%= url_for_static(:plugin => pluginName, :path => 'comp_analysis/comp_an_css.css') -%>")	
+loadcssfile("<%= url_for_static(:plugin => pluginName, :path => 'common/grids-min.css') -%>")	
+loadcssfile("<%= url_for_static(:plugin => pluginName, :path => 'common/bds_common.css') -%>")	
+loadcssfile("<%= url_for_static(:plugin => pluginName, :path => 'qtip/jquery.qtip.css') -%>")	
 </script>
 <script type="text/javascript">
       <% if protex_err_msg.nil? %>
@@ -47,13 +47,13 @@ loadcssfile("<%= url_for_static(:plugin => 'BDSPlugin', :path => 'qtip/jquery.qt
       <% else %>
       	var bdRequire = require.config({
 	  		paths: {
-	  			jquery: "..<%= url_for_static(:plugin => 'BDSPlugin', :path => 'jquery-ui-1.11.4/external/jquery/jquery') -%>"
+	  			jquery: "..<%= url_for_static(:plugin => pluginName, :path => 'jquery-ui-1.11.4/external/jquery/jquery') -%>"
 	  		}
 		});
       
 		bdRequire([
-			"<%= url_for_static(:plugin => 'BDSPlugin', :path => 'qtip/jquery.qtip.min.js') -%>",
-			"<%= url_for_static(:plugin => 'BDSPlugin', :path => 'common/bds_common_functions.js') -%>"
+			"<%= url_for_static(:plugin => pluginName, :path => 'qtip/jquery.qtip.min.js') -%>",
+			"<%= url_for_static(:plugin => pluginName, :path => 'common/bds_common_functions.js') -%>"
 		   ]
 		   jQuery(function() {		 
           		console.log("Started processing component analysis.");
@@ -179,7 +179,7 @@ loadcssfile("<%= url_for_static(:plugin => 'BDSPlugin', :path => 'qtip/jquery.qt
   	</div>
   <% else %>
 
-  <img class="logo" src="<%= url_for_static(:plugin => 'BDSPlugin', :path => 'common/bd_logo.png') -%>  ">
+  <img class="logo" src="<%= url_for_static(:plugin => pluginName, :path => 'common/bd_logo.png') -%>  ">
 
   <div class="protex-tooltip-info">
        <i class="fa fa-info-circle"></i>

@@ -1,29 +1,18 @@
 package com.blackducksoftware.soleng.bdsplugin.dao;
 
-import java.text.DateFormat;
-import java.text.ParseException;
-import java.text.SimpleDateFormat;
-import java.util.Date;
-import java.util.Locale;
-import java.util.Map;
-
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.sonar.api.batch.SensorContext;
 import org.sonar.api.config.Settings;
 
 import soleng.framework.core.exception.CommonFrameworkException;
-import soleng.framework.standard.common.ProjectPojo;
 import soleng.framework.standard.protex.ProtexProjectPojo;
 import soleng.framework.standard.protex.ProtexServerWrapper;
 
-import com.blackducksoftware.sdk.fault.SdkFault;
 import com.blackducksoftware.sdk.protex.license.GlobalLicense;
 import com.blackducksoftware.sdk.protex.license.LicenseApi;
 import com.blackducksoftware.sdk.protex.license.LicenseAttributes;
 import com.blackducksoftware.sdk.protex.license.LicenseExtensionLevel;
-import com.blackducksoftware.sdk.protex.project.Project;
-import com.blackducksoftware.sdk.protex.project.ProjectApi;
 import com.blackducksoftware.sdk.protex.project.bom.BomApi;
 import com.blackducksoftware.sdk.protex.project.bom.FileCountType;
 import com.blackducksoftware.sdk.protex.project.codetree.CodeTreeApi;
@@ -31,24 +20,22 @@ import com.blackducksoftware.sdk.protex.project.codetree.CodeTreeNodeWithCount;
 import com.blackducksoftware.sdk.protex.project.codetree.PartialCodeTree;
 import com.blackducksoftware.sdk.protex.project.codetree.PartialCodeTreeWithCount;
 import com.blackducksoftware.sdk.protex.project.codetree.discovery.DiscoveryApi;
-import com.blackducksoftware.sdk.protex.project.codetree.identification.IdentificationApi;
-import com.blackducksoftware.sdk.protex.util.CodeTreeUtilities;
 import com.blackducksoftware.soleng.bdsplugin.BDSPluginConstants;
 import com.blackducksoftware.soleng.bdsplugin.config.BDSPluginProtexConfigManager;
 import com.blackducksoftware.soleng.bdsplugin.config.BDSPluginUser;
 import com.blackducksoftware.soleng.bdsplugin.model.ApplicationPOJO;
-import com.blackducksoftware.soleng.bdsplugin.model.LicensePOJO;
 import com.blackducksoftware.soleng.bdsplugin.model.BDSProtexPojo;
+import com.blackducksoftware.soleng.bdsplugin.model.LicensePOJO;
 
 public class ProtexDAO extends CommonDAO
 {
     static Logger log = LoggerFactory.getLogger(ProtexDAO.class.getName());
 
-    private ProjectApi projectApi = null;
+//    private ProjectApi projectApi = null;
     private CodeTreeApi codeTreeApi = null;
     private DiscoveryApi discoveryApi = null;
     private LicenseApi licenseApi = null;
-    private IdentificationApi idApi = null;
+//    private IdentificationApi idApi = null;
     private BomApi bomApi = null;
 
     private Settings settings = null;
@@ -72,7 +59,7 @@ public class ProtexDAO extends CommonDAO
 	     * First we check to see if project settings contain data, if not
 	     * use global.
 	     */
-	    Map<String, String> props = settings.getProperties();
+//	    Map<String, String> props = settings.getProperties();
 
 	    String SERVER = settings
 		    .getString(BDSPluginConstants.PROPERTY_PROTEX_URL);
@@ -99,11 +86,11 @@ public class ProtexDAO extends CommonDAO
 	    protexWrapper = new ProtexServerWrapper(
 		    configManager.getServerBean(), configManager, false);
 
-	    projectApi = protexWrapper.getInternalApiWrapper().projectApi;
+//	    projectApi = protexWrapper.getInternalApiWrapper().projectApi;
 	    codeTreeApi = protexWrapper.getInternalApiWrapper().codeTreeApi;
 	    discoveryApi = protexWrapper.getInternalApiWrapper().discoveryApi;
 	    licenseApi = protexWrapper.getInternalApiWrapper().licenseApi;
-	    idApi = protexWrapper.getInternalApiWrapper().identificationApi;
+//	    idApi = protexWrapper.getInternalApiWrapper().identificationApi;
 	    bomApi = protexWrapper.getInternalApiWrapper().bomApi;
 
 	    log.info("Protex authentication completed");

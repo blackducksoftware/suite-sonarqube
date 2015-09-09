@@ -1,6 +1,8 @@
 <%
-  cc_error_msg_approvals = measure('code-center-error-message')
-  cc_bom_url = measure('cc-app-bom-url')
+	pluginName = 'BDSPlugin';
+
+	cc_error_msg_approvals = measure('code-center-error-message')
+	cc_bom_url = measure('cc-app-bom-url')
 
 	comp_list_pending_json = measure('comp-list-pending-json')
 	comp_list_approved_json = measure('comp-list-approved-json')
@@ -31,32 +33,32 @@ function loadcssfile(filename){
         document.getElementsByTagName("head")[0].appendChild(fileref)
 }
 
-loadcssfile("<%= url_for_static(:plugin => 'BDSPlugin', :path => 'font-awesome/css/font-awesome.min.css') -%>")	
-loadcssfile("<%= url_for_static(:plugin => 'BDSPlugin', :path => 'datatables/css/demo_table_jui.css') -%>")	
-loadcssfile("<%= url_for_static(:plugin => 'BDSPlugin', :path => 'datatables/css/jquery.dataTables.css') -%>")	
-loadcssfile("<%= url_for_static(:plugin => 'BDSPlugin', :path => 'jquery-ui-1.11.4/jquery-ui.min.css') -%>")	
-loadcssfile("<%= url_for_static(:plugin => 'BDSPlugin', :path => 'jquery-ui-1.11.4/jquery-ui.structure.min.css') -%>")	
-loadcssfile("<%= url_for_static(:plugin => 'BDSPlugin', :path => 'jquery-ui-1.11.4/jquery-ui.theme.min.css') -%>")	
-loadcssfile("<%= url_for_static(:plugin => 'BDSPlugin', :path => 'common/bds_common.css') -%>")	
-loadcssfile("<%= url_for_static(:plugin => 'BDSPlugin', :path => 'spop/css/jquery.smallipop.css') -%>")	
-loadcssfile("<%= url_for_static(:plugin => 'BDSPlugin', :path => 'qtip/jquery.qtip.css') -%>")
-loadcssfile("<%= url_for_static(:plugin => 'BDSPlugin', :path => 'comp_approve/comp_approve.css') -%>")	
+loadcssfile("<%= url_for_static(:plugin => pluginName, :path => 'font-awesome/css/font-awesome.min.css') -%>")	
+loadcssfile("<%= url_for_static(:plugin => pluginName, :path => 'datatables/css/demo_table_jui.css') -%>")	
+loadcssfile("<%= url_for_static(:plugin => pluginName, :path => 'datatables/css/jquery.dataTables.css') -%>")	
+loadcssfile("<%= url_for_static(:plugin => pluginName, :path => 'jquery-ui-1.11.4/jquery-ui.min.css') -%>")	
+loadcssfile("<%= url_for_static(:plugin => pluginName, :path => 'jquery-ui-1.11.4/jquery-ui.structure.min.css') -%>")	
+loadcssfile("<%= url_for_static(:plugin => pluginName, :path => 'jquery-ui-1.11.4/jquery-ui.theme.min.css') -%>")	
+loadcssfile("<%= url_for_static(:plugin => pluginName, :path => 'common/bds_common.css') -%>")	
+loadcssfile("<%= url_for_static(:plugin => pluginName, :path => 'spop/css/jquery.smallipop.css') -%>")	
+loadcssfile("<%= url_for_static(:plugin => pluginName, :path => 'qtip/jquery.qtip.css') -%>")
+loadcssfile("<%= url_for_static(:plugin => pluginName, :path => 'comp_approve/comp_approve.css') -%>")	
 </script>
 	<!-- UI Theme -->
 <!--
-	<script type="text/javascript"  src="<%= url_for_static(:plugin => 'BDSPlugin', :path => 'datatables/jquery.dataTables.min.js') -%>  "></script>
-	<script type="text/javascript" src="<%= url_for_static(:plugin => 'BDSPlugin', :path => 'datatables/jquery.dataTables.columnFilter.js') -%>  "></script>
-	<script type="text/javascript" src="<%= url_for_static(:plugin => 'BDSPlugin', :path => 'jquery-ui/jquery-ui-1.10.4.min.js') -%>  "></script>
-	<script type="text/javascript" src="<%= url_for_static(:plugin => 'BDSPlugin', :path => 'common/bds_common_functions.js') -%>  "></script>
-	<script type="text/javascript" src="<%= url_for_static(:plugin => 'BDSPlugin', :path => 'spop/jquery.smallipop.min.js') -%>  "></script>
-	<script type="text/javascript" src="<%= url_for_static(:plugin => 'BDSPlugin', :path => 'spop/contrib/modernizr.js') -%>  "></script>
-  	<script type="text/javascript" src="<%= url_for_static(:plugin => 'BDSPlugin', :path => 'qtip/jquery.qtip.min.js') -%>  "></script>
+	<script type="text/javascript"  src="<%= url_for_static(:plugin => pluginName, :path => 'datatables/jquery.dataTables.min.js') -%>  "></script>
+	<script type="text/javascript" src="<%= url_for_static(:plugin => pluginName, :path => 'datatables/jquery.dataTables.columnFilter.js') -%>  "></script>
+	<script type="text/javascript" src="<%= url_for_static(:plugin => pluginName, :path => 'jquery-ui/jquery-ui-1.10.4.min.js') -%>  "></script>
+	<script type="text/javascript" src="<%= url_for_static(:plugin => pluginName, :path => 'common/bds_common_functions.js') -%>  "></script>
+	<script type="text/javascript" src="<%= url_for_static(:plugin => pluginName, :path => 'spop/jquery.smallipop.min.js') -%>  "></script>
+	<script type="text/javascript" src="<%= url_for_static(:plugin => pluginName, :path => 'spop/contrib/modernizr.js') -%>  "></script>
+  	<script type="text/javascript" src="<%= url_for_static(:plugin => pluginName, :path => 'qtip/jquery.qtip.min.js') -%>  "></script>
 -->
 <script type="text/javascript">
 
 	var bdRequire = require.config({
 	  paths: {
-	  	jquery: "..<%= url_for_static(:plugin => 'BDSPlugin', :path => 'jquery-ui-1.11.4/external/jquery/jquery') -%>"
+	  	jquery: "..<%= url_for_static(:plugin => pluginName, :path => 'jquery-ui-1.11.4/external/jquery/jquery') -%>"
 	  }
 	});
 			var localDataTable; // global	
@@ -75,7 +77,7 @@ loadcssfile("<%= url_for_static(:plugin => 'BDSPlugin', :path => 'comp_approve/c
 	            		return  '<center>' + data + '</center>';
 	            	}
 	
-		bdRequire(["<%= url_for_static(:plugin => 'BDSPlugin', :path => 'common/bds_common_functions.js') -%>"],
+		bdRequire(["<%= url_for_static(:plugin => pluginName, :path => 'common/bds_common_functions.js') -%>"],
 		    function()
 		  	{		
 				// Populate Counts and Colors
@@ -186,10 +188,10 @@ loadcssfile("<%= url_for_static(:plugin => 'BDSPlugin', :path => 'comp_approve/c
 		// Create the table
 
 		bdRequire([
-				"<%= url_for_static(:plugin => 'BDSPlugin', :path => 'datatables/jquery.dataTables.min.js') -%>",
-				"<%= url_for_static(:plugin => 'BDSPlugin', :path => 'datatables/jquery.dataTables.columnFilter.js') -%>",
-				"<%= url_for_static(:plugin => 'BDSPlugin', :path => 'spop/jquery.smallipop.min.js') -%>",
-				"<%= url_for_static(:plugin => 'BDSPlugin', :path => 'common/bds_common_functions.js') -%>"
+				"<%= url_for_static(:plugin => pluginName, :path => 'datatables/jquery.dataTables.min.js') -%>",
+				"<%= url_for_static(:plugin => pluginName, :path => 'datatables/jquery.dataTables.columnFilter.js') -%>",
+				"<%= url_for_static(:plugin => pluginName, :path => 'spop/jquery.smallipop.min.js') -%>",
+				"<%= url_for_static(:plugin => pluginName, :path => 'common/bds_common_functions.js') -%>"
 				],			
 			function()
 	   	  	{	
@@ -207,10 +209,10 @@ loadcssfile("<%= url_for_static(:plugin => 'BDSPlugin', :path => 'comp_approve/c
         	}
         	);      
 
-		bdRequire(["<%= url_for_static(:plugin => 'BDSPlugin', :path => 'datatables/jquery.dataTables.min.js') -%>",
-				"<%= url_for_static(:plugin => 'BDSPlugin', :path => 'datatables/jquery.dataTables.columnFilter.js') -%>",
-				"<%= url_for_static(:plugin => 'BDSPlugin', :path => 'qtip/jquery.qtip.min.js') -%>",
-				"<%= url_for_static(:plugin => 'BDSPlugin', :path => 'common/bds_common_functions.js') -%>"
+		bdRequire(["<%= url_for_static(:plugin => pluginName, :path => 'datatables/jquery.dataTables.min.js') -%>",
+				"<%= url_for_static(:plugin => pluginName, :path => 'datatables/jquery.dataTables.columnFilter.js') -%>",
+				"<%= url_for_static(:plugin => pluginName, :path => 'qtip/jquery.qtip.min.js') -%>",
+				"<%= url_for_static(:plugin => pluginName, :path => 'common/bds_common_functions.js') -%>"
 				],
 	   		function()
     	  	{		
@@ -376,6 +378,6 @@ loadcssfile("<%= url_for_static(:plugin => 'BDSPlugin', :path => 'comp_approve/c
 			<tfoot></tfoot>
 		</table>
 		<br>
-		<img class="logo" src="<%= url_for_static(:plugin => 'BDSPlugin', :path => 'common/bd_logo.png') -%> ">
+		<img class="logo" src="<%= url_for_static(:plugin => pluginName, :path => 'common/bd_logo.png') -%> ">
 	</div>
 <% end %>

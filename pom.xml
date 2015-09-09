@@ -3,7 +3,54 @@
 	<modelVersion>4.0.0</modelVersion>
 	<groupId>com.blackducksofware.soleng.sonarplugin</groupId>
 	<artifactId>BDSPlugin</artifactId>
-	<version>1.2.X-SNAPSHOT</version>
+	<version>2.0.X-SNAPSHOT</version>
+	<packaging>sonar-plugin</packaging>
+
+	<name>BD Suite (Protex &amp; Code Center) plugin for SonarQube</name>
+	<description>Add Open Source Governance and Security Risk measures to your project dashbaord</description>
+	<url>https://customerhubblackducksoftware.force.com/login?inst=6&amp;startURL=%2Farticles%2FBlack_Duck_Tools%2FBlack-Duck-Suite-SonarQube-Plug-in&amp;retURL=%2Fapex%2FThe_Exchange&amp;popup=false</url>
+	<inceptionYear>2014</inceptionYear>
+	<licenses>
+		<license>
+			<name>Black Duck Commercial License</name>
+			<url>http://www.blackducksoftware.com/</url>
+			<distribution>manual</distribution>
+			<comments>Use of this plugin is governed by the license under which you use Black Duck Software Code Center (TM)</comments>
+		</license>
+	</licenses>
+	<organization>
+		<name>Black Duck Software, Inc.</name>
+		<url>http://www.blackducksoftware.com/</url>
+	</organization>
+	<developers>
+		<developer>
+			<id>kkandler</id>
+			<name>Kaj Kandler</name>
+			<email>kkandler@blackducksoftware.com</email>
+			<url>https://www.ohloh.net/accounts/KajKandler</url>
+			<organization>Black Duck Software, Inc.</organization>
+			<organizationUrl>http://www.blackducksoftware.com/</organizationUrl>
+			<roles>
+				<role>architect</role>
+				<role>developer</role>
+			</roles>
+			<timezone>-5</timezone>
+		</developer>
+		<developer>
+			<id>akamen</id>
+			<name>Ari Kamen</name>
+			<email>akamen@blackducksoftware.com</email>
+			<organization>Black Duck Software, Inc.</organization>
+			<organizationUrl>http://www.blackducksoftware.com/</organizationUrl>
+			<roles>
+				<role>developer</role>
+				<role>solutions engineer</role>
+			</roles>
+			<timezone>-5</timezone>
+		</developer>
+	</developers>
+	<contributors>
+	</contributors>
 
 	<repositories>
 		<repository>
@@ -16,9 +63,7 @@
 	<properties>
 		<license.owner>Ari Kamen</license.owner>
 		<sonar.version>3.7.2</sonar.version>
-		<sonar.pluginName>BlackDuck Plugin</sonar.pluginName>
-		<!-- Location of the deployed Sonar plugin dir -->
-		<sonar.server.location>/Applications/sonarqube-4.5.5/extensions/plugins</sonar.server.location>
+		<sonar.pluginName>Black Duck Suite Plugin</sonar.pluginName>
 	</properties>
 
 	<dependencies>
@@ -44,7 +89,7 @@
 		<dependency>
 			<groupId>com.blackducksoftware.soleng</groupId>
 			<artifactId>common-framework</artifactId>
-			<version>1.3.3-SNAPSHOT</version>
+			<version>1.3.3</version>
 		</dependency>
 		<dependency>
 			<groupId>com.blackducksoftware.protex.sdkclient</groupId>
@@ -72,7 +117,7 @@
 			<artifactId>xml-apis</artifactId>
 			<version>1.3.03</version>
 		</dependency>
-		<!--  jfree  -->
+		<!-- jfree -->
 		<dependency>
 			<groupId>jfree</groupId>
 			<artifactId>jcommon</artifactId>
@@ -85,7 +130,7 @@
 			<version>1.0.9</version>
 			<scope>provided</scope>
 		</dependency>
-		
+
 		<!-- JSON -->
 		<dependency>
 			<groupId>com.google.code.gson</groupId>
@@ -116,38 +161,6 @@
 
 
 		<plugins>
-
-			<!-- JREBEL Config -->
-			<!-- plugin> <groupId>org.zeroturnaround</groupId> <artifactId>jrebel-maven-plugin</artifactId> 
-				<executions> <execution> <id>generate-rebel-xml</id> <phase>process-resources</phase> 
-				<goals> <goal>generate</goal> </goals> </execution> </executions> </plugin -->
-
-			<!-- Copy the jar to the extension folder -->
-			<plugin>
-				<groupId>org.apache.maven.plugins</groupId>
-				<artifactId>maven-dependency-plugin</artifactId>
-				<executions>
-					<execution>
-						<id>copy-to-sonar-server</id>
-						<phase>package</phase>
-						<goals>
-							<goal>copy</goal>
-						</goals>
-						<configuration>
-							<artifactItems>
-								<artifactItem>
-									<groupId>${project.groupId}</groupId>
-									<artifactId>${project.artifactId}</artifactId>
-									<version>${project.version}</version>
-									<type>${project.packaging}</type>
-								</artifactItem>
-							</artifactItems>
-							<outputDirectory>${sonar.server.location}</outputDirectory>
-							<stripVersion>true</stripVersion>
-						</configuration>
-					</execution>
-				</executions>
-			</plugin>
 			<plugin>
 				<groupId>org.apache.maven.plugins</groupId>
 				<artifactId>maven-compiler-plugin</artifactId>
@@ -177,6 +190,69 @@
 		</plugins>
 	</build>
 
-	<packaging>sonar-plugin</packaging>
+	<profiles>
+		<profile>
+			<id>jrebel</id>
+			<properties>
+				<!-- Location of the deployed Sonar plugin dir -->
+				<sonar.server.location>/Applications/sonarqube-4.5.5/extensions/plugins</sonar.server.location>
+			</properties>
+			<build>
+				<plugins>
+					<!-- JREBEL Config -->
+					<plugin>
+						<groupId>org.zeroturnaround</groupId>
+						<artifactId>jrebel-maven-plugin</artifactId>
+						<executions>
+							<execution>
+								<id>generate-rebel-xml</id>
+								<phase>process-resources</phase>
+								<goals>
+									<goal>generate</goal>
+								</goals>
+							</execution>
+						</executions>
+					</plugin>
+				</plugins>
+			</build>
+		</profile>
+		<profile>
+			<id>local-deploy</id>
+			<properties>
+				<!-- Location of the deployed Sonar plugin dir -->
+				<sonar.server.location>/Applications/sonarqube-4.5.5/extensions/plugins</sonar.server.location>
+			</properties>
+			<build>
+				<plugins>
+					<!-- Copy the jar to the extension folder -->
+					<plugin>
+						<groupId>org.apache.maven.plugins</groupId>
+						<artifactId>maven-dependency-plugin</artifactId>
+						<executions>
+							<execution>
+								<id>copy-to-sonar-server</id>
+								<phase>package</phase>
+								<goals>
+									<goal>copy</goal>
+								</goals>
+								<configuration>
+									<artifactItems>
+										<artifactItem>
+											<groupId>${project.groupId}</groupId>
+											<artifactId>${project.artifactId}</artifactId>
+											<version>${project.version}</version>
+											<type>${project.packaging}</type>
+										</artifactItem>
+									</artifactItems>
+									<outputDirectory>${sonar.server.location}</outputDirectory>
+									<stripVersion>true</stripVersion>
+								</configuration>
+							</execution>
+						</executions>
+					</plugin>
+				</plugins>
+			</build>
+		</profile>
+	</profiles>
 </project>
 	

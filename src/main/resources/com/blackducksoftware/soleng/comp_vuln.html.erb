@@ -1,8 +1,10 @@
 <%
-  cc_error_msg_vuln = measure('code-center-error-message')
-  cc_bom_url = measure('cc-app-bom-url')
+	pluginName = 'BDSPlugin';
 
-  vuln_high_json = measure('vuln-high-list-json')
+	cc_error_msg_vuln = measure('code-center-error-message')
+	cc_bom_url = measure('cc-app-bom-url')
+
+	vuln_high_json = measure('vuln-high-list-json')
 	vuln_med_json = measure('vuln-med-list-json')
 	vuln_low_json = measure('vuln-low-list-json')
 	
@@ -27,17 +29,17 @@ function loadcssfile(filename){
         document.getElementsByTagName("head")[0].appendChild(fileref)
 }
 
-loadcssfile("<%= url_for_static(:plugin => 'BDSPlugin', :path => 'font-awesome/css/font-awesome.min.css') -%>")	
-loadcssfile("<%= url_for_static(:plugin => 'BDSPlugin', :path => 'datatables/css/demo_table_jui.css') -%>")
-loadcssfile("<%= url_for_static(:plugin => 'BDSPlugin', :path => 'datatables/css/jquery.dataTables.css') -%>")	
-loadcssfile("<%= url_for_static(:plugin => 'BDSPlugin', :path => 'font-awesome/css/font-awesome.min.css') -%>")	
+loadcssfile("<%= url_for_static(:plugin => pluginName, :path => 'font-awesome/css/font-awesome.min.css') -%>")	
+loadcssfile("<%= url_for_static(:plugin => pluginName, :path => 'datatables/css/demo_table_jui.css') -%>")
+loadcssfile("<%= url_for_static(:plugin => pluginName, :path => 'datatables/css/jquery.dataTables.css') -%>")	
+loadcssfile("<%= url_for_static(:plugin => pluginName, :path => 'font-awesome/css/font-awesome.min.css') -%>")	
 </script>
 	
 	<!-- UI Theme -->
 <script type="text/javascript">
 	var bdRequire = require.config({
 	  paths: {
-	  	jquery: "..<%= url_for_static(:plugin => 'BDSPlugin', :path => 'jquery-ui-1.11.4/external/jquery/jquery') -%>"
+	  	jquery: "..<%= url_for_static(:plugin => pluginName, :path => 'jquery-ui-1.11.4/external/jquery/jquery') -%>"
 	  }
 	});
 
@@ -51,10 +53,10 @@ loadcssfile("<%= url_for_static(:plugin => 'BDSPlugin', :path => 'font-awesome/c
 
 		console.log("Vulnerabilities: Count of master list: " + fullVulnList.length)
 		bdRequire([
-//				"<%= url_for_static(:plugin => 'BDSPlugin', :path => 'datatables/jquery.dataTables.min.js') -%>",
-//				"<%= url_for_static(:plugin => 'BDSPlugin', :path => 'datatables/jquery.dataTables.columnFilter.js') -%>",
-//				"<%= url_for_static(:plugin => 'BDSPlugin', :path => 'jquery-ui-1.11.4/jquery-ui.min.js') -%>",
-				"<%= url_for_static(:plugin => 'BDSPlugin', :path => 'common/bds_common_functions.js') -%>"],
+//				"<%= url_for_static(:plugin => pluginName, :path => 'datatables/jquery.dataTables.min.js') -%>",
+//				"<%= url_for_static(:plugin => pluginName, :path => 'datatables/jquery.dataTables.columnFilter.js') -%>",
+//				"<%= url_for_static(:plugin => pluginName, :path => 'jquery-ui-1.11.4/jquery-ui.min.js') -%>",
+				"<%= url_for_static(:plugin => pluginName, :path => 'common/bds_common_functions.js') -%>"],
 	    function()
 	  	{		
 				// Populate Counts and Colors
@@ -147,10 +149,10 @@ loadcssfile("<%= url_for_static(:plugin => 'BDSPlugin', :path => 'font-awesome/c
 	  
 
 		bdRequire([
-				"<%= url_for_static(:plugin => 'BDSPlugin', :path => 'datatables/jquery.dataTables.min.js') -%>",
-				"<%= url_for_static(:plugin => 'BDSPlugin', :path => 'datatables/jquery.dataTables.columnFilter.js') -%>",
-				"<%= url_for_static(:plugin => 'BDSPlugin', :path => 'jquery-ui-1.11.4/jquery-ui.min.js') -%>",
-				"<%= url_for_static(:plugin => 'BDSPlugin', :path => 'common/bds_common_functions.js') -%>"],
+				"<%= url_for_static(:plugin => pluginName, :path => 'datatables/jquery.dataTables.min.js') -%>",
+				"<%= url_for_static(:plugin => pluginName, :path => 'datatables/jquery.dataTables.columnFilter.js') -%>",
+				"<%= url_for_static(:plugin => pluginName, :path => 'jquery-ui-1.11.4/jquery-ui.min.js') -%>",
+				"<%= url_for_static(:plugin => pluginName, :path => 'common/bds_common_functions.js') -%>"],
   		function()
 		{		
   	  		addToMasterList(approvedJsonList, fullVulnList);
@@ -162,10 +164,10 @@ loadcssfile("<%= url_for_static(:plugin => 'BDSPlugin', :path => 'font-awesome/c
 
     
 		bdRequire([
-				"<%= url_for_static(:plugin => 'BDSPlugin', :path => 'datatables/jquery.dataTables.min.js') -%>",
-				"<%= url_for_static(:plugin => 'BDSPlugin', :path => 'datatables/jquery.dataTables.columnFilter.js') -%>",
-				"<%= url_for_static(:plugin => 'BDSPlugin', :path => 'jquery-ui-1.11.4/jquery-ui.min.js') -%>",
-				"<%= url_for_static(:plugin => 'BDSPlugin', :path => 'common/bds_common_functions.js') -%>"],
+				"<%= url_for_static(:plugin => pluginName, :path => 'datatables/jquery.dataTables.min.js') -%>",
+				"<%= url_for_static(:plugin => pluginName, :path => 'datatables/jquery.dataTables.columnFilter.js') -%>",
+				"<%= url_for_static(:plugin => pluginName, :path => 'jquery-ui-1.11.4/jquery-ui.min.js') -%>",
+				"<%= url_for_static(:plugin => pluginName, :path => 'common/bds_common_functions.js') -%>"],
   		jQuery(function()
   	  		{		
     			var localDataTable = jQuery(dtVulnTableName); // .DataTable();		 
@@ -244,6 +246,6 @@ loadcssfile("<%= url_for_static(:plugin => 'BDSPlugin', :path => 'font-awesome/c
   	</table>
   			
   	<br>
-  	 <img class="logo" src="<%= url_for_static(:plugin => 'BDSPlugin', :path => 'common/bd_logo.png') -%> ">
+  	 <img class="logo" src="<%= url_for_static(:plugin => pluginName, :path => 'common/bd_logo.png') -%> ">
   </div>
 <% end %>

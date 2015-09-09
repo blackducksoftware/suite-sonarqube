@@ -1,5 +1,7 @@
 <!-- GLOBALS -->
 <%
+	pluginName = 'BDSPlugin';
+
 	lic_json_string = measure('license-breakdown-json')
 %>
 <script type="text/javascript">
@@ -19,11 +21,11 @@ function loadcssfile(filename){
         document.getElementsByTagName("head")[0].appendChild(fileref)
 }
 
-loadcssfile("<%= url_for_static(:plugin => 'BDSPlugin', :path => 'font-awesome/css/font-awesome.min.css') -%>")	
+loadcssfile("<%= url_for_static(:plugin => pluginName, :path => 'font-awesome/css/font-awesome.min.css') -%>")	
 </script>
 
 <!--
-<script src="<%= url_for_static(:plugin => 'BDSPlugin', :path => 'highcharts.js') -%>  "></script>
+<script src="<%= url_for_static(:plugin => pluginName, :path => 'highcharts.js') -%>  "></script>
 -->
 
 <h1> scratch pad </h1>
