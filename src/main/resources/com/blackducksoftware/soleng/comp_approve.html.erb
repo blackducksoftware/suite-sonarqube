@@ -200,9 +200,9 @@ loadcssfile("<%= url_for_static(:plugin => pluginName, :path => 'comp_approve/co
 			addToMasterList(rejectedJsonList, fullDataList);
 		console.log("Rejected: Count of rejected list: " + rejectedJsonList.length+"  rejected:"+rejectedJsonList);
 			addToMasterList(pendingJsonList, fullDataList);
-		console.log("Pending: Count of pending list: " + pendingJsonList.length+"  approved:"+pendingJsonList);
+		console.log("Pending: Count of pending list: " + pendingJsonList.length+"  pending:"+pendingJsonList);
 			addToMasterList(unknownJsonList, fullDataList);
-		console.log("Unknown: Count of unknown list: " + unknownJsonList.length+"  approved:"+unknownJsonList);
+		console.log("Unknown: Count of unknown list: " + unknownJsonList.length+"  unknown:"+unknownJsonList);
 		console.log("Approvals: Count of master list: " + fullDataList.length)
 
 	      		createTable(dtTableName, fullDataList, columnData, 0);
