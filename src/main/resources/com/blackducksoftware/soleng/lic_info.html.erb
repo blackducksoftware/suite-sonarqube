@@ -127,13 +127,14 @@ loadcssfile("<%= url_for_static(:plugin => pluginName, :path => 'lic_info/lic_in
 <% if (!cc_error_msg.nil? and !cc_error_msg.data.nil?) or (!protex_error_msg.nil? and !protex_error_msg.data.nil?) %>
 <br><br>
 	<div class="error-message">
-		Error: <%=cc_error_msg.data %> <br> <%=protex_error_msg.data%>
+		<p>Error: <%=cc_error_msg.data %></p>
+		<p><%=protex_error_msg.data%></p>
 	</div>
 <% else %>
-  <img class="logo" src="<%= url_for_static(:plugin => pluginName, :path => 'common/bd_logo.png') -%>  ">  
   <div class="cc-link"> 
       <a href="<%=cc_bom_url.data%>" target="_blank" title="Code Center BOM"><i class="fa fa-share-square-o"></i></a>
   </div>
+
 
 	<table width="95%">	
 	<tr>
@@ -158,5 +159,6 @@ loadcssfile("<%= url_for_static(:plugin => pluginName, :path => 'lic_info/lic_in
       </td>
 	</tr>
 	</table>
+	<img class="logo" src="<%= url_for_static(:plugin => pluginName, :path => 'common/bd_logo.png') -%>  ">  
 
 <% end %>
