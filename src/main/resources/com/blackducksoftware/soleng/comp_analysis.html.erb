@@ -178,8 +178,6 @@ loadcssfile("<%= url_for_static(:plugin => pluginName, :path => 'qtip/jquery.qti
   	</div>
   <% else %>
 
-  <img class="logo" src="<%= url_for_static(:plugin => pluginName, :path => 'common/bd_logo.png') -%>  ">
-
   <div class="protex-tooltip-info">
        <i class="fa fa-info-circle"></i>
   </div>
@@ -248,14 +246,21 @@ loadcssfile("<%= url_for_static(:plugin => pluginName, :path => 'qtip/jquery.qti
           <p>Identified:</p>
       </div>
       <div class="widget-row widget-scale">
-        <div class="start value">0</div>
-        <div class="gradient scale">&nbsp;</div>
-        <div class="percentage">
-        	<span class="value">0%</span>
-	    	<label>Identified</label>      
+      	<div class="widget-span widget-span-11">
+	      	<div class="widget-measure-container">
+		        <div class="start value">0</div>
+		        <div class="gradient scale">&nbsp;</div>
+		        <div class="percentage">
+		        	<span class="value">0%</span>
+			    	<label>Identified</label>      
+		        </div>
+		        <div class="end value"><%=formatted_disc %></div>
+	        </div>
         </div>
-        <div class="end value"><%=formatted_disc %></div>
       </div>
+      <div class="widget-row widget-scale">
+	      <img class="logo" src="/static/BDSPlugin/common/bd_logo.png  ">
+	  </div>
       <div class="clear"></div>
     </div>
   </div>
