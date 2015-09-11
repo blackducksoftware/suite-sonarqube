@@ -111,22 +111,25 @@ filter: progid:DXImageTransform.Microsoft.gradient( startColorstr='#e80408', end
 }
 
 .percentage {
+  visibility: hidden;
+  
   height: 20px;
   width: 40px;
    
   position: absolute;
-  top: 40px;
+  top: -15px; /* equal to padding */
   display: block;
   background: #fff;
   border: 1px solid black;
   padding: 15px 15px 15px 15px;
-  left:48px;
   text-align: center;
   vertical-align: center;
   horizontal-align: center;
 }
 
-
+.percentage-container {
+	position: relative;
+}
 .percentage label {
 	margin-left: -2px;
   	font-size: 80%;
@@ -156,10 +159,5 @@ filter: progid:DXImageTransform.Microsoft.gradient( startColorstr='#e80408', end
   margin-top: -20px!important;
   padding: 8px;
   padding-right: 5px;
-}
-
-.work-complete {
-	margin-right: 3%;
-	height: 200px;
 }
 

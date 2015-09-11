@@ -2,11 +2,11 @@
 <%
 	pluginName = 'BDSPlugin';
 
-	measure_protex_total =measure('protex-total-files')
-	measure_protex_pending_total =measure('protex-total-pending-files')
-	measure_protex_no_discovery_total =measure('protex-total-no-discovery-files')
-	measure_protex_discovery_total =measure('protex-total-discovery-files')
-	measure_protex_analyzed_date =measure('protex-analyzed-date')
+	measure_protex_total = measure('protex-total-files')
+	measure_protex_pending_total = measure('protex-total-pending-files')
+	measure_protex_no_discovery_total = measure('protex-total-no-discovery-files')
+	measure_protex_discovery_total = measure('protex-total-discovery-files')
+	measure_protex_analyzed_date = measure('protex-analyzed-date')
 	
 	protex_info_json =measure('protex-info-bean')
 	
@@ -42,8 +42,8 @@ loadcssfile("<%= url_for_static(:plugin => pluginName, :path => 'common/bds_comm
 loadcssfile("<%= url_for_static(:plugin => pluginName, :path => 'qtip/jquery.qtip.css') -%>")	
 </script>
 <script type="text/javascript">
-      <% if protex_err_msg.nil? %>
-       console.log("No protex data to load");
+      <% if ! protex_err_msg.nil? %>
+       console.log("No protex data to load: "+protex_err_msg);
       <% else %>
       	var bdRequire = require.config({
 	  		paths: {
@@ -54,7 +54,7 @@ loadcssfile("<%= url_for_static(:plugin => pluginName, :path => 'qtip/jquery.qti
 		bdRequire([
 			"<%= url_for_static(:plugin => pluginName, :path => 'qtip/jquery.qtip.min.js') -%>",
 			"<%= url_for_static(:plugin => pluginName, :path => 'common/bds_common_functions.js') -%>"
-		   ]
+		   ],
 		   function() {		 
           		console.log("Started processing component analysis.");
 		 
@@ -79,12 +79,16 @@ loadcssfile("<%= url_for_static(:plugin => pluginName, :path => 'qtip/jquery.qti
   			    // We want to subtract from 1 to showcase how much percent is REMAINING rather than is absolute
   		      	var percentage_float = 1 - (pendingFiles / discoveredFiles);
   		      	var percentage = Math.floor(percentage_float * 100);
+  		      	if (pendingFiles == 0) {
+  		      		// If there is no pending files we have all the work done
+  			    	percentage = 100;
+  		      	}
   		    
   		      	var $percentageUI = jQuery('.percentage');
-  		      	var $scaleUI = jQuery('.scale');
+  		      	var $gradientUI = jQuery('.gradient');
+  		      	var $percentageContainerUI = jQuery('.percentage-container');
+  		      	var $startUI = jQuery('.start');
   		    
-  		      	var $startNumber = jQuery('.start.number');  
-  		      	var $endNumber = jQuery('.end.number');  
   		      	var $tile = jQuery('#identifiedFiles');
   		      
   		      	var mainWidgetId = $tile.length;
@@ -93,57 +97,30 @@ loadcssfile("<%= url_for_static(:plugin => pluginName, :path => 'qtip/jquery.qti
   		          	return;
   		      	}
   		      
-  		      	var range = jQuery('#identifiedFiles .end.value').offset().left 
-  		      		-    	(jQuery('#identifiedFiles .start.value').offset().left 
-  		      		+     	 jQuery('#identifiedFiles .start.value').outerWidth());
-  		      	var max_left = jQuery('#identifiedFiles .end.value').offset().left - $percentageUI.outerWidth();
-  		
-  		  	  	var min_left = ( jQuery('#identifiedFiles .start.value').offset().left + 
-  		  	  		jQuery('#identifiedFiles .start.value').outerWidth()) - 
-  		  	  		$tile.offset().left;
-  		  	  	
-  		  	  	var boxHeight = jQuery('#identifiedFiles').offset().top;
-  			 
-  		  	  	// TODO:  The fixed 15 will not work when browser is resized
-  		  	  	var top = jQuery('.gradient').offset().top - boxHeight - 15;
-  		
-  		       // Populate the starting and ending numbers
-  		       // Previous bug -- need to populate "start number" with text before
-  		       // calculating the var. left_offset, below, b/c populating "start number"
-  		       // makes the left_offset larger.
-	  		      $startNumber.html(0);
-  			      $endNumber.html(discoveredFiles); 
-  		       
-  			      var left_offset = $scaleUI.offset().left - $tile.offset().left;
-  		      
-  		    	// Calculate based on the width of the scale less the width of the % box
-  		      	// Subtract from the total the "width" of the percentage box by grabbing its left-most position
-  		      	var ranged_left = ((range * (percentage_float)) + left_offset) - $percentageUI.position().left;
-  		
-  		      	console.log("Range: " + range);
-  		      	console.log("Max Left: " +  max_left);
-  		      	console.log("Ranged left: " + ranged_left);
-  		      	console.log("Starting value of ending block: " + jQuery('#identifiedFiles .end.value').offset().left);
-  		      	console.log("Ending value of percentage block: " + $percentageUI.offset().left);
-  		      
-  		     	if( ranged_left < min_left ) {
-  		     		console.log("Resetting ranged left");
-          			ranged_left = min_left;
-          	  	}
-          		
-	          	if( ranged_left > max_left)
-          	 		console.log("Exceeded max!");
+  		        var percentageW = $gradientUI.width() - $percentageUI.outerWidth(true) - 1 
+  		        	- parseInt($percentageUI.css("borderLeftWidth").replace("px","")) 
+  		        	- parseInt($percentageUI.css("borderRightWidth").replace("px",""));
+  		        $percentageContainerUI.css({ width: percentageW + "px"});
+  		      	console.log(".gradient: width " + $gradientUI.width());
+  		      	console.log(".percentageUI: outer width " + $percentageUI.outerWidth());
+  		      	console.log(".percentageUI: borders " + $percentageUI.css("borderLeftWidth").replace("px","")
+  		      			+ " + "+$percentageUI.css("borderRightWidth").replace("px",""));
+  		      	console.log(".percentageContainerUI: width " + $percentageContainerUI.width());
+  		      	var percentageP = $startUI.outerWidth(true) - 2;
+  		      	console.log(".startUI: outer width " + $startUI.outerWidth(true));
+  		      	console.log(".startUI: borders " + $startUI.css("borderLeftWidth").replace("px","")
+  		      			+ " + "+$startUI.css("borderRightWidth").replace("px",""));
+  		      	console.log(".startUI: right " + percentageP);
+  		      	// Populate the percentage box
+  		      	$percentageUI.find(".value").html(percentage + "%");
   		      
   		      	// Animate 2 seconds max -- otherwise, a percentage of that...
   		      	var anim_time = 4000 * percentage_float;
   		    
   		      	// Add a new top for percentage box based on location of gradient
-  		      	$percentageUI.css({top: top + "px" });
-  		      	// Setting the left also removes the bounce from adding the "start number"
-  		      	$percentageUI.css({left: left_offset + "px" });
-  		      	// Populate the percentage box
-  		      	$percentageUI.animate({ left: ranged_left + "px" }, anim_time);
-  		      	$percentageUI.find(".value").html(percentage + "%");
+  		      	$percentageUI.css({left: percentageP + "px" });
+  		      	$percentageUI.css({visibility: "visible"});
+  		      	$percentageUI.animate({ left: percentage + "%" }, anim_time);
   		      
   		      	console.log("Done processing, the percent is: " + percentage);
   		      
@@ -241,18 +218,27 @@ loadcssfile("<%= url_for_static(:plugin => pluginName, :path => 'qtip/jquery.qti
           </div>
       </div>
       
-      
-      <!--div class="widget-row">
-          <p>Identified:</p>
-      </div -->
+      <div class="widget-row widget-scale">
+      	<div class="widget-span widget-span-11">
+	      	<div class="widget-measure-container">
+	          <p class="widget-measure widget-measure-main>
+    	      	<span class="widget-label">Identified</span>
+        	  	<span class="nowrap">&nbsp;</span>
+          	</p>
+		  </div>      
+		</div>      
+	  </div>      
       <div class="widget-row widget-scale">
       	<div class="widget-span widget-span-11">
 	      	<div class="widget-measure-container">
 		        <div class="start value">0</div>
-		        <div class="gradient scale">&nbsp;</div>
-		        <div class="percentage">
-		        	<span class="value">0%</span>
-			    	<label>Identified</label>      
+		        <div class="gradient scale">
+		        	<div class="percentage-container">
+		        		<div class="percentage">
+		        			<span class="value">0%</span>
+			    			<label>Identified</label>      
+		        		</div>
+		        	</div>
 		        </div>
 		        <div class="end value"><%=formatted_disc %></div>
 	        </div>
