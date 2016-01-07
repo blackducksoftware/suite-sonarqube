@@ -15,8 +15,6 @@ public class CodeCenterConnector
 
 	private static Logger log = LoggerFactory.getLogger(CodeCenterConnector.class.getName());
 	
-	private ApplicationPOJO pojo = null;
-	
     private CodeCenterDAO ccDAO = null;	
 	
     private Settings settings = null;
@@ -30,7 +28,6 @@ public class CodeCenterConnector
 	public ApplicationPOJO populateApplicationPojo(ApplicationPOJO pojo)
 	{
 		try{
-			
 			pojo = ccDAO.populateApplicationInfo(pojo);		
 			pojo = ccDAO.populateComponentBreakdown(pojo);
 			pojo = ccDAO.populateURLs(pojo, settings);

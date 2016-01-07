@@ -91,12 +91,11 @@ public class CodeCenterDAO extends CommonDAO
 		ClassLoader original = Thread.currentThread().getContextClassLoader();
 		try {
 		  Thread.currentThread().setContextClassLoader(getClass().getClassLoader());
-		   // ANY thing that references the SDK
+		  authenticate();
 		} finally {
 		  Thread.currentThread().setContextClassLoader(original);
 		}
 
-		authenticate();
 	}
 
 	@Override

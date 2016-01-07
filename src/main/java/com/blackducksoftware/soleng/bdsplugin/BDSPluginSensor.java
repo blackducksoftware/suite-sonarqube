@@ -4,6 +4,9 @@ import java.util.Date;
 
 
 
+
+
+import org.apache.commons.lang.StringUtils;
 import org.sonar.api.batch.Sensor;
 import org.sonar.api.batch.SensorContext;
 import org.sonar.api.config.Settings;
@@ -61,9 +64,39 @@ public class BDSPluginSensor implements Sensor {
 
 	public void analyse(Project sonarProject, SensorContext sensorContext) 
 	{
+		if (codeCenterIsConfgured(settings)) {
+			analyseCodeCenter(sonarProject, sensorContext);
+		} else {
+			log.info("Code Center not configured: skip analysis");
+		}
+		if (protexIsConfgured(settings)) {
+			analyseProtex(sonarProject, sensorContext);
+		} else {
+			log.info("Protex not configured: skip analysis");
+		}		
+		log.info("Finished: " + pojo.toString());
+		saveMetrics(pojo, sensorContext);
+	}
+
+	private boolean codeCenterIsConfgured(Settings settings) {
+		return !( 
+				StringUtils.isEmpty(settings.getString(BDSPluginConstants.PROPERTY_CC_URL)) && 
+				StringUtils.isEmpty(settings.getString(BDSPluginConstants.PROPERTY_CC_USERNAME)) &&
+				StringUtils.isEmpty(settings.getString(BDSPluginConstants.PROPERTY_CC_PASSSWORD))
+				);
+	}
 	
+	private boolean protexIsConfgured(Settings settings) {
+			return !( 
+					StringUtils.isEmpty(settings.getString(BDSPluginConstants.PROPERTY_PROTEX_URL)) && 
+					StringUtils.isEmpty(settings.getString(BDSPluginConstants.PROPERTY_PROTEX_USERNAME)) &&
+					StringUtils.isEmpty(settings.getString(BDSPluginConstants.PROPERTY_PROTEX_PASSWORD))
+					);
+	}
+
+	private void analyseCodeCenter(Project sonarProject,
+			SensorContext sensorContext) {
 		CodeCenterConnector ccConecctor = null;
-		ProtexConnector protexConnector = null;
 	
 		// Code Center should be initialized first so that it can get associated project info.
 		// Catch authentication exceptions and store the errors.
@@ -74,8 +107,17 @@ public class BDSPluginSensor implements Sensor {
 			log.error("Unable to authenticate Code Center, cause: " + e.getMessage());
 			pojo.setCcErrorMsg(e.getMessage());
 		}
+		
+		// Get the basic stuff
+		if(ccConecctor != null)
+			pojo = ccConecctor.populateApplicationPojo(pojo);
+	}
+	
+	private void analyseProtex(Project sonarProject,
+			SensorContext sensorContext) {
+		ProtexConnector protexConnector = null;
+	
 		try{
-			
 			protexConnector = new ProtexConnector(settings, sonarProject);
 		} catch (Exception e)
 		{
@@ -84,10 +126,6 @@ public class BDSPluginSensor implements Sensor {
 		}
 		
 		
-		// Get the basic stuff
-		if(ccConecctor != null)
-			pojo = ccConecctor.populateApplicationPojo(pojo);
-		
 		if(protexConnector != null)
 		{
 			pojo = protexConnector.populateApplicationWithProtexData(pojo, sensorContext);
@@ -95,10 +133,6 @@ public class BDSPluginSensor implements Sensor {
 			// Determine license breakdown
 			pojo = protexConnector.populateLicenseData(pojo);
 		}
-		
-		log.info("Finished: " + pojo.toString());
-
-		saveMetrics(pojo, sensorContext);
 		
 	}
 
