@@ -59,7 +59,7 @@ public class BDSPluginSensor implements Sensor {
 	
 	public boolean shouldExecuteOnProject(Project arg0) 
 	{
-		return true;
+		return codeCenterIsConfgured(settings) || protexIsConfgured(settings);
 	}
 
 	public void analyse(Project sonarProject, SensorContext sensorContext) 
@@ -79,19 +79,19 @@ public class BDSPluginSensor implements Sensor {
 	}
 
 	private boolean codeCenterIsConfgured(Settings settings) {
-		return !( 
-				StringUtils.isEmpty(settings.getString(BDSPluginConstants.PROPERTY_CC_URL)) && 
-				StringUtils.isEmpty(settings.getString(BDSPluginConstants.PROPERTY_CC_USERNAME)) &&
+		return !(
+				StringUtils.isEmpty(settings.getString(BDSPluginConstants.PROPERTY_CC_URL)) || 
+				StringUtils.isEmpty(settings.getString(BDSPluginConstants.PROPERTY_CC_USERNAME)) ||
 				StringUtils.isEmpty(settings.getString(BDSPluginConstants.PROPERTY_CC_PASSSWORD))
 				);
 	}
 	
 	private boolean protexIsConfgured(Settings settings) {
-			return !( 
-					StringUtils.isEmpty(settings.getString(BDSPluginConstants.PROPERTY_PROTEX_URL)) && 
-					StringUtils.isEmpty(settings.getString(BDSPluginConstants.PROPERTY_PROTEX_USERNAME)) &&
-					StringUtils.isEmpty(settings.getString(BDSPluginConstants.PROPERTY_PROTEX_PASSWORD))
-					);
+		return !(
+				StringUtils.isEmpty(settings.getString(BDSPluginConstants.PROPERTY_PROTEX_URL)) || 
+				StringUtils.isEmpty(settings.getString(BDSPluginConstants.PROPERTY_PROTEX_USERNAME)) ||
+				StringUtils.isEmpty(settings.getString(BDSPluginConstants.PROPERTY_PROTEX_PASSWORD))
+				);
 	}
 
 	private void analyseCodeCenter(Project sonarProject,
