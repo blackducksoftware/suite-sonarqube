@@ -68,11 +68,13 @@ public class BDSPluginSensor implements Sensor {
 			analyseCodeCenter(sonarProject, sensorContext);
 		} else {
 			log.info("Code Center not configured: skip analysis");
+			pojo.setCcErrorMsg("Code Center not configured: no data");
 		}
 		if (protexIsConfgured(settings)) {
 			analyseProtex(sonarProject, sensorContext);
 		} else {
 			log.info("Protex not configured: skip analysis");
+			pojo.setProtexErrorMsg("Protex not configured: no data");
 		}		
 		log.info("Finished: " + pojo.toString());
 		saveMetrics(pojo, sensorContext);
