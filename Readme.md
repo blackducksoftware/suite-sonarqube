@@ -65,6 +65,7 @@
   * Run
 	
 		env MAVEN_OPTS="-Xmx512m -XX:MaxPermSize=128m" mvn -s ./settings.xml clean verify sonar:sonar
+		
 * Once you have the project, go to settings and set
 	* Protex project (*)
 	* Code Center application/version
