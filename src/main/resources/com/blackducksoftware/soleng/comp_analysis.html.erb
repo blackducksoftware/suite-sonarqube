@@ -58,19 +58,32 @@ loadcssfile("<%= url_for_static(:plugin => pluginName, :path => 'qtip/jquery.qti
 		   function() {		 
           		console.log("Started processing component analysis.");
 		 
-            	var infoJson = null;
             <% if !protex_info_json.nil? %>
-              <% if !protex_info_json.data and !protex_info_json.empty %>
-                  infoJson = <%=protex_info_json.data%>;
-              <% end %>
-  	        <% end %>
-            
+            	var infoJson = <%=protex_info_json.data%>;
+
             	if(infoJson != null) {
               		var protexBomUrl = infoJson.protexBomURL;
               		var protexLinkUI = jQuery('#protex_bom_anchor_tag');
               		protexLinkUI.attr('href',protexBomUrl);
             	}
-            
+
+             	// Build the Protex info Tip        
+             	if(infoJson != null) {
+                 	var protexInfoList = "";
+                 	var html_info_list = "";  
+       
+	                html_info_list = buildHtmlToolTip("Server", infoJson.protexServer);
+                 	html_info_list = html_info_list + buildHtmlToolTip("Project", infoJson.protexProjectPojo.projectName);
+                 	html_info_list = html_info_list + buildHtmlToolTip("Analyzed Date", infoJson.protexProjectPojo.analyzedDate);
+                
+                 	console.log("Protex Info HTML:" + html_info_list);
+  
+                	// Create a tooltip for the protex info button
+                	buildToolTip(".protex-tooltip-info", "Protex Information", html_info_list);     
+            	}
+            <% else %>
+              console.log("Protex Info: Nil"); 		
+  	        <% end %>
             
   		      	var discoveredFiles = <%=measure_protex_discovery_total.value%>;
   		      	console.log("Discovered files: " + discoveredFiles);
@@ -124,20 +137,6 @@ loadcssfile("<%= url_for_static(:plugin => pluginName, :path => 'qtip/jquery.qti
   		      
   		      	console.log("Done processing, the percent is: " + percentage);
   		      
-             	// Build the Protex info Tip        
-             	if(infoJson != null) {
-                 	var protexInfoList = "";
-                 	var html_info_list = "";  
-       
-	                html_info_list = buildHtmlToolTip("Server", infoJson.protexServer);
-                 	html_info_list = html_info_list + buildHtmlToolTip("Project", infoJson.protexProjectPojo.projectName);
-                 	html_info_list = html_info_list + buildHtmlToolTip("Analyzed Date", infoJson.protexProjectPojo.analyzedDate);
-                
-                 	console.log("Protex Info HTML:" + html_info_list);
-  
-                	// Create a tooltip for the protex info button
-                	buildToolTip(".protex-tooltip-info", "Protex Information", html_info_list);     
-            	}
 			});
       <% end %>
 	</script>
