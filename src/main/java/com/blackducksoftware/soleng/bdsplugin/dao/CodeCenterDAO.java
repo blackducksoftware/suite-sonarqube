@@ -50,7 +50,7 @@ import com.blackducksoftware.soleng.bdsplugin.model.VulnPOJO;
 
 /**
  * All Code Center Connectivity goes through this DAO class
- * 
+ *
  * @author Ari Kamen
  *
  */
@@ -187,7 +187,7 @@ public class CodeCenterDAO extends CommonDAO
             appToken.setVersion(VERSION_ID);
 
             app = aApi.getApplication(appToken);
-            log.info("Found application: " + app.getDescription());
+            log.info("Found application: " + app.getName() + "  " + app.getVersion() + "(" + app.getDescription() + ")");
 
             // Get associated Protex project!
             try
@@ -230,17 +230,16 @@ public class CodeCenterDAO extends CommonDAO
 
     /**
      * Based on the request.getApprovalStatus create buckets for requests
-     * 
+     *
      * @param pojo
      * @return
      */
     public ApplicationPOJO populateComponentBreakdown(ApplicationPOJO pojo)
     {
-        List<CompPOJO> allComponents = new ArrayList<CompPOJO>();
         try
         {
-            log.info("Gathering all requests.");
-            allComponents = getAllRequestsForApplication(allComponents, pojo, pojo.getApplicationId());
+            log.info("Gathering all requests for :" + pojo.getApplicationId().getId());
+            List<CompPOJO> allComponents = getAllRequestsForApplication(pojo, pojo.getApplicationId());
 
             List<CompPOJO> approvedComponents = new ArrayList<CompPOJO>();
             List<CompPOJO> rejectedComponents = new ArrayList<CompPOJO>();
@@ -294,14 +293,15 @@ public class CodeCenterDAO extends CommonDAO
     /**
      * Recursively looks through all the requests, if a request is another application
      * then continues looking until all requests are fetched.
-     * 
+     *
      * @param requests
      * @param applicationId
      * @return
      */
-    private List<CompPOJO> getAllRequestsForApplication(
-            List<CompPOJO> allComponents, ApplicationPOJO pojo, ApplicationNameVersionOrIdToken appToken)
+    private List<CompPOJO> getAllRequestsForApplication(ApplicationPOJO pojo, ApplicationNameVersionOrIdToken appToken)
     {
+
+        List<CompPOJO> allComponents = new ArrayList<CompPOJO>();
         try
         {
             List<RequestSummary> summaries = new ArrayList<RequestSummary>();
@@ -310,12 +310,15 @@ public class CodeCenterDAO extends CommonDAO
                 summaries = aApi.getApplicationRequests(appToken);
             } catch (SdkFault sdk)
             {
-                // We catch here, because of bug CC-10683
+                // FIXME We catch here, because of bug CC-10683
                 log.warn("Unable to get app information for: " + sdk.getMessage());
                 String errorCode = sdk.getFaultInfo().getErrorCode().toString();
                 if (errorCode != null && errorCode.contains("NO_APPLICATION_NAMEVERISON_FOUND")) {
                     log.warn("Most likely a custom component.");
                 }
+            }
+            if (summaries.size() == 0) {
+                log.warn("No Requests for " + pojo.getAppName() + "  " + pojo.getAppVersion());
             }
             for (RequestSummary request : summaries)
             {
@@ -335,10 +338,11 @@ public class CodeCenterDAO extends CommonDAO
                     componentApplicationToken.setName(component.getComponentName());
                     componentApplicationToken.setVersion(component.getVersion());
 
-                    getAllRequestsForApplication(allComponents, pojo, componentApplicationToken);
+                    allComponents.addAll(getAllRequestsForApplication(pojo, componentApplicationToken));
                 }
                 // Otherwise add it to our list
                 allComponents.add(component);
+                log.info("Fetched component: " + component.getComponentName() + "  " + component.getVersion());
                 // Process licenses and vulnerabilities for this component
                 populateLicenseData(pojo, request);
                 populateVulnerabilityData(pojo, component, request);
@@ -354,7 +358,7 @@ public class CodeCenterDAO extends CommonDAO
 
     /**
      * Creates a component map, with key being
-     * 
+     *
      * @param pojo
      * @param request
      */
@@ -401,7 +405,7 @@ public class CodeCenterDAO extends CommonDAO
     /**
      * Grabs the license information from the SDK and creates the first basic license POJO object.
      * This object will acquire more data later from Protex.
-     * 
+     *
      * @param pojo
      * @param request
      */
@@ -433,7 +437,7 @@ public class CodeCenterDAO extends CommonDAO
     /**
      * Populates the application with counts
      * Populates the internal component bean with vulnerability information
-     * 
+     *
      * @param appPojo
      * @param component
      * @param request
@@ -522,7 +526,7 @@ public class CodeCenterDAO extends CommonDAO
      * Note: Version is optional
      * http://<servername>/codecenter/CCRedirectPage?isAtTop=true&CCRedirectPageName=Component&CCComponentName=<compName
      * >&CCComponentVersion=<version>
-     * 
+     *
      * @param pojo
      * @param settings
      * @return
@@ -562,7 +566,7 @@ public class CodeCenterDAO extends CommonDAO
 
     /**
      * Populates URLs for specific entry points within Code Center
-     * 
+     *
      * @param pojo
      * @param settings
      * @return
@@ -580,11 +584,33 @@ public class CodeCenterDAO extends CommonDAO
                 if (!server.endsWith("/")) {
                     server += "/";
                 }
+                StringBuilder urlBuilder = new StringBuilder(server)
+                        .append("codecenter/CCRedirectPage?isAtTop=true&CCRedirectPageName=Request&CCApplicationName=")
+                        .append(appName)
+                        .append("&CCApplicationVersion=")
+                        .append(versionName);
+                // FIXME CC-13128
+                /*
+                 * Hack!!!
+                 * Dangerous workaround for CC-13128
+                 * This assumes that the components are already filled in the Pojo, which we ensure in the calling
+                 * method
+                 */
+                CompPOJO firstComp = getFirstComponent(pojo);
+                if (firstComp != null) {
+                    log.warn("**Hack** adding false selection to CC BOM URL");
+                    urlBuilder.append("&CCComponentName=")
+                            .append(firstComp.getComponentName())
+                            .append("&CCComponentVersion=")
+                            .append(firstComp.getVersion());
+                } else {
+                    log.warn("CC URL will fail, because there are no components");
+                }
+                /*
+                 * End of Hack
+                 */
                 String urlString =
-                        URIUtil.encodeQuery(server +
-                                "codecenter/CCRedirectPage?isAtTop=true&CCRedirectPageName=Request&CCApplicationName=" + appName + "&CCApplicationVersion="
-                                + versionName);
-
+                        URIUtil.encodeQuery(urlBuilder.toString());
                 pojo.setCodeCenterBomPage(urlString);
 
             } catch (URIException e) {
@@ -597,6 +623,31 @@ public class CodeCenterDAO extends CommonDAO
         }
 
         return pojo;
+    }
+
+    private CompPOJO getFirstComponent(ApplicationPOJO pojo) {
+        List<CompPOJO> compsA = pojo.getComponentsApproved();
+        if (compsA.size() > 0) {
+            log.debug("Approved: " + compsA.size());
+            return compsA.get(0);
+        }
+        List<CompPOJO> compsR = pojo.getComponentsRejected();
+        if (compsR.size() > 0) {
+            log.debug("Rejected: " + compsR.size());
+            return compsR.get(0);
+        }
+        List<CompPOJO> compsP = pojo.getComponentsPending();
+        if (compsP.size() > 0) {
+            log.debug("Pending: " + compsP.size());
+            return compsP.get(0);
+        }
+        List<CompPOJO> compsU = pojo.getComponentsUnknown();
+        if (compsU.size() > 0) {
+            log.debug("Unknown: " + compsU.size());
+            return compsU.get(0);
+        }
+        log.debug("No components");
+        return null;
     }
 
     public ApplicationPOJO collectCustomAttributes(ApplicationPOJO applicationPojo)
