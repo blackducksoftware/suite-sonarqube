@@ -581,14 +581,12 @@ public class CodeCenterDAO extends CommonDAO
         {
             try
             {
+                StringBuilder urlBuilder = new StringBuilder(server);
                 if (!server.endsWith("/")) {
-                    server += "/";
+                    urlBuilder.append("/");
                 }
-                StringBuilder urlBuilder = new StringBuilder(server)
-                        .append("codecenter/CCRedirectPage?isAtTop=true&CCRedirectPageName=Request&CCApplicationName=")
-                        .append(appName)
-                        .append("&CCApplicationVersion=")
-                        .append(versionName);
+
+                urlBuilder.append("codecenter");
                 // FIXME CC-13128
                 /*
                  * Hack!!!
@@ -599,12 +597,20 @@ public class CodeCenterDAO extends CommonDAO
                 CompPOJO firstComp = getFirstComponent(pojo);
                 if (firstComp != null) {
                     log.warn("**Hack** adding false selection to CC BOM URL");
-                    urlBuilder.append("&CCComponentName=")
+                    urlBuilder.append("/CCRedirectPage?isAtTop=true&CCRedirectPageName=Request&CCApplicationName=")
+                            .append(appName)
+                            .append("&CCApplicationVersion=")
+                            .append(versionName)
+                            .append("&CCComponentName=")
                             .append(firstComp.getComponentName())
                             .append("&CCComponentVersion=")
                             .append(firstComp.getVersion());
                 } else {
+                    //
                     log.warn("CC URL will fail, because there are no components");
+                    log.warn("Sending the user to the CC Server URL page instead");
+                    // when CC-13128 is fixed the Re-direct URL for the application
+                    // BOM will go here.
                 }
                 /*
                  * End of Hack
