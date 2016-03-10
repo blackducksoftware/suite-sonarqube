@@ -129,6 +129,7 @@ filter: progid:DXImageTransform.Microsoft.gradient( startColorstr='#e80408', end
 
 .percentage-container {
 	position: relative;
+	z-index: 1; /*Want the percentage box over the gradient */
 }
 .percentage label {
 	margin-left: -2px;

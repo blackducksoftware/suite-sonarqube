@@ -88,10 +88,22 @@ loadcssfile("<%= url_for_static(:plugin => pluginName, :path => 'qtip/jquery.qti
   		      	var discoveredFiles = <%=measure_protex_discovery_total.value%>;
   		      	console.log("Discovered files: " + discoveredFiles);
   			    var pendingFiles = <%=measure_protex_pending_total.value%>;
-  		
+  			    console.log("Pending files: " + pendingFiles);
+  			    
   			    // We want to subtract from 1 to showcase how much percent is REMAINING rather than is absolute
   		      	var percentage_float = 1 - (pendingFiles / discoveredFiles);
   		      	var percentage = Math.floor(percentage_float * 100);
+  		      	
+  		      	// defensive programming here if the percentage is less than 0 
+  		      	// then set the value to 0. Specifically if the pendingFiles > discoveredFiles
+  		      	if(percentage < 0) {
+  		      	   percentage = 0;
+  		      	}
+  		      	// also make sure we do not exceed 100%
+  		      	if(percentage > 100) {
+  		      		percentage = 100;
+  		      	}
+  		      	
   		      	if (pendingFiles == 0) {
   		      		// If there is no pending files we have all the work done
   			    	percentage = 100;
