@@ -76,6 +76,7 @@
 
 #Release Notes
 ##Version 2.0.0
+* Due to a Protex issue the counts for component analysis shown in SonarQube will not match the Protex UI.  This has been address in Protex 7.3
 * New version supporting the UI of SonarQube 5.1+
 ##Version 1.2.2
 * Fixed bug with password authentication failing
