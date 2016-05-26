@@ -1,11 +1,11 @@
 package com.blackducksoftware.soleng.bdsplugin.config;
 
-import soleng.framework.core.config.CodeCenterConfigurationManager;
-import soleng.framework.core.config.user.CommonUser;
+import com.blackducksoftware.tools.commonframework.core.config.ConfigurationManager;
+import com.blackducksoftware.tools.commonframework.core.config.user.CommonUser;
 
-public class BDSPluginCodeCenterConfigManager extends CodeCenterConfigurationManager {
+public class BDSPluginCodeCenterConfigManager extends ConfigurationManager {
 
-	public BDSPluginCodeCenterConfigManager(CommonUser user) {
-		super(user);
-	}
+    public BDSPluginCodeCenterConfigManager(CommonUser user, APPLICATION appType) {
+        super(user, appType);
+    }
 }
