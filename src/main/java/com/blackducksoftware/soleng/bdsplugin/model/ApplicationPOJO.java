@@ -28,9 +28,9 @@ public class ApplicationPOJO {
 	/**
 	 * Error Messages
 	 */
-	private String protexErrorMsg;
+	private String protexErrorMsg = "";
 
-	private String ccErrorMsg;
+	private String ccErrorMsg = "";
 
 	/**
 	 * Component Information
@@ -435,6 +435,10 @@ public class ApplicationPOJO {
 	}
 
 	public String getProtexErrorMsg() {
+		if (protexErrorMsg == null) {
+			protexErrorMsg = "";
+		}
+
 		return protexErrorMsg;
 	}
 
