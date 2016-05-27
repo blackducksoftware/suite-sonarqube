@@ -34,12 +34,12 @@ loadcssfile("<%= url_for_static(:plugin => pluginName, :path => 'common/bds_comm
 loadcssfile("<%= url_for_static(:plugin => pluginName, :path => 'lic_info/lic_info.css') -%>")	
 </script>
 <script type="text/javascript">
-	<% if !(cc_error_msg.nil? or protex_error_msg.nil?) %>
+	<% if false %>
 	    console.log("Code Center error:"<% cc_error_msg -%>);
 		console.log("Protex error:"<% protex_error_msg -%>);		
     	console.log("License info widget, nothing to display");
 	<% else %>
-		require(["<%= url_for_static(:plugin => pluginName, :path => 'highcharts.js') -%>"],
+	
 	  function()
 	  {
 		var dataArr = [];
