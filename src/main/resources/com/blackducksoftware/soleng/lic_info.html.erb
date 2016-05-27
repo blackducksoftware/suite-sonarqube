@@ -40,7 +40,7 @@ loadcssfile("<%= url_for_static(:plugin => pluginName, :path => 'lic_info/lic_in
 
 
 <script type="text/javascript">
-	<% if !(cc_error_msg.nil? or protex_error_msg.nil?) %>
+	<% if (!cc_error_msg.nil? and !protex_error_msg.nil? and protex_error_msg.data.length > 0) %>
 	    console.log("Code Center error:"<% cc_error_msg -%>);
 		console.log("Protex error:"<% protex_error_msg -%>);		
     	console.log("License info widget, nothing to display");
