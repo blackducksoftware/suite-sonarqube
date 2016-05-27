@@ -41,9 +41,12 @@ loadcssfile("<%= url_for_static(:plugin => pluginName, :path => 'common/grids-mi
 loadcssfile("<%= url_for_static(:plugin => pluginName, :path => 'common/bds_common.css') -%>")	
 loadcssfile("<%= url_for_static(:plugin => pluginName, :path => 'qtip/jquery.qtip.css') -%>")	
 </script>
+
+<script type="text/javascript" src="<%= url_for_static(:plugin => pluginName, :path => 'spop/contrib/require.min.js') -%>  "></script>
+
 <script type="text/javascript">
-      <% if ! protex_err_msg.nil? %>
-       console.log("No protex data to load: "+protex_err_msg);
+      <% if !protex_err_msg.nil? and !protex_err_msg.data.nil? and protex_err_msg.data.length > 0 %>
+       			console.log("No protex data to load!");
       <% else %>
       	var bdRequire = requirejs.config({
 	  		paths: {
