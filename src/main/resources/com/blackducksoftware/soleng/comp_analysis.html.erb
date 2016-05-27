@@ -159,7 +159,7 @@ loadcssfile("<%= url_for_static(:plugin => pluginName, :path => 'qtip/jquery.qti
   
   <!-- HANDLE ERROR CASE -->
             
-  <% if !protex_err_msg.nil? and !protex_err_msg.data.nil? %>
+  <% if !protex_err_msg.nil? and !protex_err_msg.data.nil? and protex_err_msg.data.length > 0 %>
   	<br><br>
   	<div class="error-message">
   		Error: <%=protex_err_msg.data %>

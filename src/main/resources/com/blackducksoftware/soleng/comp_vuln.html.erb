@@ -34,7 +34,6 @@ loadcssfile("<%= url_for_static(:plugin => pluginName, :path => 'datatables/css/
 loadcssfile("<%= url_for_static(:plugin => pluginName, :path => 'datatables/css/jquery.dataTables.css') -%>")	
 loadcssfile("<%= url_for_static(:plugin => pluginName, :path => 'font-awesome/css/font-awesome.min.css') -%>")	
 </script>
-
 	<script type="text/javascript" src="<%= url_for_static(:plugin => pluginName, :path => 'spop/contrib/require.min.js') -%>  "></script>
 	
 	<!-- UI Theme -->
@@ -188,7 +187,8 @@ loadcssfile("<%= url_for_static(:plugin => pluginName, :path => 'font-awesome/cs
      <a href="<%=cc_bom_url.data%>" target="_blank" title="Code Center BOM"><i class="fa fa-share-square-o"></i></a>
  </div>
  <br>
-<% if !cc_error_msg_vuln.nil? and !cc_error_msg_vuln.data.nil? %>   
+
+<% if !cc_error_msg_vuln.nil? and !cc_error_msg_vuln.data.nil? and cc_error_msg_vuln.data.length > 0 %>   
   <br>
   <div class="error-message">
     Error: <%=cc_error_msg_vuln.data %>

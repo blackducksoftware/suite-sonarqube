@@ -129,8 +129,8 @@ loadcssfile("<%= url_for_static(:plugin => pluginName, :path => 'lic_info/lic_in
       Component License Information 
      </h1> 
   </div>
-  
-<% if (!cc_error_msg.nil? and !cc_error_msg.data.nil?) or (!protex_error_msg.nil? and !protex_error_msg.data.nil?) %>
+
+<% if (!cc_error_msg.nil? and !cc_error_msg.data.nil? and cc_error_msg.data.length > 0) or (!protex_error_msg.nil? and !protex_error_msg.data.nil? and protex_error_msg.data.length>0) %>
 <br><br>
 	<div class="error-message">
 		<p>Error: <%=cc_error_msg.data %></p>
