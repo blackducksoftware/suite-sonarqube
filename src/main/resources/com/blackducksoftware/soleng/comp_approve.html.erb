@@ -54,9 +54,11 @@ loadcssfile("<%= url_for_static(:plugin => pluginName, :path => 'comp_approve/co
 	<script type="text/javascript" src="<%= url_for_static(:plugin => pluginName, :path => 'spop/contrib/modernizr.js') -%>  "></script>
   	<script type="text/javascript" src="<%= url_for_static(:plugin => pluginName, :path => 'qtip/jquery.qtip.min.js') -%>  "></script>
 -->
+
+<script type="text/javascript" src="<%= url_for_static(:plugin => pluginName, :path => 'spop/contrib/require.min.js') -%>  "></script>
 <script type="text/javascript">
 
-	var bdRequire = require.config({
+	var bdRequire = requirejs.config({
 	  paths: {
 	  	jquery: "..<%= url_for_static(:plugin => pluginName, :path => 'jquery-ui-1.11.4/external/jquery/jquery') -%>"
 	  }

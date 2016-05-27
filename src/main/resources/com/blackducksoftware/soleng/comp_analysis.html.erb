@@ -45,7 +45,7 @@ loadcssfile("<%= url_for_static(:plugin => pluginName, :path => 'qtip/jquery.qti
       <% if ! protex_err_msg.nil? %>
        console.log("No protex data to load: "+protex_err_msg);
       <% else %>
-      	var bdRequire = require.config({
+      	var bdRequire = requirejs.config({
 	  		paths: {
 	  			jquery: "..<%= url_for_static(:plugin => pluginName, :path => 'jquery-ui-1.11.4/external/jquery/jquery') -%>"
 	  		}

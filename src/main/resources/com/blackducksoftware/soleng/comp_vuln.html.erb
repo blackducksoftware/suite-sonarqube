@@ -34,10 +34,12 @@ loadcssfile("<%= url_for_static(:plugin => pluginName, :path => 'datatables/css/
 loadcssfile("<%= url_for_static(:plugin => pluginName, :path => 'datatables/css/jquery.dataTables.css') -%>")	
 loadcssfile("<%= url_for_static(:plugin => pluginName, :path => 'font-awesome/css/font-awesome.min.css') -%>")	
 </script>
+
+	<script type="text/javascript" src="<%= url_for_static(:plugin => pluginName, :path => 'spop/contrib/require.min.js') -%>  "></script>
 	
 	<!-- UI Theme -->
 <script type="text/javascript">
-	var bdRequire = require.config({
+	var bdRequire = requirejs.config({
 	  paths: {
 	  	jquery: "..<%= url_for_static(:plugin => pluginName, :path => 'jquery-ui-1.11.4/external/jquery/jquery') -%>"
 	  }
