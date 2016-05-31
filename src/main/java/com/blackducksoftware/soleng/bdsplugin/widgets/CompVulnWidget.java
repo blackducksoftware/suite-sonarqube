@@ -10,7 +10,6 @@ import org.sonar.api.web.RubyRailsWidget;
 import org.sonar.api.web.UserRole;
 import org.sonar.api.web.WidgetCategory;
 
-import com.blackducksoftware.soleng.bdsplugin.BDSPlugin;
 import com.blackducksoftware.soleng.bdsplugin.BDSPluginConstants;
 
 @UserRole(UserRole.USER)
@@ -33,7 +32,7 @@ public class CompVulnWidget extends AbstractRubyTemplate implements RubyRailsWid
 
 	@Override
 	protected String getTemplatePath() {
-		if (BDSPlugin.devMode) {
+		if (BDSPluginConstants.DEV_MODE) {
 			String workspace = BDSPluginConstants.DEV_LOCAL_ECLIPSE_PROJECT;
 			log.warn("RUNNING IN DEV MODE!!!");
 			String absolutePath = workspace + File.separator + ruby_template_file;

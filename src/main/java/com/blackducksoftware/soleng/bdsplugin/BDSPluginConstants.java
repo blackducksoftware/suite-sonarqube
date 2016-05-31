@@ -90,6 +90,6 @@ public class BDSPluginConstants {
 	// workspace
 	public static String DEV_LOCAL_ECLIPSE_PROJECT = "C:\\eclipse_workspaces\\workspace-git-repos\\sonarqubeplugin\\src\\main\\resources\\com\\blackducksoftware\\soleng";
 	// Used for the UI to return static ruby templates
-	public static final Boolean devMode = new Boolean(false);
+	public static final Boolean DEV_MODE = new Boolean(false);
 
 }
