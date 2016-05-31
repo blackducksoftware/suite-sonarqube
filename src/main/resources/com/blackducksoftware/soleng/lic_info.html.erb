@@ -12,6 +12,8 @@
 	pp_measure = measure('protex-project')
 	
 %>
+
+
 <script type="text/javascript">
 function loadjsfile(filename){
     var fileref=document.createElement('script')
@@ -33,13 +35,17 @@ loadcssfile("<%= url_for_static(:plugin => pluginName, :path => 'font-awesome/cs
 loadcssfile("<%= url_for_static(:plugin => pluginName, :path => 'common/bds_common.css') -%>")	
 loadcssfile("<%= url_for_static(:plugin => pluginName, :path => 'lic_info/lic_info.css') -%>")	
 </script>
+
+<script type="text/javascript" src="<%= url_for_static(:plugin => pluginName, :path => 'spop/contrib/require.min.js') -%>  "></script>
+
+
 <script type="text/javascript">
-	<% if !(cc_error_msg.nil? or protex_error_msg.nil?) %>
+	<% if (!cc_error_msg.nil? and !protex_error_msg.nil? and protex_error_msg.data.length > 0) %>
 	    console.log("Code Center error:"<% cc_error_msg -%>);
 		console.log("Protex error:"<% protex_error_msg -%>);		
     	console.log("License info widget, nothing to display");
 	<% else %>
-		require(["<%= url_for_static(:plugin => pluginName, :path => 'highcharts.js') -%>"],
+		requirejs(["<%= url_for_static(:plugin => pluginName, :path => 'highcharts.js') -%>"],
 	  function()
 	  {
 		var dataArr = [];
@@ -123,8 +129,8 @@ loadcssfile("<%= url_for_static(:plugin => pluginName, :path => 'lic_info/lic_in
       Component License Information 
      </h1> 
   </div>
-  
-<% if (!cc_error_msg.nil? and !cc_error_msg.data.nil?) or (!protex_error_msg.nil? and !protex_error_msg.data.nil?) %>
+
+<% if (!cc_error_msg.nil? and !cc_error_msg.data.nil? and cc_error_msg.data.length > 0) or (!protex_error_msg.nil? and !protex_error_msg.data.nil? and protex_error_msg.data.length>0) %>
 <br><br>
 	<div class="error-message">
 		<p>Error: <%=cc_error_msg.data %></p>

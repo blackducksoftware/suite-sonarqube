@@ -435,6 +435,10 @@ public class ApplicationPOJO {
 	}
 
 	public String getProtexErrorMsg() {
+		if (protexErrorMsg == null) {
+			protexErrorMsg = "";
+		}
+
 		return protexErrorMsg;
 	}
 

@@ -34,10 +34,11 @@ loadcssfile("<%= url_for_static(:plugin => pluginName, :path => 'datatables/css/
 loadcssfile("<%= url_for_static(:plugin => pluginName, :path => 'datatables/css/jquery.dataTables.css') -%>")	
 loadcssfile("<%= url_for_static(:plugin => pluginName, :path => 'font-awesome/css/font-awesome.min.css') -%>")	
 </script>
+	<script type="text/javascript" src="<%= url_for_static(:plugin => pluginName, :path => 'spop/contrib/require.min.js') -%>  "></script>
 	
 	<!-- UI Theme -->
 <script type="text/javascript">
-	var bdRequire = require.config({
+	var bdRequire = requirejs.config({
 	  paths: {
 	  	jquery: "..<%= url_for_static(:plugin => pluginName, :path => 'jquery-ui-1.11.4/external/jquery/jquery') -%>"
 	  }
@@ -186,7 +187,8 @@ loadcssfile("<%= url_for_static(:plugin => pluginName, :path => 'font-awesome/cs
      <a href="<%=cc_bom_url.data%>" target="_blank" title="Code Center BOM"><i class="fa fa-share-square-o"></i></a>
  </div>
  <br>
-<% if !cc_error_msg_vuln.nil? and !cc_error_msg_vuln.data.nil? %>   
+
+<% if !cc_error_msg_vuln.nil? and !cc_error_msg_vuln.data.nil? and cc_error_msg_vuln.data.length > 0 %>   
   <br>
   <div class="error-message">
     Error: <%=cc_error_msg_vuln.data %>
