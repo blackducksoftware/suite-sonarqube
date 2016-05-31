@@ -29,10 +29,6 @@ public class BDSPlugin extends SonarPlugin {
 	protected final static String CC_SUB_CATEGORY = "Code Center";
 	protected final static String PROTEX_SUB_CATEGORY = "Protex";
 	protected final static String GENERAL_CATEGORY = " General";
-
-	// Used for the UI to return static ruby templates
-	public static final Boolean devMode = new Boolean(true);
-
 	private static final Logger log = LoggerFactory.getLogger(ProtexConnector.class);
 
 	private String sonarProjectName = "";
