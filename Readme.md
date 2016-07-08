@@ -1,5 +1,5 @@
 ## Overview ##
-BDB Suite plugin for SonarQube
+BDB Suite plugin for SonarQube.  Creates widgets displaying Protex summary data, license information and security vulnerability lists per projects via SonarQube widgets.
 
 ## Build ##
 
