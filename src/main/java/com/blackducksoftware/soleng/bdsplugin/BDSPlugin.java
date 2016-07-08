@@ -1,3 +1,25 @@
+/*******************************************************************************
+ * Copyright (C) 2016 Black Duck Software, Inc.
+ * http://www.blackducksoftware.com/
+ *
+ * Licensed to the Apache Software Foundation (ASF) under one
+ * or more contributor license agreements. See the NOTICE file
+ * distributed with this work for additional information
+ * regarding copyright ownership. The ASF licenses this file
+ * to you under the Apache License, Version 2.0 (the
+ * "License"); you may not use this file except in compliance
+ *  with the License. You may obtain a copy of the License at
+ *
+ * http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing,
+ *  software distributed under the License is distributed on an
+ * "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY
+ * KIND, either express or implied. See the License for the
+ * specific language governing permissions and limitations
+ *  under the License.
+ *
+ *******************************************************************************/
 package com.blackducksoftware.soleng.bdsplugin;
 
 import java.util.ArrayList;
@@ -18,9 +40,6 @@ import com.google.common.collect.ImmutableList;
 
 /**
  * Plugin class that defines all the properties.
- * 
- * @author Ari
- * 
  */
 
 public class BDSPlugin extends SonarPlugin {
@@ -48,75 +67,87 @@ public class BDSPlugin extends SonarPlugin {
 		PROXY_PROTOCOLS.add(BDSPluginConstants.PROXY_PROTOCOL_HTTP);
 		PROXY_PROTOCOLS.add(BDSPluginConstants.PROXY_PROTOCOL_SSL);
 
-		return ImmutableList
-				.of(PropertyDefinition.builder(BDSPluginConstants.PROPERTY_CC_URL).name("Code Center Server URL")
+		return ImmutableList.of(
+				PropertyDefinition.builder(BDSPluginConstants.PROPERTY_CC_URL).name("Code Center Server URL")
 						.description("The full URL of the code center server, example: http://your server/")
 						.category(BD_CATEGORY).subCategory(CC_SUB_CATEGORY).type(PropertyType.STRING).index(0).build(),
-						PropertyDefinition.builder(BDSPluginConstants.PROPERTY_CC_USERNAME)
-								.name("Code Center user name").description("Your code center login name")
-								.category(BD_CATEGORY).subCategory(CC_SUB_CATEGORY).type(PropertyType.STRING).index(1)
-								.build(),
-						PropertyDefinition.builder(BDSPluginConstants.PROPERTY_CC_PASSSWORD)
-								.name("Code Center Password").description("Your CC password").category(BD_CATEGORY)
-								.subCategory(CC_SUB_CATEGORY).type(PropertyType.PASSWORD).index(2).build(),
+				PropertyDefinition.builder(BDSPluginConstants.PROPERTY_CC_USERNAME).name("Code Center user name")
+						.description("Your code center login name").category(BD_CATEGORY).subCategory(CC_SUB_CATEGORY)
+						.type(PropertyType.STRING).index(1).build(),
+				PropertyDefinition.builder(BDSPluginConstants.PROPERTY_CC_PASSSWORD).name("Code Center Password")
+						.description("Your CC password").category(BD_CATEGORY).subCategory(CC_SUB_CATEGORY)
+						.type(PropertyType.PASSWORD).index(2).build(),
 
-						PropertyDefinition.builder(BDSPluginConstants.PROPERTY_CC_PROJECT).name("Code Center App Name")
-								.description("Name of your Code Center Application").category(BD_CATEGORY)
-								.onlyOnQualifiers(Qualifiers.PROJECT, Qualifiers.MODULE).subCategory(CC_SUB_CATEGORY)
-								.type(PropertyType.STRING).index(0).build(),
-						PropertyDefinition.builder(BDSPluginConstants.PROPERTY_CC_VERSION)
-								.name("Version of your Code Center Application")
-								.description("Version of your Code Center Application").category(BD_CATEGORY)
-								.onlyOnQualifiers(Qualifiers.PROJECT).subCategory(CC_SUB_CATEGORY)
-								.type(PropertyType.STRING).index(1).build(),
+				PropertyDefinition.builder(BDSPluginConstants.PROPERTY_CC_PROJECT).name("Code Center App Name")
+						.description("Name of your Code Center Application").category(BD_CATEGORY)
+						.onlyOnQualifiers(Qualifiers.PROJECT, Qualifiers.MODULE).subCategory(CC_SUB_CATEGORY)
+						.type(PropertyType.STRING).index(0).build(),
+				PropertyDefinition.builder(BDSPluginConstants.PROPERTY_CC_VERSION)
+						.name("Version of your Code Center Application")
+						.description("Version of your Code Center Application").category(BD_CATEGORY)
+						.onlyOnQualifiers(Qualifiers.PROJECT).subCategory(CC_SUB_CATEGORY).type(PropertyType.STRING)
+						.index(1).build(),
 
-						// Protex Properties
-						PropertyDefinition.builder(BDSPluginConstants.PROPERTY_PROTEX_URL).name("Protex Server URL")
-								.description("The full URL of the protex server.").category(BD_CATEGORY)
-								.onQualifiers(Qualifiers.PROJECT) // General and
-																	// project
-								.subCategory(PROTEX_SUB_CATEGORY).type(PropertyType.STRING).index(0).build(),
-						PropertyDefinition.builder(BDSPluginConstants.PROPERTY_PROTEX_USERNAME)
-								.name("Protex User Name").description("Your Protex account user name")
-								.category(BD_CATEGORY).onQualifiers(Qualifiers.PROJECT) // General
-																						// and
-																						// project
-								.subCategory(PROTEX_SUB_CATEGORY).type(PropertyType.STRING).index(1).build(),
-						PropertyDefinition.builder(BDSPluginConstants.PROPERTY_PROTEX_PASSWORD).name("Protex Password")
-								.description("Your Protex password").category(BD_CATEGORY)
-								.onQualifiers(Qualifiers.PROJECT) // General and
-																	// project
-								.subCategory(PROTEX_SUB_CATEGORY).type(PropertyType.PASSWORD).index(2).build(),
-						PropertyDefinition.builder(BDSPluginConstants.PROPERTY_PROTEX_REFRESH_BOM_DATE)
-								.defaultValue("January 1, 2012").name("BOM Refresh").category(BD_CATEGORY)
-								.subCategory(PROTEX_SUB_CATEGORY).type(PropertyType.STRING).index(3).hidden().build(),
-						PropertyDefinition
-								.builder(BDSPluginConstants.PROPERTY_PROTEX_PROJECT)
-								.defaultValue(sonarProjectName)
-								.name("Name of Protex Project")
-								.description(
-										"This should be automatically configured within Code Center, but you can override here.")
-								.onlyOnQualifiers(Qualifiers.PROJECT, Qualifiers.MODULE).category(BD_CATEGORY)
-								.subCategory(PROTEX_SUB_CATEGORY).type(PropertyType.STRING).index(4).build(),
-						PropertyDefinition.builder(BDSPluginConstants.PROPERTY_PROTEX_LICENSE_COLORS)
-								.name("Protex License Category Colors")
-								.description("Assign colors per license type, example: permissive=red,unknown=orange")
-								.category(BD_CATEGORY).subCategory(PROTEX_SUB_CATEGORY).type(PropertyType.STRING)
-								.index(5).hidden().build(),
+				// Protex Properties
+				PropertyDefinition.builder(BDSPluginConstants.PROPERTY_PROTEX_URL).name("Protex Server URL")
+						.description("The full URL of the protex server.").category(BD_CATEGORY)
+						.onQualifiers(Qualifiers.PROJECT) // General and
+															// project
+						.subCategory(PROTEX_SUB_CATEGORY)
+						.type(PropertyType.STRING).index(
+								0)
+						.build(),
+				PropertyDefinition.builder(BDSPluginConstants.PROPERTY_PROTEX_USERNAME).name("Protex User Name")
+						.description("Your Protex account user name").category(BD_CATEGORY)
+						.onQualifiers(Qualifiers.PROJECT) // General
+															// and
+															// project
+						.subCategory(
+								PROTEX_SUB_CATEGORY)
+						.type(PropertyType.STRING).index(1).build(),
+				PropertyDefinition.builder(BDSPluginConstants.PROPERTY_PROTEX_PASSWORD).name("Protex Password")
+						.description("Your Protex password").category(BD_CATEGORY).onQualifiers(Qualifiers.PROJECT) // General
+																													// and
+																													// project
+						.subCategory(PROTEX_SUB_CATEGORY)
+						.type(PropertyType.PASSWORD).index(
+								2)
+						.build(),
+				PropertyDefinition.builder(BDSPluginConstants.PROPERTY_PROTEX_REFRESH_BOM_DATE)
+						.defaultValue("January 1, 2012").name("BOM Refresh").category(BD_CATEGORY)
+						.subCategory(
+								PROTEX_SUB_CATEGORY)
+						.type(PropertyType.STRING).index(3).hidden().build(),
+				PropertyDefinition.builder(BDSPluginConstants.PROPERTY_PROTEX_PROJECT).defaultValue(sonarProjectName)
+						.name("Name of Protex Project")
+						.description(
+								"This should be automatically configured within Code Center, but you can override here.")
+						.onlyOnQualifiers(Qualifiers.PROJECT, Qualifiers.MODULE).category(BD_CATEGORY)
+						.subCategory(PROTEX_SUB_CATEGORY)
+						.type(PropertyType.STRING).index(
+								4)
+						.build(),
+				PropertyDefinition.builder(BDSPluginConstants.PROPERTY_PROTEX_LICENSE_COLORS)
+						.name("Protex License Category Colors")
+						.description("Assign colors per license type, example: permissive=red,unknown=orange")
+						.category(BD_CATEGORY).subCategory(PROTEX_SUB_CATEGORY).type(PropertyType.STRING).index(5)
+						.hidden().build(),
 
-						// Proxy
-						PropertyDefinition.builder(BDSPluginConstants.PROPERTY_PROXY_SERVER).name("Proxy Server")
-								.description("Server for your proxy.").category(BD_CATEGORY)
-								.subCategory(GENERAL_CATEGORY).type(PropertyType.STRING).index(0).build(),
-						PropertyDefinition.builder(BDSPluginConstants.PROPERTY_PROXY_PORT).name("Proxy Port")
-								.description("Port for your proxy.").category(BD_CATEGORY)
-								.subCategory(GENERAL_CATEGORY).type(PropertyType.STRING).index(1).build(),
-						PropertyDefinition.builder(BDSPluginConstants.PROPERTY_PROXY_PROTOCOL)
-								.name("Protocol for your proxy").defaultValue(BDSPluginConstants.PROXY_PROTOCOL_HTTP)
-								.description("HTTP or SSL").category(BD_CATEGORY).subCategory(GENERAL_CATEGORY)
-								.type(PropertyType.SINGLE_SELECT_LIST).options(PROXY_PROTOCOLS).index(2).build(),
+				// Proxy
+				PropertyDefinition.builder(BDSPluginConstants.PROPERTY_PROXY_SERVER).name("Proxy Server")
+						.description("Server for your proxy.")
+						.category(
+								BD_CATEGORY)
+						.subCategory(GENERAL_CATEGORY).type(PropertyType.STRING).index(0).build(),
+				PropertyDefinition.builder(BDSPluginConstants.PROPERTY_PROXY_PORT).name("Proxy Port")
+						.description("Port for your proxy.").category(BD_CATEGORY).subCategory(GENERAL_CATEGORY)
+						.type(PropertyType.STRING).index(1).build(),
+				PropertyDefinition.builder(BDSPluginConstants.PROPERTY_PROXY_PROTOCOL).name("Protocol for your proxy")
+						.defaultValue(BDSPluginConstants.PROXY_PROTOCOL_HTTP).description("HTTP or SSL")
+						.category(BD_CATEGORY).subCategory(GENERAL_CATEGORY).type(PropertyType.SINGLE_SELECT_LIST)
+						.options(PROXY_PROTOCOLS).index(2).build(),
 
-						BDSPluginMetrics.class, BDSPluginSensor.class, CompAnalysisWidget.class,
-						LicenseInfoWidget.class, CompApproveWidget.class, CompVulnWidget.class);
+				BDSPluginMetrics.class, BDSPluginSensor.class, CompAnalysisWidget.class, LicenseInfoWidget.class,
+				CompApproveWidget.class, CompVulnWidget.class);
 	}
 }

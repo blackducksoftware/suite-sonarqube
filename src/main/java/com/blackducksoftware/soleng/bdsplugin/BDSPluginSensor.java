@@ -1,3 +1,25 @@
+/*******************************************************************************
+ * Copyright (C) 2016 Black Duck Software, Inc.
+ * http://www.blackducksoftware.com/
+ *
+ * Licensed to the Apache Software Foundation (ASF) under one
+ * or more contributor license agreements. See the NOTICE file
+ * distributed with this work for additional information
+ * regarding copyright ownership. The ASF licenses this file
+ * to you under the Apache License, Version 2.0 (the
+ * "License"); you may not use this file except in compliance
+ *  with the License. You may obtain a copy of the License at
+ *
+ * http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing,
+ *  software distributed under the License is distributed on an
+ * "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY
+ * KIND, either express or implied. See the License for the
+ * specific language governing permissions and limitations
+ *  under the License.
+ *
+ *******************************************************************************/
 package com.blackducksoftware.soleng.bdsplugin;
 
 import java.util.Date;
@@ -23,37 +45,27 @@ public class BDSPluginSensor implements Sensor {
 	private ApplicationPOJO pojo = new ApplicationPOJO();
 	private Settings settings = null;
 
-	public static void main(String[] args) {
-		Settings sets = new Settings();
-		sets.appendProperty(BDSPluginConstants.PROPERTY_CC_PROJECT, "Ari_App");
-		sets.appendProperty(BDSPluginConstants.PROPERTY_CC_VERSION, "1.0");
-
-		sets.appendProperty(BDSPluginConstants.PROPERTY_PROTEX_URL, "https://kiowa.blackducksoftware.com");
-		sets.appendProperty(BDSPluginConstants.PROPERTY_PROTEX_PASSWORD, "blackduck");
-		sets.appendProperty(BDSPluginConstants.PROPERTY_PROTEX_USERNAME, "akamen@blackducksoftware.com");
-
-		sets.appendProperty(BDSPluginConstants.PROPERTY_CC_URL, "http://satemplatecc1");
-
-		BDSPluginSensor sensor = new BDSPluginSensor(sets);
-
-		sensor.analyse(null, null);
+	public static void main(final String[] args) {
+		// Not called
 	}
 
 	/**
 	 * Optional constructor if you want to utilize the properties set forth by
 	 * the Plugin class Settings are
-	 * 
+	 *
 	 * @param configuration
 	 */
-	public BDSPluginSensor(Settings settings) {
+	public BDSPluginSensor(final Settings settings) {
 		this.settings = settings;
 	}
 
-	public boolean shouldExecuteOnProject(Project arg0) {
+	@Override
+	public boolean shouldExecuteOnProject(final Project arg0) {
 		return codeCenterIsConfgured(settings) || protexIsConfgured(settings);
 	}
 
-	public void analyse(Project sonarProject, SensorContext sensorContext) {
+	@Override
+	public void analyse(final Project sonarProject, final SensorContext sensorContext) {
 		if (codeCenterIsConfgured(settings)) {
 			analyseCodeCenter(sonarProject, sensorContext);
 		} else {
@@ -70,19 +82,19 @@ public class BDSPluginSensor implements Sensor {
 		saveMetrics(pojo, sensorContext);
 	}
 
-	private boolean codeCenterIsConfgured(Settings settings) {
+	private boolean codeCenterIsConfgured(final Settings settings) {
 		return !(StringUtils.isEmpty(settings.getString(BDSPluginConstants.PROPERTY_CC_URL))
-				|| StringUtils.isEmpty(settings.getString(BDSPluginConstants.PROPERTY_CC_USERNAME)) || StringUtils
-					.isEmpty(settings.getString(BDSPluginConstants.PROPERTY_CC_PASSSWORD)));
+				|| StringUtils.isEmpty(settings.getString(BDSPluginConstants.PROPERTY_CC_USERNAME))
+				|| StringUtils.isEmpty(settings.getString(BDSPluginConstants.PROPERTY_CC_PASSSWORD)));
 	}
 
-	private boolean protexIsConfgured(Settings settings) {
+	private boolean protexIsConfgured(final Settings settings) {
 		return !(StringUtils.isEmpty(settings.getString(BDSPluginConstants.PROPERTY_PROTEX_URL))
-				|| StringUtils.isEmpty(settings.getString(BDSPluginConstants.PROPERTY_PROTEX_USERNAME)) || StringUtils
-					.isEmpty(settings.getString(BDSPluginConstants.PROPERTY_PROTEX_PASSWORD)));
+				|| StringUtils.isEmpty(settings.getString(BDSPluginConstants.PROPERTY_PROTEX_USERNAME))
+				|| StringUtils.isEmpty(settings.getString(BDSPluginConstants.PROPERTY_PROTEX_PASSWORD)));
 	}
 
-	private void analyseCodeCenter(Project sonarProject, SensorContext sensorContext) {
+	private void analyseCodeCenter(final Project sonarProject, final SensorContext sensorContext) {
 		CodeCenterConnector ccConecctor = null;
 
 		// Code Center should be initialized first so that it can get associated
@@ -101,7 +113,7 @@ public class BDSPluginSensor implements Sensor {
 		}
 	}
 
-	private void analyseProtex(Project sonarProject, SensorContext sensorContext) {
+	private void analyseProtex(final Project sonarProject, final SensorContext sensorContext) {
 		ProtexConnector protexConnector = null;
 
 		try {
@@ -122,11 +134,11 @@ public class BDSPluginSensor implements Sensor {
 
 	/**
 	 * Save all the application pojo metrics inside the Sonar DB
-	 * 
+	 *
 	 * @param pojo
 	 * @param sensorContext
 	 */
-	private void saveMetrics(ApplicationPOJO pojo, SensorContext sensorContext) {
+	private void saveMetrics(final ApplicationPOJO pojo, final SensorContext sensorContext) {
 		try {
 			// Errors if any
 			saveMetricString(sensorContext, pojo.getProtexErrorMsg(), BDSPluginMetrics.PROTEX_ERROR_MESSAGE);
@@ -182,7 +194,7 @@ public class BDSPluginSensor implements Sensor {
 		}
 	}
 
-	private void saveMetricDate(SensorContext sensorContext, Date value, Metric metric) {
+	private void saveMetricDate(final SensorContext sensorContext, final Date value, final Metric metric) {
 		final Measure measure = new Measure(metric);
 		measure.setDate(value);
 
@@ -193,7 +205,7 @@ public class BDSPluginSensor implements Sensor {
 		log.info("Saved new measure: " + measure.toString());
 	}
 
-	private void saveMetricString(SensorContext sensorContext, String value, Metric metric) {
+	private void saveMetricString(final SensorContext sensorContext, final String value, final Metric metric) {
 		try {
 			final Measure measure = new Measure(metric);
 			measure.setData(value);
@@ -214,12 +226,13 @@ public class BDSPluginSensor implements Sensor {
 
 	/**
 	 * Converts the objects into a JSON string and saved that as the metric
-	 * 
+	 *
 	 * @param sensorContext
 	 * @param sortedLicenseMap
 	 * @param licenseBreakdownJson
 	 */
-	private void saveMetricJson(SensorContext sensorContext, Object collection, Metric licenseBreakdownJson) {
+	private void saveMetricJson(final SensorContext sensorContext, final Object collection,
+			final Metric licenseBreakdownJson) {
 		Gson gson = new Gson();
 
 		String value = gson.toJson(collection);
@@ -237,7 +250,7 @@ public class BDSPluginSensor implements Sensor {
 
 	}
 
-	private void saveMetricInt(SensorContext sensorContext, Integer value, Metric metric) {
+	private void saveMetricInt(final SensorContext sensorContext, final Integer value, final Metric metric) {
 		final Measure measure = new Measure(metric);
 		measure.setIntValue(value);
 
@@ -250,12 +263,12 @@ public class BDSPluginSensor implements Sensor {
 
 	/**
 	 * Sonar does not allow for longs, convert it.
-	 * 
+	 *
 	 * @param sensorContext
 	 * @param value
 	 * @param metric
 	 */
-	private void saveMetricLong(SensorContext sensorContext, Long value, Metric metric) {
+	private void saveMetricLong(final SensorContext sensorContext, final Long value, final Metric metric) {
 		final Measure measure = new Measure(metric);
 		measure.setIntValue(value.intValue());
 

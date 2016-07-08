@@ -1,3 +1,25 @@
+/*******************************************************************************
+ * Copyright (C) 2016 Black Duck Software, Inc.
+ * http://www.blackducksoftware.com/
+ *
+ * Licensed to the Apache Software Foundation (ASF) under one
+ * or more contributor license agreements. See the NOTICE file
+ * distributed with this work for additional information
+ * regarding copyright ownership. The ASF licenses this file
+ * to you under the Apache License, Version 2.0 (the
+ * "License"); you may not use this file except in compliance
+ *  with the License. You may obtain a copy of the License at
+ *
+ * http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing,
+ *  software distributed under the License is distributed on an
+ * "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY
+ * KIND, either express or implied. See the License for the
+ * specific language governing permissions and limitations
+ *  under the License.
+ *
+ *******************************************************************************/
 package com.blackducksoftware.soleng.bdsplugin.dao;
 
 import java.text.DateFormat;
@@ -54,13 +76,12 @@ import com.blackducksoftware.tools.connector.codecenter.common.RequestPojo;
 
 /**
  * All Code Center Connectivity goes through this DAO class
- * 
- * @author Ari Kamen
- * 
+ *
+ *
  */
 public class CodeCenterDAO extends CommonDAO {
 
-	static Logger log = LoggerFactory.getLogger(CodeCenterDAO.class.getName());
+	private final Logger log = LoggerFactory.getLogger(CodeCenterDAO.class.getName());
 
 	private static String SERVER = "";
 
@@ -177,7 +198,8 @@ public class CodeCenterDAO extends CommonDAO {
 			appToken.setVersion(VERSION_ID);
 
 			app = aApi.getApplication(appToken);
-			log.info("Found application: " + app.getName() + "  " + app.getVersion() + "(" + app.getDescription() + ")");
+			log.info(
+					"Found application: " + app.getName() + "  " + app.getVersion() + "(" + app.getDescription() + ")");
 
 			// Get associated Protex project!
 			try {
@@ -216,7 +238,7 @@ public class CodeCenterDAO extends CommonDAO {
 
 	/**
 	 * Based on the request.getApprovalStatus create buckets for requests
-	 * 
+	 *
 	 * @param pojo
 	 * @return
 	 */
@@ -274,9 +296,9 @@ public class CodeCenterDAO extends CommonDAO {
 	/**
 	 * Recursively looks through all the requests, if a request is another
 	 * application then continues looking until all requests are fetched.
-	 * 
+	 *
 	 * TODO: Check for nested applications after 7.x refactor
-	 * 
+	 *
 	 * @param requests
 	 * @param applicationId
 	 * @return
@@ -332,7 +354,7 @@ public class CodeCenterDAO extends CommonDAO {
 
 	/**
 	 * Creates a component map, with key being
-	 * 
+	 *
 	 * @param pojo
 	 * @param request
 	 */
@@ -375,7 +397,7 @@ public class CodeCenterDAO extends CommonDAO {
 	 * Grabs the license information from the SDK and creates the first basic
 	 * license POJO object. This object will acquire more data later from
 	 * Protex.
-	 * 
+	 *
 	 * @param pojo
 	 * @param request
 	 */
@@ -401,7 +423,7 @@ public class CodeCenterDAO extends CommonDAO {
 	/**
 	 * Populates the application with counts Populates the internal component
 	 * bean with vulnerability information
-	 * 
+	 *
 	 * @param appPojo
 	 * @param component
 	 * @param request
@@ -417,8 +439,8 @@ public class CodeCenterDAO extends CommonDAO {
 		filter.setSortAscending(true);
 
 		try {
-			List<VulnerabilitySummary> vulnerabilities = vulApi.searchDirectMatchedVulnerabilitiesByCatalogComponent(
-					compIdtoken, filter);
+			List<VulnerabilitySummary> vulnerabilities = vulApi
+					.searchDirectMatchedVulnerabilitiesByCatalogComponent(compIdtoken, filter);
 
 			for (VulnerabilitySummary summary : vulnerabilities) {
 				VulnerabilitySeverityEnum severityEnum = summary.getSeverity();
@@ -474,11 +496,10 @@ public class CodeCenterDAO extends CommonDAO {
 
 	/**
 	 * Constructs a Code Center url using their redirect knowledge The pattern
-	 * must follow the protocol: Note: Version is optional
-	 * http://<servername>/codecenter
-	 * /CCRedirectPage?isAtTop=true&CCRedirectPageName
+	 * must follow the protocol: Note: Version is optional http://
+	 * <servername>/codecenter /CCRedirectPage?isAtTop=true&CCRedirectPageName
 	 * =Component&CCComponentName=<compName >&CCComponentVersion=<version>
-	 * 
+	 *
 	 * @param pojo
 	 * @param settings
 	 * @return
@@ -494,9 +515,9 @@ public class CodeCenterDAO extends CommonDAO {
 				if (!server.endsWith("/")) {
 					server += "/";
 				}
-				String urlString = URIUtil.encodeQuery(server
-						+ "codecenter/CCRedirectPage?isAtTop=true&CCRedirectPageName=Component&CCComponentName="
-						+ compName.trim() + "&CCComponentVersion=" + compVersion);
+				String urlString = URIUtil.encodeQuery(
+						server + "codecenter/CCRedirectPage?isAtTop=true&CCRedirectPageName=Component&CCComponentName="
+								+ compName.trim() + "&CCComponentVersion=" + compVersion);
 				pojo.setUrl(urlString);
 
 			} catch (URIException e) {
@@ -511,7 +532,7 @@ public class CodeCenterDAO extends CommonDAO {
 
 	/**
 	 * Populates URLs for specific entry points within Code Center
-	 * 
+	 *
 	 * @param pojo
 	 * @param settings
 	 * @return

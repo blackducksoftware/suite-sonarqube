@@ -1,3 +1,25 @@
+/*******************************************************************************
+ * Copyright (C) 2016 Black Duck Software, Inc.
+ * http://www.blackducksoftware.com/
+ *
+ * Licensed to the Apache Software Foundation (ASF) under one
+ * or more contributor license agreements. See the NOTICE file
+ * distributed with this work for additional information
+ * regarding copyright ownership. The ASF licenses this file
+ * to you under the Apache License, Version 2.0 (the
+ * "License"); you may not use this file except in compliance
+ *  with the License. You may obtain a copy of the License at
+ *
+ * http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing,
+ *  software distributed under the License is distributed on an
+ * "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY
+ * KIND, either express or implied. See the License for the
+ * specific language governing permissions and limitations
+ *  under the License.
+ *
+ *******************************************************************************/
 package com.blackducksoftware.soleng.bdsplugin.dao;
 
 import java.util.Map;
@@ -29,203 +51,197 @@ import com.blackducksoftware.tools.connector.protex.CodeTreeHelper;
 import com.blackducksoftware.tools.connector.protex.ProtexServerWrapper;
 
 public class ProtexDAO extends CommonDAO {
-    static Logger log = LoggerFactory.getLogger(ProtexDAO.class.getName());
+	private final Logger log = LoggerFactory.getLogger(ProtexDAO.class.getName());
 
-    // private ProjectApi projectApi = null;
-    private CodeTreeApi codeTreeApi = null;
+	private CodeTreeApi codeTreeApi = null;
+	private DiscoveryApi discoveryApi = null;
+	private LicenseApi licenseApi = null;
+	private BomApi bomApi = null;
 
-    private DiscoveryApi discoveryApi = null;
+	private Settings settings = null;
 
-    private LicenseApi licenseApi = null;
+	private BDSPluginProtexConfigManager configManager = null;
 
-    // private IdentificationApi idApi = null;
-    private BomApi bomApi = null;
+	private ProtexServerWrapper<?> protexWrapper = null;
 
-    private Settings settings = null;
+	public ProtexDAO(final Settings settings, final org.sonar.api.resources.Project sonarProject) throws Exception {
+		this.settings = settings;
+		authenticate();
+	}
 
-    private BDSPluginProtexConfigManager configManager = null;
+	@Override
+	public void authenticate() throws Exception {
+		try {
+			/**
+			 * First we check to see if project settings contain data, if not
+			 * use global.
+			 */
+			// Map<String, String> props = settings.getProperties();
 
-    private ProtexServerWrapper protexWrapper = null;
+			final String SERVER = settings.getString(BDSPluginConstants.PROPERTY_PROTEX_URL);
+			final String USER_NAME = settings.getString(BDSPluginConstants.PROPERTY_PROTEX_USERNAME);
+			final String PASSWORD = settings.getString(BDSPluginConstants.PROPERTY_PROTEX_PASSWORD);
+			final String PROJECT_NAME = settings.getString(BDSPluginConstants.PROPERTY_PROTEX_PROJECT);
 
-    public ProtexDAO(final Settings settings, final org.sonar.api.resources.Project sonarProject) throws Exception {
-        this.settings = settings;
-        authenticate();
-    }
+			final BDSPluginUser user = new BDSPluginUser(SERVER, USER_NAME, PASSWORD);
 
-    @Override
-    public void authenticate() throws Exception {
-        try {
-            /**
-             * First we check to see if project settings contain data, if not
-             * use global.
-             */
-            // Map<String, String> props = settings.getProperties();
+			configManager = new BDSPluginProtexConfigManager(user);
+			configManager.setProtexPojectName(PROJECT_NAME);
 
-            final String SERVER = settings.getString(BDSPluginConstants.PROPERTY_PROTEX_URL);
-            final String USER_NAME = settings.getString(BDSPluginConstants.PROPERTY_PROTEX_USERNAME);
-            final String PASSWORD = settings.getString(BDSPluginConstants.PROPERTY_PROTEX_PASSWORD);
-            final String PROJECT_NAME = settings.getString(BDSPluginConstants.PROPERTY_PROTEX_PROJECT);
+			configManager = (BDSPluginProtexConfigManager) collectGeneralSettings(configManager, settings);
 
-            final BDSPluginUser user = new BDSPluginUser(SERVER, USER_NAME, PASSWORD);
+			// workaround for this here
+			// http://fusesource.com/forums/thread.jspa?messageID=10988
+			Thread.currentThread().setContextClassLoader(this.getClass().getClassLoader());
 
-            configManager = new BDSPluginProtexConfigManager(user);
-            configManager.setProtexPojectName(PROJECT_NAME);
+			// AK -- Use the deprecated method for now
+			protexWrapper = new ProtexServerWrapper(configManager.getServerBean(APPLICATION.PROTEX), configManager,
+					false);
 
-            configManager = (BDSPluginProtexConfigManager) collectGeneralSettings(configManager, settings);
+			codeTreeApi = protexWrapper.getInternalApiWrapper().getCodeTreeApi();
+			discoveryApi = protexWrapper.getInternalApiWrapper().getDiscoveryApi();
+			licenseApi = protexWrapper.getInternalApiWrapper().getLicenseApi();
+			bomApi = protexWrapper.getInternalApiWrapper().getBomApi();
 
-            // workaround for this here
-            // http://fusesource.com/forums/thread.jspa?messageID=10988
-            Thread.currentThread().setContextClassLoader(this.getClass().getClassLoader());
+			log.info("Protex authentication completed");
+		} catch (final Exception e) {
+			throw new Exception("Authentication failure: " + e.getMessage());
+		}
 
-            // AK -- Use the deprecated method for now
-            // TODO: See if the config manager created inside here is usable
-            protexWrapper = new ProtexServerWrapper(configManager.getServerBean(APPLICATION.PROTEX), configManager,
-                    false);
+	}
 
-            codeTreeApi = protexWrapper.getInternalApiWrapper().getCodeTreeApi();
-            discoveryApi = protexWrapper.getInternalApiWrapper().getDiscoveryApi();
-            licenseApi = protexWrapper.getInternalApiWrapper().getLicenseApi();
-            bomApi = protexWrapper.getInternalApiWrapper().getBomApi();
+	public void populateProjectInfo(final ApplicationPOJO sonarQubeApplication) {
+		String projectName = null;
+		try {
+			// Use the user specified project
+			projectName = configManager.getProtexPojectName();
+			if (projectName == null || projectName.length() == 0) {
+				// If it is empty, then take it from the Config Manager, Code
+				// Center may have populated it.
+				projectName = sonarQubeApplication.getProjectName();
+			}
 
-            log.info("Protex authentication completed");
-        } catch (final Exception e) {
-            throw new Exception("Authentication failure: " + e.getMessage());
-        }
+			// If it is still empty, then there is no sense in continuing.
+			if (projectName == null || projectName.length() == 0) {
+				throw new Exception("Nothing to analyze, project name is empty");
+			}
 
-    }
+			log.info("Getting project information for project name: " + projectName);
 
-    public void populateProjectInfo(final ApplicationPOJO sonarQubeApplication) {
-        String projectName = null;
-        try {
-            // Use the user specified project
-            projectName = configManager.getProtexPojectName();
-            if (projectName == null || projectName.length() == 0) {
-                // If it is empty, then take it from the Config Manager, Code
-                // Center may have populated it.
-                projectName = sonarQubeApplication.getProjectName();
-            }
+			// Get the project from the SDK, if the project has a bad name,
+			// missing, etc it will bomb.
+			// workaround for this here
+			// http://fusesource.com/forums/thread.jspa?messageID=10988
+			Thread.currentThread().setContextClassLoader(this.getClass().getClassLoader());
 
-            // If it is still empty, then there is no sense in continuing.
-            if (projectName == null || projectName.length() == 0) {
-                throw new Exception("Nothing to analyze, project name is empty");
-            }
+			final ProtexProjectPojo projectPojo = (ProtexProjectPojo) protexWrapper.getProjectByName(projectName);
 
-            log.info("Getting project information for project name: " + projectName);
+			sonarQubeApplication.setProjectID(projectPojo.getProjectKey());
+			sonarQubeApplication.setProjectName(projectPojo.getProjectName());
+			sonarQubeApplication.setDateLastAnalyzed(projectPojo.getAnalyzedDate());
 
-            // Get the project from the SDK, if the project has a bad name,
-            // missing, etc it will bomb.
-            // workaround for this here
-            // http://fusesource.com/forums/thread.jspa?messageID=10988
-            Thread.currentThread().setContextClassLoader(this.getClass().getClassLoader());
+			// Grab the url
+			final String serverURL = settings.getString(BDSPluginConstants.PROPERTY_PROTEX_URL);
 
-            final ProtexProjectPojo projectPojo = (ProtexProjectPojo) protexWrapper.getProjectByName(projectName);
+			// TODO: Figure it out, this hard-coded stuff is terrible.
+			final String protexBomURL = serverURL + (serverURL.endsWith("/") ? "" : "/")
+					+ "protex/ProtexIPIdentifyFolderBillOfMaterialsContainer?isAtTop=true&ProtexIPProjectId="
+					+ projectPojo.getProjectKey() + "&ProtexIPIdentifyFileViewLevel=folder&ProtexIPIdentifyFileId=-1";
 
-            sonarQubeApplication.setProjectID(projectPojo.getProjectKey());
-            sonarQubeApplication.setProjectName(projectPojo.getProjectName());
-            sonarQubeApplication.setDateLastAnalyzed(projectPojo.getAnalyzedDate());
+			sonarQubeApplication.setProtexBomURL(protexBomURL);
 
-            // Grab the url
-            final String serverURL = settings.getString(BDSPluginConstants.PROPERTY_PROTEX_URL);
+			// Pack some information about Protex
+			final BDSProtexPojo protexInfo = new BDSProtexPojo(projectPojo);
+			protexInfo.setProtexServer(serverURL);
+			protexInfo.setProtexBomURL(protexBomURL);
+			sonarQubeApplication.setProtexProject(protexInfo);
 
-            // TODO: Figure it out, this hard-coded stuff is terrible.
-            final String protexBomURL = serverURL + (serverURL.endsWith("/") ? "" : "/")
-                    + "protex/ProtexIPIdentifyFolderBillOfMaterialsContainer?isAtTop=true&ProtexIPProjectId="
-                    + projectPojo.getProjectKey() + "&ProtexIPIdentifyFileViewLevel=folder&ProtexIPIdentifyFileId=-1";
+		} catch (final CommonFrameworkException cfe) {
+			log.error("Could not get project information for: " + projectName);
+			log.error("Error: " + cfe.getMessage());
+			log.error("Configuration Information: " + cfe.getConfigurationInformation());
+			sonarQubeApplication.setProtexErrorMsg(cfe.getMessage());
+		} catch (final Exception e) {
+			log.error("Error: " + e.getMessage());
+			sonarQubeApplication.setProtexErrorMsg(e.getMessage());
+		}
+		log.info("Got project information for: " + projectName);
+	}
 
-            sonarQubeApplication.setProtexBomURL(protexBomURL);
+	/**
+	 * As of 2.0.1 - Refactored to use 7.x SDK
+	 *
+	 * @param applicationPojo
+	 * @param sensorContext
+	 */
+	public void populateProjectFileCounts(final ApplicationPOJO applicationPojo, final SensorContext sensorContext) {
+		Long totalFiles = new Long(0);
+		Long totalPendingFiles = new Long(0);
+		Long noDiscoveryCount = new Long(0);
+		Long discoveryCount = new Long(0);
+		Long licenseConflictCount = new Long(0);
+		Long skippedFiles = new Long(0);
 
-            // Pack some information about Protex
-            final BDSProtexPojo protexInfo = new BDSProtexPojo(projectPojo);
-            protexInfo.setProtexServer(serverURL);
-            protexInfo.setProtexBomURL(protexBomURL);
-            sonarQubeApplication.setProtexProject(protexInfo);
+		CodeTreeHelper treeHelper = protexWrapper.getCodeTreeHelper();
+		CodeTreeApi codeTreeApi = protexWrapper.getInternalApiWrapper().getCodeTreeApi();
 
-        } catch (final CommonFrameworkException cfe) {
-            log.error("Could not get project information for: " + projectName);
-            log.error("Error: " + cfe.getMessage());
-            log.error("Configuration Information: " + cfe.getConfigurationInformation());
-            sonarQubeApplication.setProtexErrorMsg(cfe.getMessage());
-        } catch (final Exception e) {
-            log.error("Error: " + e.getMessage());
-            sonarQubeApplication.setProtexErrorMsg(e.getMessage());
-        }
-        log.info("Got project information for: " + projectName);
-    }
+		ProjectPojo protexProjectPojo = applicationPojo.getProtexProject();
 
-    /**
-     * As of 2.0.1 - Refactored to use 7.x SDK
-     *
-     * @param applicationPojo
-     * @param sensorContext
-     */
-    public void populateProjectFileCounts(final ApplicationPOJO applicationPojo, final SensorContext sensorContext) {
-        Long totalFiles = new Long(0);
-        Long totalPendingFiles = new Long(0);
-        Long noDiscoveryCount = new Long(0);
-        Long discoveryCount = new Long(0);
-        Long licenseConflictCount = new Long(0);
-        Long skippedFiles = new Long(0);
+		try {
+			Map<NodeCountType, Long> allCounts = treeHelper.getAllCountsForProjects(protexProjectPojo);
 
-        CodeTreeHelper treeHelper = protexWrapper.getCodeTreeHelper();
-        CodeTreeApi codeTreeApi = protexWrapper.getInternalApiWrapper().getCodeTreeApi();
+			totalFiles = allCounts.get(NodeCountType.FILES);
+			totalPendingFiles = allCounts.get(NodeCountType.PENDING_ID_ALL);
+			noDiscoveryCount = allCounts.get(NodeCountType.NO_DISCOVERIES);
+			discoveryCount = allCounts.get(NodeCountType.DISCOVERIES);
+			licenseConflictCount = allCounts.get(NodeCountType.LICENSE_CONFLICTS);
+			// The only count not available from the map.
+			skippedFiles = codeTreeApi.getSkippedFileCount(applicationPojo.getProjectID());
 
-        ProjectPojo protexProjectPojo = applicationPojo.getProtexProject();
+		} catch (final Exception e) {
+			log.error("Error getting Protex project counts: " + e.getMessage());
+		}
 
-        try {
-            Map<NodeCountType, Long> allCounts = treeHelper.getAllCountsForProjects(protexProjectPojo);
+		applicationPojo.setTotalFileCount(totalFiles);
+		applicationPojo.setTotalPendingFileCount(totalPendingFiles);
+		applicationPojo.setTotalSkippedFileCount(skippedFiles);
+		applicationPojo.setTotalNoDiscoveryCount(noDiscoveryCount);
+		applicationPojo.setTotalLicenseConflictCount(licenseConflictCount);
 
-            totalFiles = allCounts.get(NodeCountType.FILES);
-            totalPendingFiles = allCounts.get(NodeCountType.PENDING_ID_ALL);
-            noDiscoveryCount = allCounts.get(NodeCountType.NO_DISCOVERIES);
-            discoveryCount = allCounts.get(NodeCountType.DISCOVERIES);
-            licenseConflictCount = allCounts.get(NodeCountType.LICENSE_CONFLICTS);
-            // The only count not available from the map.
-            skippedFiles = codeTreeApi.getSkippedFileCount(applicationPojo.getProjectID());
+		// This is the only value we calculate
+		// But we must do it here and then store it as a metric to get Sonar
+		// trending.
+		discoveryCount = totalFiles - noDiscoveryCount;
+		applicationPojo.setTotalDiscoveryCount(discoveryCount);
 
-        } catch (final Exception e) {
-            log.error("Error getting Protex project counts: " + e.getMessage());
-        }
+	}
 
-        applicationPojo.setTotalFileCount(totalFiles);
-        applicationPojo.setTotalPendingFileCount(totalPendingFiles);
-        applicationPojo.setTotalSkippedFileCount(skippedFiles);
-        applicationPojo.setTotalNoDiscoveryCount(noDiscoveryCount);
-        applicationPojo.setTotalLicenseConflictCount(licenseConflictCount);
+	public LicensePOJO populateLicenseAttributes(final LicensePOJO licensePojo) {
+		final String lic_id = licensePojo.getLicenseID();
+		try {
+			final GlobalLicense lic = licenseApi.getLicenseById(lic_id);
+			final LicenseAttributes attributes = lic.getAttributes();
+			final LicenseExtensionLevel licLevel = attributes.getIntegrationLevelForLicenseApplication();
 
-        // This is the only value we calculate
-        // But we must do it here and then store it as a metric to get Sonar
-        // trending.
-        discoveryCount = totalFiles - noDiscoveryCount;
-        applicationPojo.setTotalDiscoveryCount(discoveryCount);
+			final String licenseReachName = licLevel.toString();
+			if (licenseReachName == null) {
+				log.warn("Could not get license level reach name for license ID: " + lic_id);
+			} else {
+				licensePojo.setLicenseReachString(licenseReachName);
+			}
 
-    }
+			final Integer ordinalNumber = licLevel.ordinal();
+			if (ordinalNumber == null) {
+				log.warn("Could not get ordinal value for license ID: " + lic_id);
+			} else {
+				licensePojo.setLicenseReachNumber(ordinalNumber);
+			}
 
-    public LicensePOJO populateLicenseAttributes(final LicensePOJO licensePojo) {
-        final String lic_id = licensePojo.getLicenseID();
-        try {
-            final GlobalLicense lic = licenseApi.getLicenseById(lic_id);
-            final LicenseAttributes attributes = lic.getAttributes();
-            final LicenseExtensionLevel licLevel = attributes.getIntegrationLevelForLicenseApplication();
+		} catch (final Exception e) {
+			log.error("Error: " + e.getMessage());
+		}
 
-            final String licenseReachName = licLevel.toString();
-            if (licenseReachName == null) {
-                log.warn("Could not get license level reach name for license ID: " + lic_id);
-            } else {
-                licensePojo.setLicenseReachString(licenseReachName);
-            }
-
-            final Integer ordinalNumber = licLevel.ordinal();
-            if (ordinalNumber == null) {
-                log.warn("Could not get ordinal value for license ID: " + lic_id);
-            } else {
-                licensePojo.setLicenseReachNumber(ordinalNumber);
-            }
-
-        } catch (final Exception e) {
-            log.error("Error: " + e.getMessage());
-        }
-
-        return licensePojo;
-    }
+		return licensePojo;
+	}
 
 }
