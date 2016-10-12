@@ -39,15 +39,10 @@ import com.blackducksoftware.soleng.bdsplugin.model.ApplicationPOJO;
 import com.google.gson.Gson;
 
 public class BDSPluginSensor implements Sensor {
-
 	private static Logger log = LoggerFactory.getLogger(BDSPluginSensor.class.getName());
 
 	private ApplicationPOJO pojo = new ApplicationPOJO();
 	private Settings settings = null;
-
-	public static void main(final String[] args) {
-		// Not called
-	}
 
 	/**
 	 * Optional constructor if you want to utilize the properties set forth by
@@ -60,7 +55,7 @@ public class BDSPluginSensor implements Sensor {
 	}
 
 	@Override
-	public boolean shouldExecuteOnProject(final Project arg0) {
+	public boolean shouldExecuteOnProject(final Project project) {
 		return codeCenterIsConfgured(settings) || protexIsConfgured(settings);
 	}
 
@@ -102,7 +97,7 @@ public class BDSPluginSensor implements Sensor {
 		// Catch authentication exceptions and store the errors.
 		try {
 			ccConecctor = new CodeCenterConnector(settings, sonarProject);
-		} catch (Exception e) {
+		} catch (final Exception e) {
 			log.error("Unable to authenticate Code Center, cause: " + e.getMessage());
 			pojo.setCcErrorMsg(e.getMessage());
 		}
@@ -118,7 +113,7 @@ public class BDSPluginSensor implements Sensor {
 
 		try {
 			protexConnector = new ProtexConnector(settings, sonarProject);
-		} catch (Exception e) {
+		} catch (final Exception e) {
 			log.error("Unable to authenticate Protex, cause: " + e.getMessage());
 			pojo.setProtexErrorMsg(e.getMessage());
 		}
@@ -189,7 +184,7 @@ public class BDSPluginSensor implements Sensor {
 			// Licenses for the chart
 			saveMetricJson(sensorContext, pojo.getSortedLicenseMap(), BDSPluginMetrics.LICENSE_BREAKDOWN_JSON);
 
-		} catch (Exception e) {
+		} catch (final Exception e) {
 			log.warn("Unable to save all metrics!", e);
 		}
 	}
@@ -218,7 +213,7 @@ public class BDSPluginSensor implements Sensor {
 
 			log.info("Saved new measure: " + measure.toString());
 
-		} catch (Exception e) {
+		} catch (final Exception e) {
 			log.warn("Unable to save metric: " + metric.getName(), e);
 		}
 
@@ -233,9 +228,9 @@ public class BDSPluginSensor implements Sensor {
 	 */
 	private void saveMetricJson(final SensorContext sensorContext, final Object collection,
 			final Metric licenseBreakdownJson) {
-		Gson gson = new Gson();
+		final Gson gson = new Gson();
 
-		String value = gson.toJson(collection);
+		final String value = gson.toJson(collection);
 
 		final Measure measure = new Measure(licenseBreakdownJson);
 		measure.setData(value);

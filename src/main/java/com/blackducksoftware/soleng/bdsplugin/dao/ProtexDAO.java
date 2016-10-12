@@ -22,6 +22,8 @@
  *******************************************************************************/
 package com.blackducksoftware.soleng.bdsplugin.dao;
 
+import java.net.MalformedURLException;
+import java.net.URL;
 import java.util.Map;
 
 import org.slf4j.Logger;
@@ -29,14 +31,14 @@ import org.slf4j.LoggerFactory;
 import org.sonar.api.batch.SensorContext;
 import org.sonar.api.config.Settings;
 
+import com.blackducksoftware.sdk.fault.SdkFault;
 import com.blackducksoftware.sdk.protex.license.GlobalLicense;
 import com.blackducksoftware.sdk.protex.license.LicenseApi;
 import com.blackducksoftware.sdk.protex.license.LicenseAttributes;
 import com.blackducksoftware.sdk.protex.license.LicenseExtensionLevel;
-import com.blackducksoftware.sdk.protex.project.bom.BomApi;
+import com.blackducksoftware.sdk.protex.policy.PolicyApi;
 import com.blackducksoftware.sdk.protex.project.codetree.CodeTreeApi;
 import com.blackducksoftware.sdk.protex.project.codetree.NodeCountType;
-import com.blackducksoftware.sdk.protex.project.codetree.discovery.DiscoveryApi;
 import com.blackducksoftware.soleng.bdsplugin.BDSPluginConstants;
 import com.blackducksoftware.soleng.bdsplugin.config.BDSPluginProtexConfigManager;
 import com.blackducksoftware.soleng.bdsplugin.config.BDSPluginUser;
@@ -53,16 +55,12 @@ import com.blackducksoftware.tools.connector.protex.ProtexServerWrapper;
 public class ProtexDAO extends CommonDAO {
 	private final Logger log = LoggerFactory.getLogger(ProtexDAO.class.getName());
 
-	private CodeTreeApi codeTreeApi = null;
-	private DiscoveryApi discoveryApi = null;
 	private LicenseApi licenseApi = null;
-	private BomApi bomApi = null;
-
+	private PolicyApi policyApi = null;
 	private Settings settings = null;
-
 	private BDSPluginProtexConfigManager configManager = null;
-
 	private ProtexServerWrapper<?> protexWrapper = null;
+	private String protexUrl = null;
 
 	public ProtexDAO(final Settings settings, final org.sonar.api.resources.Project sonarProject) throws Exception {
 		this.settings = settings;
@@ -79,6 +77,7 @@ public class ProtexDAO extends CommonDAO {
 			// Map<String, String> props = settings.getProperties();
 
 			final String SERVER = settings.getString(BDSPluginConstants.PROPERTY_PROTEX_URL);
+			protexUrl = SERVER;
 			final String USER_NAME = settings.getString(BDSPluginConstants.PROPERTY_PROTEX_USERNAME);
 			final String PASSWORD = settings.getString(BDSPluginConstants.PROPERTY_PROTEX_PASSWORD);
 			final String PROJECT_NAME = settings.getString(BDSPluginConstants.PROPERTY_PROTEX_PROJECT);
@@ -98,16 +97,22 @@ public class ProtexDAO extends CommonDAO {
 			protexWrapper = new ProtexServerWrapper(configManager.getServerBean(APPLICATION.PROTEX), configManager,
 					false);
 
-			codeTreeApi = protexWrapper.getInternalApiWrapper().getCodeTreeApi();
-			discoveryApi = protexWrapper.getInternalApiWrapper().getDiscoveryApi();
 			licenseApi = protexWrapper.getInternalApiWrapper().getLicenseApi();
-			bomApi = protexWrapper.getInternalApiWrapper().getBomApi();
+			policyApi = protexWrapper.getInternalApiWrapper().getPolicyApi();
 
 			log.info("Protex authentication completed");
 		} catch (final Exception e) {
 			throw new Exception("Authentication failure: " + e.getMessage());
 		}
 
+	}
+
+	public URL getProtexServerUrl() throws MalformedURLException {
+		return new URL(protexUrl);
+	}
+
+	public String getProtexServerVersion() throws SdkFault {
+		return policyApi.getSystemInformation().getBdsClientVersion();
 	}
 
 	public void populateProjectInfo(final ApplicationPOJO sonarQubeApplication) {
@@ -182,13 +187,13 @@ public class ProtexDAO extends CommonDAO {
 		Long licenseConflictCount = new Long(0);
 		Long skippedFiles = new Long(0);
 
-		CodeTreeHelper treeHelper = protexWrapper.getCodeTreeHelper();
-		CodeTreeApi codeTreeApi = protexWrapper.getInternalApiWrapper().getCodeTreeApi();
+		final CodeTreeHelper treeHelper = protexWrapper.getCodeTreeHelper();
+		final CodeTreeApi codeTreeApi = protexWrapper.getInternalApiWrapper().getCodeTreeApi();
 
-		ProjectPojo protexProjectPojo = applicationPojo.getProtexProject();
+		final ProjectPojo protexProjectPojo = applicationPojo.getProtexProject();
 
 		try {
-			Map<NodeCountType, Long> allCounts = treeHelper.getAllCountsForProjects(protexProjectPojo);
+			final Map<NodeCountType, Long> allCounts = treeHelper.getAllCountsForProjects(protexProjectPojo);
 
 			totalFiles = allCounts.get(NodeCountType.FILES);
 			totalPendingFiles = allCounts.get(NodeCountType.PENDING_ID_ALL);
